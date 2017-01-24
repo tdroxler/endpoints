@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html class="no-js" lang="eng" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparison with similar tools</title>
+    <link rel="stylesheet" href="theme/css/foundation.min.css">
+    <link rel="stylesheet" href="theme/css/app.css">
+     <link rel="stylesheet" href="theme/highlight.js/styles/github-gist.css"> 
+    
+  </head>
+  <body>
+    <div class="expanded row">
+      <div class="small-12 medium-12 large-12 columns align-self-top">
+        <div class="row">
+          
+          <header class="large-12 columns align-self-top a_header">
+            <div class="row">
+              <div class="large-12 columns a_limited top-bar">
+                <div class="top-bar-left">
+                  <p>endpoints 0.2-SNAPSHOT</p>
+
+                </div>
+                <div class="top-bar-right align-right row">
+                  
+                  
+                    <form action="site-search.html" method="get" class="align-right a_search">
+                      <input name="q" type="search"  placeholder="Search
+" >
+                      <button><img alt="&#1F50D;" src="theme/images/search.svg" /></button>
+                    </form>
+                  
+                </div>
+              </div>
+            </div>
+          </header>
+          
+          <div class="small-12 medium-12 large-12 columns align-self-top a_limited a_main">
+            <div class="row">
+              
+              <main class="columns large-order-2 sections" id="_sections">
+                
+                <h1 id="comparison-with-similar-tools" class="a_section" data-magellan-target="comparison-with-similar-tools">Comparison with similar tools<a class="a_hlink" href="#comparison-with-similar-tools"></a></h1>
+<h2 id="autowire" class="a_section" data-magellan-target="autowire">Autowire<a class="a_hlink" href="#autowire"></a></h2>
+<p>With autowire, all the communications typically go through a single HTTP endpoint and
+use a single marshalling format. This has the following consequences :</p>
+<ul>
+<li>You can hardly define RESTful APIs ;</li>
+<li>You can hardly control response caching ;</li>
+<li>You can hardly serve assets.</li>
+</ul>
+<p>Another difference is that <code class="hljs">endpoints</code> uses no macros at all.</p>
+<h2 id="swagger" class="a_section" data-magellan-target="swagger">Swagger<a class="a_hlink" href="#swagger"></a></h2>
+<p>Swagger provides a set of tools producing documentation resources from an API specification.
+The drawback of Swagger is that you have to maintain both the implementation and the
+specification and to keep them consistent (even when using the available “integrations”, which
+are only able to automate a small part of the specification generation).</p>
+<p>With <code class="hljs">endpoints</code> you can write an object algebra producing documentation resources for
+endpoint definitions, so that your documentation is derived from the exact same code
+that is used to implement the API, hence being always consistent.</p>
+<h2 id="thrift-finch-rho-lagom-remotely-fintrospect" class="a_section" data-magellan-target="thrift-finch-rho-lagom-remotely-fintrospect">Thrift? Finch? Rho? Lagom? Remotely? Fintrospect?<a class="a_hlink" href="#thrift-finch-rho-lagom-remotely-fintrospect"></a></h2>
+
+              </main>
+              
+              
+                <div data-sticky-container class="small-12 medium-12 large-2 large-order-1 columns a_sitenav_container">
+                  <nav class="a_sitenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                    
+                  <ul>
+                     
+  <li >
+    
+      <a href="index.html">Introduction</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="overview.html">Overview</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="installation.html">Installation</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="tutorial.html">Tutorial</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="design.html">Design</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="interfaces-and-interpreters.html">Interfaces and interpreters</a>
+    
+    
+  </li>
+  
+  <li  class="a_thispage" >
+    
+      <a href="comparison.html">Comparison with similar tools</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="talks.html">Talks</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="changelog.html">Changelog</a>
+    
+    
+  </li>
+ 
+                  </ul>
+                  </nav>
+                </div>
+              
+              
+              
+                <div class="small-12 medium-12 large-2 large-order-3 columns a_show-for-xlarge" data-sticky-container>
+                  <nav class="a_pagenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                     <header><p>On This Page</p>
+</header> 
+                    <ul class="vertical menu" data-magellan>
+                       
+  <li>
+    
+       <a href="#comparison-with-similar-tools">Comparison with similar tools</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#autowire">Autowire</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#swagger">Swagger</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#thrift-finch-rho-lagom-remotely-fintrospect">Thrift? Finch? Rho? Lagom? Remotely? Fintrospect?</a> 
+    
+    
+  </li>
+  </ul>
+    
+  </li>
+ 
+                    </ul>
+                  </nav>
+                </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer class="small-12 medium-12 large-12 columns align-self-bottom a_footer">
+        <div class="row">
+          <div class="small-12 medium-12 large-12 columns top-bar">
+            <div class="top-bar-left">
+              
+            </div>
+            <div class="top-bar-right">
+              <p>Generated with <a href="https://github.com/szeiger/ornate">Ornate</a>.</p>
+
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="theme/js/jquery.min.js"></script>
+    <script src="theme/js/what-input.min.js"></script>
+    <script src="theme/js/foundation.min.js"></script>
+    
+    <script src="theme/js/app.js"></script>
+    
+  </body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html class="no-js" lang="eng" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overview</title>
+    <link rel="stylesheet" href="theme/css/foundation.min.css">
+    <link rel="stylesheet" href="theme/css/app.css">
+     <link rel="stylesheet" href="theme/css/mermaid.custom.css">  <link rel="stylesheet" href="theme/highlight.js/styles/github-gist.css"> 
+    
+  </head>
+  <body>
+    <div class="expanded row">
+      <div class="small-12 medium-12 large-12 columns align-self-top">
+        <div class="row">
+          
+          <header class="large-12 columns align-self-top a_header">
+            <div class="row">
+              <div class="large-12 columns a_limited top-bar">
+                <div class="top-bar-left">
+                  <p>endpoints 0.2-SNAPSHOT</p>
+
+                </div>
+                <div class="top-bar-right align-right row">
+                  
+                  
+                    <form action="site-search.html" method="get" class="align-right a_search">
+                      <input name="q" type="search"  placeholder="Search
+" >
+                      <button><img alt="&#1F50D;" src="theme/images/search.svg" /></button>
+                    </form>
+                  
+                </div>
+              </div>
+            </div>
+          </header>
+          
+          <div class="small-12 medium-12 large-12 columns align-self-top a_limited a_main">
+            <div class="row">
+              
+              <main class="columns large-order-2 sections" id="_sections">
+                
+                   <noscript> <blockquote class="warning">
+<p>This page requires JavaScript. Please enable JavaScript in your browser.</p>
+</blockquote>
+ </noscript> 
+                
+                <h1 id="overview" class="a_section" data-magellan-target="overview">Overview<a class="a_hlink" href="#overview"></a></h1>
+<p>Typically, a project is broken down into several sub-projects:</p>
+<div class="mermaid" id="_id0"><pre class="mermaid_src" style="display: none">graph BT
+  endpoints
+  server --&gt; endpoints
+  client --&gt; endpoints
+</pre></div>
+<p>The <code class="hljs">endpoints</code> sub-project contains the <em>definition</em> of the communication
+protocol. The <code class="hljs">server</code> sub-project <em>implements</em> this communication protocol.
+The <code class="hljs">client</code> sub-project <em>uses</em> the protocol to communicate with the <code class="hljs">server</code>.</p>
+<h2 id="description-of-the-http-endpoints" class="a_section" data-magellan-target="description-of-the-http-endpoints">Description of the HTTP endpoints<a class="a_hlink" href="#description-of-the-http-endpoints"></a></h2>
+<p>Let’s define a first artifact, cross-compiled for Scala.js, and containing a description of the
+endpoints of a web service.</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.algebra.{<span class="hljs-type">Endpoints</span>, <span class="hljs-type">CirceEntities</span>}
+<span class="hljs-keyword">import</span> io.circe.generic.<span class="hljs-type">JsonCodec</span>
+
+<span class="hljs-comment">/**
+  * Defines the HTTP endpoints description of a web service implementing a counter.
+  * This web service has two endpoints: one for getting the current value of the counter,
+  * and one for incrementing it.
+  * It uses circe.io for JSON marshalling.
+  */</span>
+<span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">CounterEndpoints</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Endpoints</span> <span class="hljs-keyword">with</span> <span class="hljs-title">CirceEntities</span> </span>{
+
+  <span class="hljs-comment">/**
+    * Get the counter current value.
+    * Uses the HTTP verb “GET” and URL path “/current-value”.
+    * The response entity is a JSON document representing the counter value.
+    */</span>
+  <span class="hljs-keyword">val</span> currentValue = endpoint(get(path / <span class="hljs-string">"current-value"</span>), jsonResponse[<span class="hljs-type">Counter</span>])
+
+  <span class="hljs-comment">/**
+    * Increments the counter value.
+    * Uses the HTTP verb “POST” and URL path “/increment”.
+    * The request entity is a JSON document representing the increment to apply to the counter.
+    * The response entity is empty.
+    */</span>
+  <span class="hljs-keyword">val</span> increment = endpoint(post(path / <span class="hljs-string">"increment"</span>, jsonRequest[<span class="hljs-type">Increment</span>]), emptyResponse)
+
+}
+
+<span class="hljs-meta">@JsonCodec</span>
+<span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span>(<span class="hljs-params">value: <span class="hljs-type">Int</span></span>)</span>
+
+<span class="hljs-meta">@JsonCodec</span>
+<span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Increment</span>(<span class="hljs-params">step: <span class="hljs-type">Int</span></span>)</span></code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/examples/overview/endpoints/src/main/scala/overview/CounterEndpoints.scala#L4-L36" class="a_sourcelink">CounterEndpoints.scala</a></div></div>
+<h2 id="javascript-scala.js-client" class="a_section" data-magellan-target="javascript-scala.js-client">JavaScript (Scala.js) client<a class="a_hlink" href="#javascript-scala.js-client"></a></h2>
+<p>The following code, located in the <code class="hljs">client</code> sub-project, defines a Scala.js
+client for the web service.</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.xhr
+
+<span class="hljs-comment">/**
+  * Defines an HTTP client for the endpoints described in the `CounterEndpoints` trait.
+  * The derived HTTP client uses XMLHttpRequest to perform requests and returns
+  * results in a `js.Thenable`.
+  */</span>
+<span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">CounterClient</span></span>
+  <span class="hljs-keyword">extends</span> <span class="hljs-type">CounterEndpoints</span>
+    <span class="hljs-keyword">with</span> xhr.thenable.<span class="hljs-type">Endpoints</span>
+    <span class="hljs-keyword">with</span> xhr.<span class="hljs-type">CirceEntities</span></code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/examples/overview/client/src/main/scala/overview/CounterClient.scala#L4-L14" class="a_sourcelink">CounterClient.scala</a></div></div>
+<p>And then, this client can be used as follows:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> scala.scalajs.js
+
+<span class="hljs-comment">/**
+  * Performs an XMLHttpRequest on the `currentValue` endpoint, and then
+  * deserializes the JSON response as a `Counter`.
+  */</span>
+<span class="hljs-keyword">val</span> eventuallyCounter: js.<span class="hljs-type">Thenable</span>[<span class="hljs-type">Counter</span>] = <span class="hljs-type">CounterClient</span>.currentValue(())</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/examples/overview/client/src/main/scala/overview/Usage.scala#L6-L12" class="a_sourcelink">Usage.scala</a></div></div>
+<p>And also:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">/**
+  * Serializes the `Increment` value into JSON and performs an XMLHttpRequest
+  * on the `increment` endpoint.
+  */</span>
+<span class="hljs-keyword">val</span> eventuallyDone: js.<span class="hljs-type">Thenable</span>[<span class="hljs-type">Unit</span>] = <span class="hljs-type">CounterClient</span>.increment(<span class="hljs-type">Increment</span>(<span class="hljs-number">42</span>))</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/examples/overview/client/src/main/scala/overview/Usage.scala#L16-L20" class="a_sourcelink">Usage.scala</a></div></div>
+<h2 id="service-implementation-backed-by-play-framework" class="a_section" data-magellan-target="service-implementation-backed-by-play-framework">Service implementation (backed by Play framework)<a class="a_hlink" href="#service-implementation-backed-by-play-framework"></a></h2>
+<p>The following code, located in the <code class="hljs">server</code> sub-project, defines the implementation of
+the web service.</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.play.routing
+<span class="hljs-keyword">import</span> scala.concurrent.stm.<span class="hljs-type">Ref</span>
+
+<span class="hljs-comment">/**
+  * Defines a Play router (and reverse router) for the endpoints described in the `CounterAlg` trait.
+  */</span>
+<span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">CounterServer</span></span>
+  <span class="hljs-keyword">extends</span> <span class="hljs-type">CounterEndpoints</span>
+    <span class="hljs-keyword">with</span> routing.<span class="hljs-type">Endpoints</span>
+    <span class="hljs-keyword">with</span> routing.<span class="hljs-type">CirceEntities</span> {
+
+  <span class="hljs-comment">/** Simple implementation of an in-memory counter */</span>
+  <span class="hljs-keyword">val</span> counter = <span class="hljs-type">Ref</span>(<span class="hljs-number">0</span>)
+
+  <span class="hljs-keyword">val</span> routes = routesFromEndpoints(
+
+    <span class="hljs-comment">/** Implements the `currentValue` endpoint */</span>
+    currentValue.implementedBy(_ =&gt; <span class="hljs-type">Counter</span>(counter.single.get)),
+
+    <span class="hljs-comment">/** Implements the `increment` endpoint */</span>
+    increment.implementedBy(inc =&gt; counter.single += inc.step)
+
+  )
+
+}</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/examples/overview/server/src/main/scala/overview/CounterServer.scala#L4-L28" class="a_sourcelink">CounterServer.scala</a></div></div>
+<p>The <code class="hljs">CounterServer.routes</code> value is just a <code class="hljs">play.api.routing.Router.Routes</code>.
+To get an executable Web server we need to setup a “main” like the following:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> play.core.server.<span class="hljs-type">NettyServer</span>
+
+<span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">Main</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">App</span> </span>{
+  <span class="hljs-type">NettyServer</span>.fromRouter()(<span class="hljs-type">CounterServer</span>.routes)
+}</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/examples/overview/server/src/main/scala/overview/Main.scala#L4-L8" class="a_sourcelink">Main.scala</a></div></div>
+<h2 id="what-else" class="a_section" data-magellan-target="what-else">What else?<a class="a_hlink" href="#what-else"></a></h2>
+<p>You can also get a Scala/JVM client (which uses <code class="hljs">play-ws</code> under the hood) as follows:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.play.client
+<span class="hljs-keyword">import</span> play.api.libs.ws.<span class="hljs-type">WSClient</span>
+<span class="hljs-keyword">import</span> scala.concurrent.<span class="hljs-type">ExecutionContext</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CounterClient</span>(<span class="hljs-params">wsClient: <span class="hljs-type">WSClient</span></span>)(<span class="hljs-params">implicit ec: <span class="hljs-type">ExecutionContext</span></span>)</span>
+  <span class="hljs-keyword">extends</span> client.<span class="hljs-type">Endpoints</span>(<span class="hljs-string">"http://my-counter.com"</span>, wsClient)
+    <span class="hljs-keyword">with</span> <span class="hljs-type">CounterEndpoints</span>
+    <span class="hljs-keyword">with</span> client.<span class="hljs-type">CirceEntities</span></code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/examples/overview/play-client/src/main/scala/overview/CounterClient.scala#L4-L11" class="a_sourcelink">CounterClient.scala</a></div></div>
+<p>Thus, you can distribute a (fully working) JVM client, which is independent of your implementation.</p>
+
+              </main>
+              
+              
+                <div data-sticky-container class="small-12 medium-12 large-2 large-order-1 columns a_sitenav_container">
+                  <nav class="a_sitenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                    
+                  <ul>
+                     
+  <li >
+    
+      <a href="index.html">Introduction</a>
+    
+    
+  </li>
+  
+  <li  class="a_thispage" >
+    
+      <a href="overview.html">Overview</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="installation.html">Installation</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="tutorial.html">Tutorial</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="design.html">Design</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="interfaces-and-interpreters.html">Interfaces and interpreters</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="comparison.html">Comparison with similar tools</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="talks.html">Talks</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="changelog.html">Changelog</a>
+    
+    
+  </li>
+ 
+                  </ul>
+                  </nav>
+                </div>
+              
+              
+              
+                <div class="small-12 medium-12 large-2 large-order-3 columns a_show-for-xlarge" data-sticky-container>
+                  <nav class="a_pagenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                     <header><p>On This Page</p>
+</header> 
+                    <ul class="vertical menu" data-magellan>
+                       
+  <li>
+    
+       <a href="#overview">Overview</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#description-of-the-http-endpoints">Description of the HTTP endpoints</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#javascript-scala.js-client">JavaScript (Scala.js) client</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#service-implementation-backed-by-play-framework">Service implementation (backed by Play framework)</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#what-else">What else?</a> 
+    
+    
+  </li>
+  </ul>
+    
+  </li>
+ 
+                    </ul>
+                  </nav>
+                </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer class="small-12 medium-12 large-12 columns align-self-bottom a_footer">
+        <div class="row">
+          <div class="small-12 medium-12 large-12 columns top-bar">
+            <div class="top-bar-left">
+              
+            </div>
+            <div class="top-bar-right">
+              <p>Generated with <a href="https://github.com/szeiger/ornate">Ornate</a>.</p>
+
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="theme/js/jquery.min.js"></script>
+    <script src="theme/js/what-input.min.js"></script>
+    <script src="theme/js/foundation.min.js"></script>
+     <script src="theme/js/mermaidAPI-0.5.8.min.js"></script> 
+    <script src="theme/js/app.js"></script>
+    
+  </body>
+</html>

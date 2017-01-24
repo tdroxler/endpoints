@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html class="no-js" lang="eng" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial</title>
+    <link rel="stylesheet" href="theme/css/foundation.min.css">
+    <link rel="stylesheet" href="theme/css/app.css">
+     <link rel="stylesheet" href="theme/highlight.js/styles/github-gist.css">  <link rel="stylesheet" href="theme/css/mermaid.custom.css"> 
+    
+  </head>
+  <body>
+    <div class="expanded row">
+      <div class="small-12 medium-12 large-12 columns align-self-top">
+        <div class="row">
+          
+          <header class="large-12 columns align-self-top a_header">
+            <div class="row">
+              <div class="large-12 columns a_limited top-bar">
+                <div class="top-bar-left">
+                  <p>endpoints 0.2-SNAPSHOT</p>
+
+                </div>
+                <div class="top-bar-right align-right row">
+                  
+                  
+                    <form action="site-search.html" method="get" class="align-right a_search">
+                      <input name="q" type="search"  placeholder="Search
+" >
+                      <button><img alt="&#1F50D;" src="theme/images/search.svg" /></button>
+                    </form>
+                  
+                </div>
+              </div>
+            </div>
+          </header>
+          
+          <div class="small-12 medium-12 large-12 columns align-self-top a_limited a_main">
+            <div class="row">
+              
+              <main class="columns large-order-2 sections" id="_sections">
+                
+                   <noscript> <blockquote class="warning">
+<p>This page requires JavaScript. Please enable JavaScript in your browser.</p>
+</blockquote>
+ </noscript> 
+                
+                <h1 id="tutorial" class="a_section" data-magellan-target="tutorial">Tutorial<a class="a_hlink" href="#tutorial"></a></h1>
+<p>This tutorial introduces the main features of the endpoints library
+based on a complete application.</p>
+<h2 id="introduction" class="a_section" data-magellan-target="introduction">Introduction<a class="a_hlink" href="#introduction"></a></h2>
+<p>This section describes the application domain and architecture.
+For the sake of brevity, this tutorial only shows the parts of the code
+that are rely on the endpoints library. The complete
+source code (less than 1k lines of code) is available
+<a href="https://github.com/julienrf/endpoints/tree/master/examples/cqrs">here</a>.</p>
+<p>The goal of the application is to help monitoring home resource consumption (like,
+for instance, electricity or water).
+It provides a dashboard listing all the meters the user
+is interested in and display charts showing their evolution over time:</p>
+<p><img src="meters.png" alt="" /></p>
+<p>Users are able to create meters, to add records (the value of a meter
+at a given time) to them, and to visualize their evolution over time.</p>
+<p>In order to exercise the features of the endpoints library, the application is
+broken down into several sub-applications that communicate
+over HTTP.</p>
+<p>First, our user interface is web-based, which means that we have a
+<code class="hljs">web-client</code> and a <code class="hljs">public-server</code>:</p>
+<div class="mermaid" id="_id0"><pre class="mermaid_src" style="display: none">graph LR
+  web-client --&gt; public-server
+</pre></div>
+<p>In this diagram, the <code class="hljs">web-client</code> application is a Scala.js application running in
+a web browser and communicating with the <code class="hljs">public-server</code> through HTTP.</p>
+<p>Second, the <code class="hljs">public-server</code> itself is broken down into smaller pieces. It follows a
+<a href="https://martinfowler.com/bliki/CQRS.html">CQRS</a> pattern:</p>
+<div class="mermaid" id="_id1"><pre class="mermaid_src" style="display: none">graph LR
+  web-client --&gt; public-server
+  subgraph public-server
+    public-server --&gt; commands
+    public-server --&gt; queries
+    queries --&gt; commands
+  end
+</pre></div>
+<p>The <code class="hljs">public-server</code> itself delegates commands processing
+to the <code class="hljs">commands</code> microservice and queries processing to the <code class="hljs">queries</code>
+microservice.</p>
+<p>In case you are not familiar with CQRS, the idea is to have distinct microservices
+handle <em>queries</em> (actions that <em>read</em> the state of the application) and <em>commands</em>
+(actions that <em>update</em> the state of the application). As a benefit, the system is
+more resilient (if the commands service is down, the system still works in
+read-only) and more scalable (we could add multiple <code class="hljs">queries</code> nodes).</p>
+<p>The <code class="hljs">commands</code> microservice validates commands and
+updates the state of the system. State changes are represented as
+an infinitely growing sequence of events. Then, the <code class="hljs">queries</code> microservice
+builds a model from these events (hence the arrow from <code class="hljs">queries</code> to
+<code class="hljs">commands</code>). This pattern is known as
+<a href="https://martinfowler.com/eaaDev/EventSourcing.html">event sourcing</a>.</p>
+<p>This tutorial shows how these services communicate with each
+other by using the endpoints library.</p>
+<p>Let’s start with the <code class="hljs">commands</code> microservice!</p>
+<h2 id="defining-a-communication-protocol" class="a_section" data-magellan-target="defining-a-communication-protocol">Defining a communication protocol<a class="a_hlink" href="#defining-a-communication-protocol"></a></h2>
+<h3 id="project-layout" class="a_section" data-magellan-target="project-layout">Project layout<a class="a_hlink" href="#project-layout"></a></h3>
+<p>In order to get our <code class="hljs">queries</code> service successfully communicate with the
+<code class="hljs">commands</code> service, they have to agree on a communication protocol.</p>
+<div class="mermaid" id="_id2"><pre class="mermaid_src" style="display: none">graph BT
+  queries -.-&gt; commands-endpoints
+  commands -.-&gt; commands-endpoints
+  queries --&gt; commands
+</pre></div>
+<p>We introduce a new artifact named <code class="hljs">commands-endpoints</code> that provides the
+<em>descriptions</em> of the endpoints of the <code class="hljs">commands</code> service. The <code class="hljs">queries</code> service
+uses these descriptions to derive a <em>client</em> invoking the endpoints, while the
+<code class="hljs">commands</code> service uses these descriptions to derive a <em>server</em> handling
+incoming requests. (Note that in our diagrams, dotted links mean classpath
+dependencies, while solid links mean communication over the wire)</p>
+<p>Our <code class="hljs">commands-endpoints</code> project has to depend on the <em>endpoints algebra API</em>, which
+provides means of describing HTTP endpoints:</p>
+<div class="mermaid" id="_id3"><pre class="mermaid_src" style="display: none">graph BT
+  queries -.-&gt; commands-endpoints
+  commands -.-&gt; commands-endpoints
+  queries --&gt; commands
+  commands-endpoints -.-&gt; algebra[&quot;endpoints-algebra-circe&quot;]
+  style algebra fill:#eee;
+</pre></div>
+<h3 id="describing-http-endpoints" class="a_section" data-magellan-target="describing-http-endpoints">Describing HTTP endpoints<a class="a_hlink" href="#describing-http-endpoints"></a></h3>
+<p>Our <code class="hljs">commands</code> service to handles two actions:</p>
+<ul>
+<li>apply a command ;</li>
+<li>read the event log.</li>
+</ul>
+<p>Here is how we define a communication protocol for these actions:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.algebra.{<span class="hljs-type">CirceEntities</span>, <span class="hljs-type">Endpoints</span>}
+
+<span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">CommandsEndpoints</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Endpoints</span> <span class="hljs-keyword">with</span> <span class="hljs-title">CirceEntities</span> </span>{
+
+  <span class="hljs-comment">/**
+    * Application of a command.
+    *
+    * Returns the produced event, or `None` in case of failure (aggregate
+    * not found or invalid command).
+    */</span>
+  <span class="hljs-keyword">val</span> command: <span class="hljs-type">Endpoint</span>[<span class="hljs-type">Command</span>, <span class="hljs-type">Option</span>[<span class="hljs-type">StoredEvent</span>]] =
+    endpoint(post[<span class="hljs-type">Unit</span>, <span class="hljs-type">Command</span>, <span class="hljs-type">Unit</span>, <span class="hljs-type">Command</span>](path / <span class="hljs-string">"command"</span>, jsonRequest[<span class="hljs-type">Command</span>]), jsonResponse[<span class="hljs-type">Option</span>[<span class="hljs-type">StoredEvent</span>]])
+
+  <span class="hljs-comment">/**
+    * Read the event long (optionally from a given timestamp).
+    */</span>
+  <span class="hljs-keyword">val</span> events: <span class="hljs-type">Endpoint</span>[<span class="hljs-type">Option</span>[<span class="hljs-type">Long</span>], <span class="hljs-type">Seq</span>[<span class="hljs-type">StoredEvent</span>]] =
+    endpoint(get(path / <span class="hljs-string">"events"</span> /? optQs[<span class="hljs-type">Long</span>](<span class="hljs-string">"since"</span>)), jsonResponse[<span class="hljs-type">Seq</span>[<span class="hljs-type">StoredEvent</span>]])
+
+}</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/examples/cqrs/commands-endpoints/src/main/scala/cqrs/commands/CommandsEndpoints.scala#L11-L30" class="a_sourcelink">CommandsEndpoints.scala</a></div></div>
+<p>Let’s explain this code line by line.</p>
+<p>First, we import the <code class="hljs">Endpoints</code> and <code class="hljs">CirceEntities</code> traits from the <code class="hljs">endpoints.algebra</code> package.
+All the traits that live in the <code class="hljs">algebra</code> package provide methods for <em>describing</em> HTTP endpoints.
+In our case, the <a href="api/0.2-SNAPSHOT/index.html#endpoints.algebra.Endpoints">Endpoints</a> trait provides the core methods
+while the (optional) <a href="api/0.2-SNAPSHOT/index.html#endpoints.algebra.CirceEntities">CirceEntities</a> trait allows us to
+use <a href="https://circe.github.io/circe/">circe</a> encoders and decoders to marshal JSON entities in
+requests and responses.</p>
+<p>Second, we define our communication protocol within a trait, <code class="hljs">CommandsEndpoints</code>, that extends
+the algebra interfaces.</p>
+<p>Then, we describe the HTTP endpoint for applying a command. Because commands update the state
+of the system and because state updates are represented by events, our HTTP endpoint handles
+requests carrying a <code class="hljs">Command</code> and returns responses carrying an <code class="hljs">Option[StoredEvent]</code> (in
+case of failure, the response is <code class="hljs">None</code>). Thus, the type of our <code class="hljs">command</code> member is
+<code class="hljs">Endpoint[Command, Option[StoredEvent]]</code>. The <code class="hljs">Endpoint</code> type is provided by the endpoints
+library, while the types <code class="hljs">Command</code> and <code class="hljs">StoredEvent</code> are defined by our application. Their
+definition is omitted for the sake of brevity, but they are plain case classes.</p>
+<p>We describe the <code class="hljs">command</code> endpoint by using the <code class="hljs">endpoint</code> constructor, which takes two
+parameters, one describing the request and the other describing the response.</p>
+<p>Let’s detail the request description:</p>
+<ul>
+<li>the <code class="hljs">post</code> method describes a request that uses the HTTP verb <code class="hljs">POST</code>,</li>
+<li>the <code class="hljs">path / &quot;command&quot;</code> expression describes the URL <code class="hljs">/command</code>,</li>
+<li>the <code class="hljs">jsonRequest[Command]</code> expression describes a JSON entity containing a <code class="hljs">Command</code>.</li>
+</ul>
+<p>The response is simply defined by the expression <code class="hljs">jsonResponse[Option[StoredEvent]]</code>,
+which describes an HTTP response whose entity is a JSON document containing an
+<code class="hljs">Option[StoredEvent]</code>.</p>
+<p>As you can see, we describe our HTTP endpoints by combining plain Scala expressions.
+The algebra interfaces provide methods that define the way we can combine these
+expressions to build a complete HTTP endpoint description.</p>
+<p>Now, let’s have a look at the <code class="hljs">events</code> endpoint description. This endpoint returns
+the events that happened after a given optional timestamp (or all the events, if
+no timestamp is supplied). Thus, its type is <code class="hljs">Endpoint[Option[Long], Seq[StoredEvent]]</code>.</p>
+<p>The request description uses the method <code class="hljs">get</code>, meaning that the request uses the
+<code class="hljs">GET</code> HTTP verb. The URL is described by the expression
+<code class="hljs">path / &quot;events&quot; /? optQs[Long](&quot;since&quot;)</code>. Let’s break down this expression into
+smaller parts:</p>
+<ul>
+<li>the beginning, <code class="hljs">path / &quot;events&quot;</code> is similar to the URL description
+of the <code class="hljs">command</code> endpoint: it describes an URL whose path is <code class="hljs">/events</code> ;</li>
+<li>the <code class="hljs">optQs[Long](&quot;since&quot;)</code> expression describes an optional query string parameter
+of type <code class="hljs">Long</code> and named <code class="hljs">since</code> ;</li>
+<li>finally, the <code class="hljs">/?</code> operator combines the path description and the query string
+description: our URL is described by the path <code class="hljs">/events</code> followed by a query
+string containing an optional parameter <code class="hljs">since</code>.</li>
+</ul>
+<p>Last, the response is defined by the <code class="hljs">jsonResponse[Seq[StoredEvent]]</code>
+expression, which describes an HTTP response whose entity is a JSON document
+containing a <code class="hljs">Seq[StoredEvent]</code>.</p>
+<h3 id="summary" class="a_section" data-magellan-target="summary">Summary<a class="a_hlink" href="#summary"></a></h3>
+<p>In this section we have seen that, in order to get two applications communicate
+with each other, we first have to define a description of the HTTP endpoints
+they will use.</p>
+<p>We achieve this with plain Scala expressions describing all the characteristics
+(verb, URL, entities, etc.) of each HTTP endpoint.</p>
+<h2 id="deriving-a-server-from-a-service-description" class="a_section" data-magellan-target="deriving-a-server-from-a-service-description">Deriving a server from a service description<a class="a_hlink" href="#deriving-a-server-from-a-service-description"></a></h2>
+<p>In this section we see how to implement a service from the service description
+defined in the previous section.</p>
+<p>The endpoints library provides <em>interpreters</em> that breathe life to inert service
+descriptions.</p>
+<p>A “server” interpreter implements an HTTP server that processes incoming requests
+and calls the actual implementation of your service endpoints.</p>
+<p>In this tutorial we will use an interpreter that uses
+<a href="http://playframework.com">Play framework</a> as the underlying HTTP server. Thus, we
+add the following dependency to the <code class="hljs">commands</code> project:</p>
+<div class="mermaid" id="_id4"><pre class="mermaid_src" style="display: none">graph BT
+  queries -.-&gt; commands-endpoints
+  commands -.-&gt; commands-endpoints
+  queries --&gt; commands
+  commands-endpoints -.-&gt; algebra[&quot;endpoints-algebra-circe&quot;]
+  commands -.-&gt; interpreter[&quot;endpoints-play-server-circe&quot;]
+  style algebra fill:#eee;
+  style interpreter fill:#eee;
+</pre></div>
+<p>Then we can create a <code class="hljs">Commands</code> object interpreting the service description as a
+server as follows:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.play.routing.{<span class="hljs-type">CirceEntities</span>, <span class="hljs-type">Endpoints</span>}
+<span class="hljs-keyword">import</span> play.api.routing.<span class="hljs-type">Router</span>
+
+<span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">Commands</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">CommandsEndpoints</span> <span class="hljs-keyword">with</span> <span class="hljs-title">Endpoints</span> <span class="hljs-keyword">with</span> <span class="hljs-title">CirceEntities</span> </span>{
+
+  <span class="hljs-keyword">val</span> routes: <span class="hljs-type">Router</span>.<span class="hljs-type">Routes</span> = routesFromEndpoints(
+
+    command.implementedBy(<span class="hljs-type">CommandsService</span>.apply),
+
+    events.implementedBy(<span class="hljs-type">CommandsService</span>.events)
+
+  )
+
+}</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/examples/cqrs/commands/src/main/scala/cqrs/commands/Commands.scala#L5-L18" class="a_sourcelink">Commands.scala</a></div></div>
+<p>Again, let’s detail line by line the above code.</p>
+<p>First, we import the <a href="api/0.2-SNAPSHOT/index.html#endpoints.play.routing.Endpoints"><code class="hljs">Endpoints</code></a> and
+<a href="api/0.2-SNAPSHOT/index.html#endpoints.play.routing.CirceEntities"><code class="hljs">CirceEntities</code></a> <em>interpreters</em> from the
+<code class="hljs">endpoints.play.routing</code> package. Interpreters always have the same name as the
+algebra interface they implement, but they are not located in the <code class="hljs">endpoints.algebra</code>
+package. The <code class="hljs">endpoints.play.routing</code> package contains interpreters that rely
+on Play framework to implement an HTTP server.</p>
+<p>Then, we extend the <code class="hljs">CommandsEndpoints</code> trait that we defined in the previous section and we
+mix the <code class="hljs">Endpoints</code> and <code class="hljs">CirceEntities</code> interpreters into it. That’s really the fact that
+we mix the interpreters into our service description that is responsible of giving it a
+concrete semantics.</p>
+<p>The semantics provided by this interpreter consists in processing incoming requests
+to extract the information we are interested in (for instance, a query string parameter,
+or the request entity), and building HTTP responses from the values returned by the service
+implementation. In the middle of this process, we have to supply the actual service implementation.</p>
+<p>We achieve this by calling the <code class="hljs">implementedBy</code> method on our endpoints. In our case, we just
+delegate to a <code class="hljs">CommandsService</code> object. The underlying implementation details are not relevant
+for this tutorial, but let’s just have a look at the type signature of these methods <code class="hljs">apply</code>
+and <code class="hljs">events</code>:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">/**
+  * Atomically applies a command to the current aggregates.
+  * @return The completed event, or `None` if the command was not applicable
+  */</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">apply</span></span>(command: <span class="hljs-type">Command</span>): <span class="hljs-type">Option</span>[<span class="hljs-type">StoredEvent</span>] = <span class="hljs-comment">// …</span>
+<span class="hljs-comment">/**
+  * @return The sequence of events stored in the log. Events that happened
+  *         before the given optional timestamp are discarded.
+  */</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">events</span></span>(maybeSince: <span class="hljs-type">Option</span>[<span class="hljs-type">Long</span>]): <span class="hljs-type">Vector</span>[<span class="hljs-type">StoredEvent</span>] = <span class="hljs-comment">// …</span></code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/examples/cqrs/commands/src/main/scala/cqrs/commands/CommandsService.scala#L20-L66" class="a_sourcelink">CommandsService.scala</a></div></div>
+<p>As you can see, the <code class="hljs">play.routing</code> interpreter takes care of decoding HTTP requests and
+encoding HTTP responses according to our endpoint descriptions, so that we can focus
+on implementing the actual logic of our service in terms of high-level data types.</p>
+<p>Finally, we create a Play <code class="hljs">Routes</code> value by using the <code class="hljs">routesFromEndpoint</code> method (provided by
+the interpreter), which takes implemented endpoints as parameters and returns a Play router.</p>
+<p>At this point, we can effectively start our microservice by using the usual Play API. A minimal
+program achieving this would look like the following:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> play.core.server.<span class="hljs-type">NettyServer</span>
+<span class="hljs-type">NettyServer</span>.fromRouter()(<span class="hljs-type">Commands</span>.routes)
+</code></pre>
+</div></div>
+<p>That’s it.</p>
+<h3 id="summary-1" class="a_section" data-magellan-target="summary-1">Summary<a class="a_hlink" href="#summary-1"></a></h3>
+<p>In this section we have mixed an interpreter to a service description
+to give it a “server” semantics, which effectively decodes HTTP requests and
+encodes HTTP responses according to the service description.</p>
+<h2 id="deriving-a-client-from-a-service-description" class="a_section" data-magellan-target="deriving-a-client-from-a-service-description">Deriving a client from a service description<a class="a_hlink" href="#deriving-a-client-from-a-service-description"></a></h2>
+<p>This section explains how to apply a “client” interpreter to a service description
+and how to use it to effectively communicate with the server.</p>
+<p>A “client” interpreter is the dual of a server interpreter: it encodes
+HTTP requests and decodes HTTP responses.</p>
+<p>Our tutorial keeps using the Play framework stack and use in particular its
+<code class="hljs">WSClient</code> as the underlying HTTP client. Thus, we add the following
+dependency to the <code class="hljs">queries</code> project:</p>
+<div class="mermaid" id="_id5"><pre class="mermaid_src" style="display: none">graph BT
+  queries -.-&gt; interpreter2[&quot;endpoints-play-client-circe&quot;]
+  queries -.-&gt; commands-endpoints
+  queries --&gt; commands
+  commands -.-&gt; commands-endpoints
+  commands-endpoints -.-&gt; algebra[&quot;endpoints-algebra-circe&quot;]
+  commands -.-&gt; interpreter[&quot;endpoints-play-server-circe&quot;]
+  style algebra fill:#eee;
+  style interpreter fill:#eee;
+  style interpreter2 fill:#eee;
+</pre></div>
+<p>Then we can create an <code class="hljs">eventLog</code> object interpreting the service description as
+a client as follows:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.play.client.{<span class="hljs-type">CirceEntities</span>, <span class="hljs-type">Endpoints</span>}
+
+<span class="hljs-comment">/** Client for the event log */</span>
+<span class="hljs-keyword">private</span> <span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">eventLog</span></span>
+  <span class="hljs-keyword">extends</span> <span class="hljs-type">Endpoints</span>(commandsBaseUrl, wsClient)
+    <span class="hljs-keyword">with</span> <span class="hljs-type">CirceEntities</span>
+    <span class="hljs-keyword">with</span> <span class="hljs-type">CommandsEndpoints</span></code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/examples/cqrs/queries/src/main/scala/cqrs/queries/QueriesService.scala#L31-L37" class="a_sourcelink">QueriesService.scala</a></div></div>
+<p>The pattern is similar to the code applying a server interpreter: we extend our <code class="hljs">CommandsEndpoints</code>
+trait and mix the <a href="api/0.2-SNAPSHOT/index.html#endpoints.play.client.Endpoints"><code class="hljs">endpoints.play.client.Endpoints</code></a>
+and <a href="api/0.2-SNAPSHOT/index.html#endpoints.play.client.CirceEntities"><code class="hljs">endpoints.play.client.CirceEntities</code></a> interpreters to it.</p>
+<p>The <code class="hljs">commandsBaseUrl</code> and <code class="hljs">wsClient</code> parameters (whose definition is not shown here for brevity)
+define the base URL of the commands service
+(e.g. <code class="hljs">http://192.168.1.50</code>) and the Play <code class="hljs">WSClient</code> instance to use to effectively perform
+the HTTP requests.</p>
+<p>Our queries service builds a model of the state of the application by periodically reading the events
+that are appended to the log. To achieve this, it calls the <code class="hljs">events</code> endpoint of the commands
+service as follows:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> eventuallyUpdatedState: <span class="hljs-type">Future</span>[<span class="hljs-type">State</span>] =
+  eventLog.events(maybeLastEventTimestamp).map { (newEvents: <span class="hljs-type">Seq</span>[<span class="hljs-type">StoredEvent</span>]) =&gt;
+    atomicallyApplyEvents(newEvents)
+  }</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/examples/cqrs/queries/src/main/scala/cqrs/queries/QueriesService.scala#L87-L90" class="a_sourcelink">QueriesService.scala</a></div></div>
+<p>From the perspective of a client, and endpoint is modeled as a function that takes as parameter
+the information carried by the request and eventually returns the information carried by
+the response.</p>
+<p>In our case, the <code class="hljs">eventLog.events</code> endpoint is the function we want to invoke. We can
+write its type signature as follows:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">eventLog.events: <span class="hljs-type">Option</span>[<span class="hljs-type">Long</span>] =&gt; <span class="hljs-type">Future</span>[<span class="hljs-type">Seq</span>[<span class="hljs-type">StoredEvent</span>]]
+</code></pre>
+</div></div>
+<p>However, if you remember, we <a href="tutorial.html#describing-http-endpoints">previously</a> defined <code class="hljs">events</code> as a member
+of type <code class="hljs">Endpoint[Option[Long], Seq[StoredEvent]]</code>. But now we see that its type is different.
+This works because <code class="hljs">Endpoint[A, B]</code> is an abstract type member that is refined by
+interpreters. Our client interpreter defines the <code class="hljs">Endpoint</code> type as follows:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">/**
+  * A function that, given an `A`, eventually attempts to decode the `B` response.
+  *
+  * Communication failures and protocol failures are represented by a `Future.failed`.
+  */</span>
+<span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Endpoint</span>[<span class="hljs-type">A</span>, <span class="hljs-type">B</span>] </span>= <span class="hljs-type">A</span> =&gt; <span class="hljs-type">Future</span>[<span class="hljs-type">B</span>]</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/play-client/src/main/scala/endpoints/play/client/Endpoints.scala#L61-L66" class="a_sourcelink">Endpoints.scala</a></div></div>
+<p>Let’s read again the code that invokes the <code class="hljs">events</code> endpoint:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> eventuallyUpdatedState: <span class="hljs-type">Future</span>[<span class="hljs-type">State</span>] =
+  eventLog.events(maybeLastEventTimestamp).map { (newEvents: <span class="hljs-type">Seq</span>[<span class="hljs-type">StoredEvent</span>]) =&gt;
+    atomicallyApplyEvents(newEvents)
+  }</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/examples/cqrs/queries/src/main/scala/cqrs/queries/QueriesService.scala#L87-L90" class="a_sourcelink">QueriesService.scala</a></div></div>
+<p>We supply a parameter, <code class="hljs">maybeLastEventTimestamp</code>, that contains the timestamp of the last event that
+we applied to our projection (or <code class="hljs">None</code> if we want to rebuild the entire projection).</p>
+<p>The invocation returns a <code class="hljs">Future[Seq[StoredEvent]]</code>, we <code class="hljs">map</code> it transform the events into
+an updated model of the system.</p>
+<h3 id="summary-2" class="a_section" data-magellan-target="summary-2">Summary<a class="a_hlink" href="#summary-2"></a></h3>
+<p>We have seen how to derive a client from a service description and how to use
+this client to communicate with the server (that was derived from the same service
+description).</p>
+<p>The communication between microservices is achieved through a statically typed API.</p>
+<p>From a developer perspective, remotely invoking an endpoint of a microservice
+consists in calling a function.</p>
+<h2 id="queries-service-description" class="a_section" data-magellan-target="queries-service-description">Queries service description<a class="a_hlink" href="#queries-service-description"></a></h2>
+<p>TODO.</p>
+<h2 id="web-client" class="a_section" data-magellan-target="web-client">Web client<a class="a_hlink" href="#web-client"></a></h2>
+<p>TODO.</p>
+
+              </main>
+              
+              
+                <div data-sticky-container class="small-12 medium-12 large-2 large-order-1 columns a_sitenav_container">
+                  <nav class="a_sitenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                    
+                  <ul>
+                     
+  <li >
+    
+      <a href="index.html">Introduction</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="overview.html">Overview</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="installation.html">Installation</a>
+    
+    
+  </li>
+  
+  <li  class="a_thispage" >
+    
+      <a href="tutorial.html">Tutorial</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="design.html">Design</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="interfaces-and-interpreters.html">Interfaces and interpreters</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="comparison.html">Comparison with similar tools</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="talks.html">Talks</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="changelog.html">Changelog</a>
+    
+    
+  </li>
+ 
+                  </ul>
+                  </nav>
+                </div>
+              
+              
+              
+                <div class="small-12 medium-12 large-2 large-order-3 columns a_show-for-xlarge" data-sticky-container>
+                  <nav class="a_pagenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                     <header><p>On This Page</p>
+</header> 
+                    <ul class="vertical menu" data-magellan>
+                       
+  <li>
+    
+       <a href="#tutorial">Tutorial</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#introduction">Introduction</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#defining-a-communication-protocol">Defining a communication protocol</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#project-layout">Project layout</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#describing-http-endpoints">Describing HTTP endpoints</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#summary">Summary</a> 
+    
+    
+  </li>
+  </ul>
+    
+  </li>
+  
+  <li>
+    
+       <a href="#deriving-a-server-from-a-service-description">Deriving a server from a service description</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#summary-1">Summary</a> 
+    
+    
+  </li>
+  </ul>
+    
+  </li>
+  
+  <li>
+    
+       <a href="#deriving-a-client-from-a-service-description">Deriving a client from a service description</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#summary-2">Summary</a> 
+    
+    
+  </li>
+  </ul>
+    
+  </li>
+  
+  <li>
+    
+       <a href="#queries-service-description">Queries service description</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#web-client">Web client</a> 
+    
+    
+  </li>
+  </ul>
+    
+  </li>
+ 
+                    </ul>
+                  </nav>
+                </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer class="small-12 medium-12 large-12 columns align-self-bottom a_footer">
+        <div class="row">
+          <div class="small-12 medium-12 large-12 columns top-bar">
+            <div class="top-bar-left">
+              
+            </div>
+            <div class="top-bar-right">
+              <p>Generated with <a href="https://github.com/szeiger/ornate">Ornate</a>.</p>
+
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="theme/js/jquery.min.js"></script>
+    <script src="theme/js/what-input.min.js"></script>
+    <script src="theme/js/foundation.min.js"></script>
+     <script src="theme/js/mermaidAPI-0.5.8.min.js"></script> 
+    <script src="theme/js/app.js"></script>
+    
+  </body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html class="no-js" lang="eng" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installation</title>
+    <link rel="stylesheet" href="theme/css/foundation.min.css">
+    <link rel="stylesheet" href="theme/css/app.css">
+     <link rel="stylesheet" href="theme/css/mermaid.custom.css">  <link rel="stylesheet" href="theme/highlight.js/styles/github-gist.css"> 
+    
+  </head>
+  <body>
+    <div class="expanded row">
+      <div class="small-12 medium-12 large-12 columns align-self-top">
+        <div class="row">
+          
+          <header class="large-12 columns align-self-top a_header">
+            <div class="row">
+              <div class="large-12 columns a_limited top-bar">
+                <div class="top-bar-left">
+                  <p>endpoints 0.2-SNAPSHOT</p>
+
+                </div>
+                <div class="top-bar-right align-right row">
+                  
+                  
+                    <form action="site-search.html" method="get" class="align-right a_search">
+                      <input name="q" type="search"  placeholder="Search
+" >
+                      <button><img alt="&#1F50D;" src="theme/images/search.svg" /></button>
+                    </form>
+                  
+                </div>
+              </div>
+            </div>
+          </header>
+          
+          <div class="small-12 medium-12 large-12 columns align-self-top a_limited a_main">
+            <div class="row">
+              
+              <main class="columns large-order-2 sections" id="_sections">
+                
+                   <noscript> <blockquote class="warning">
+<p>This page requires JavaScript. Please enable JavaScript in your browser.</p>
+</blockquote>
+ </noscript> 
+                
+                <h1 id="installation" class="a_section" data-magellan-target="installation">Installation<a class="a_hlink" href="#installation"></a></h1>
+<h2 id="project-layout" class="a_section" data-magellan-target="project-layout">Project layout<a class="a_hlink" href="#project-layout"></a></h2>
+<p>Typically, your project will be broken down into several sub-projects:</p>
+<div class="mermaid" id="_id0"><pre class="mermaid_src" style="display: none">graph BT
+  endpoints
+  server -.-&gt; endpoints
+  client -.-&gt; endpoints
+</pre></div>
+<p>The <code class="hljs">endpoints</code> sub-project contains the <em>description</em> of the communication
+protocol. The <code class="hljs">server</code> sub-project <em>implements</em> this communication protocol.
+The <code class="hljs">client</code> sub-project <em>uses</em> the protocol to communicate with the <code class="hljs">server</code>.</p>
+<p>This translates to the following sbt configuration:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> endpoints = project
+
+<span class="hljs-keyword">val</span> client = project.dependsOn(endpoints)
+
+<span class="hljs-keyword">val</span> server = project.dependsOn(endpoints)
+</code></pre>
+</div></div>
+<h2 id="dependencies" class="a_section" data-magellan-target="dependencies">Dependencies<a class="a_hlink" href="#dependencies"></a></h2>
+<p>All the artifacts are published on maven central under the organization
+name <code class="hljs">org.julienrf</code>.</p>
+<h3 id="endpoint-descriptions" class="a_section" data-magellan-target="endpoint-descriptions">Endpoint descriptions<a class="a_hlink" href="#endpoint-descriptions"></a></h3>
+<p>Add the following dependencies to your <code class="hljs">endpoints</code> sub-project:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
+  <span class="hljs-comment">// core API</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra"</span> % <span class="hljs-string">"0.2-SNAPSHOT"</span>,
+  <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra-circe"</span> % <span class="hljs-string">"0.2-SNAPSHOT"</span>
+)
+</code></pre>
+</div></div>
+<h3 id="client-interpreters" class="a_section" data-magellan-target="client-interpreters">Client interpreters<a class="a_hlink" href="#client-interpreters"></a></h3>
+<h4 id="client-based-on-play-framework-jvm-only" class="a_section" data-magellan-target="client-based-on-play-framework-jvm-only">Client based on Play framework (JVM only)<a class="a_hlink" href="#client-based-on-play-framework-jvm-only"></a></h4>
+<p>Add the following dependencies to your <code class="hljs">client</code> sub-project:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
+  <span class="hljs-comment">// client based on Play framework</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-client"</span> % <span class="hljs-string">"0.2-SNAPSHOT"</span>,
+  <span class="hljs-comment">// JSON serialization using circe.io</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-client-circe"</span> % <span class="hljs-string">"0.2-SNAPSHOT"</span>
+)
+</code></pre>
+</div></div>
+<h4 id="scala.js-client-using-native-xmlhttprequests" class="a_section" data-magellan-target="scala.js-client-using-native-xmlhttprequests">Scala.js client using native <code class="hljs">XMLHttpRequest</code>s<a class="a_hlink" href="#scala.js-client-using-native-xmlhttprequests"></a></h4>
+<p>Add the following dependencies to your <code class="hljs">client</code> sub-project:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">  <span class="hljs-comment">// client based on JavaScript’s XMLHttpRequest</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-xhr-client"</span> % <span class="hljs-string">"0.2-SNAPSHOT"</span>,
+  <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-xhr-client-circe"</span> % <span class="hljs-string">"0.2-SNAPSHOT"</span>
+  <span class="hljs-comment">// (optional) uses faithful’s `Future`</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-xhr-faithful"</span> % <span class="hljs-string">"0.2-SNAPSHOT"</span>
+)
+</code></pre>
+</div></div>
+<h3 id="server-interpreters" class="a_section" data-magellan-target="server-interpreters">Server interpreters<a class="a_hlink" href="#server-interpreters"></a></h3>
+<h4 id="server-based-on-play-framework" class="a_section" data-magellan-target="server-based-on-play-framework">Server based on Play framework<a class="a_hlink" href="#server-based-on-play-framework"></a></h4>
+<p>Add the following dependencies to your <code class="hljs">server</code> sub-project:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
+  <span class="hljs-comment">// server based on play framework</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-server"</span> % <span class="hljs-string">"0.2-SNAPSHOT"</span>,
+  <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-server-circe"</span> % <span class="hljs-string">"0.2-SNAPSHOT"</span>
+)
+</code></pre>
+</div></div>
+
+              </main>
+              
+              
+                <div data-sticky-container class="small-12 medium-12 large-2 large-order-1 columns a_sitenav_container">
+                  <nav class="a_sitenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                    
+                  <ul>
+                     
+  <li >
+    
+      <a href="index.html">Introduction</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="overview.html">Overview</a>
+    
+    
+  </li>
+  
+  <li  class="a_thispage" >
+    
+      <a href="installation.html">Installation</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="tutorial.html">Tutorial</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="design.html">Design</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="interfaces-and-interpreters.html">Interfaces and interpreters</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="comparison.html">Comparison with similar tools</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="talks.html">Talks</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="changelog.html">Changelog</a>
+    
+    
+  </li>
+ 
+                  </ul>
+                  </nav>
+                </div>
+              
+              
+              
+                <div class="small-12 medium-12 large-2 large-order-3 columns a_show-for-xlarge" data-sticky-container>
+                  <nav class="a_pagenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                     <header><p>On This Page</p>
+</header> 
+                    <ul class="vertical menu" data-magellan>
+                       
+  <li>
+    
+       <a href="#installation">Installation</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#project-layout">Project layout</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#dependencies">Dependencies</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#endpoint-descriptions">Endpoint descriptions</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#client-interpreters">Client interpreters</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#client-based-on-play-framework-jvm-only">Client based on Play framework (JVM only)</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#scala.js-client-using-native-xmlhttprequests">Scala.js client using native XMLHttpRequests</a> 
+    
+    
+  </li>
+  </ul>
+    
+  </li>
+  
+  <li>
+    
+       <a href="#server-interpreters">Server interpreters</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#server-based-on-play-framework">Server based on Play framework</a> 
+    
+    
+  </li>
+  </ul>
+    
+  </li>
+  </ul>
+    
+  </li>
+  </ul>
+    
+  </li>
+ 
+                    </ul>
+                  </nav>
+                </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer class="small-12 medium-12 large-12 columns align-self-bottom a_footer">
+        <div class="row">
+          <div class="small-12 medium-12 large-12 columns top-bar">
+            <div class="top-bar-left">
+              
+            </div>
+            <div class="top-bar-right">
+              <p>Generated with <a href="https://github.com/szeiger/ornate">Ornate</a>.</p>
+
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="theme/js/jquery.min.js"></script>
+    <script src="theme/js/what-input.min.js"></script>
+    <script src="theme/js/foundation.min.js"></script>
+     <script src="theme/js/mermaidAPI-0.5.8.min.js"></script> 
+    <script src="theme/js/app.js"></script>
+    
+  </body>
+</html>

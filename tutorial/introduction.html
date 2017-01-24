@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html class="no-js" lang="eng" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction</title>
+    <link rel="stylesheet" href="../theme/css/foundation.min.css">
+    <link rel="stylesheet" href="../theme/css/app.css">
+     <link rel="stylesheet" href="../theme/highlight.js/styles/github-gist.css">  <link rel="stylesheet" href="../theme/css/mermaid.custom.css"> 
+    
+  </head>
+  <body>
+    <div class="expanded row">
+      <div class="small-12 medium-12 large-12 columns align-self-top">
+        <div class="row">
+          
+          <header class="large-12 columns align-self-top a_header">
+            <div class="row">
+              <div class="large-12 columns a_limited top-bar">
+                <div class="top-bar-left">
+                  <p>endpoints 0.2-SNAPSHOT</p>
+
+                </div>
+                <div class="top-bar-right align-right row">
+                  
+                  
+                    <form action="../site-search.html" method="get" class="align-right a_search">
+                      <input name="q" type="search"  placeholder="Search
+" >
+                      <button><img alt="&#1F50D;" src="../theme/images/search.svg" /></button>
+                    </form>
+                  
+                </div>
+              </div>
+            </div>
+          </header>
+          
+          <div class="small-12 medium-12 large-12 columns align-self-top a_limited a_main">
+            <div class="row">
+              
+              <main class="columns large-order-2 sections" id="_sections">
+                
+                   <noscript> <blockquote class="warning">
+<p>This page requires JavaScript. Please enable JavaScript in your browser.</p>
+</blockquote>
+ </noscript> 
+                
+                <h1 id="introduction" class="a_section" data-magellan-target="introduction">Introduction<a class="a_hlink" href="#introduction"></a></h1>
+<p>In this tutorial we will explore the main features of the endpoints library
+through the development of a complete application.</p>
+<p>This page will describe the application domain and how we will architect it.</p>
+<p>The goal of the application is to help monitoring home resource consumption (like,
+for instance, electricity or water).
+It will provide a dashboard listing all the meters the user
+is interested in and display charts showing their evolution over time:</p>
+<p><img src="meters.png" alt="" /></p>
+<p>Users will be able to create meters, to add records (the value of a meter
+at a given time) to them, and to visualize their evolution over time.</p>
+<p>In order to exercise the features of the endpoints library, we will break
+down the application into several sub-applications that will communicate
+over HTTP.</p>
+<p>First, our user interface will be web-based, which means that we will have a
+<code class="hljs">web-client</code> and a <code class="hljs">public-server</code>:</p>
+<div class="mermaid" id="_id0"><pre class="mermaid_src" style="display: none">graph LR
+  web-client --&gt; public-server
+</pre></div>
+<p>In this diagram, the <code class="hljs">web-client</code> application is a Scala.js application running in
+a web browser and communicating with the <code class="hljs">public-server</code> through HTTP.</p>
+<p>Second, the <code class="hljs">public-server</code> itself can be broken down into smaller pieces. We will
+follow a <a href="https://martinfowler.com/bliki/CQRS.html">CQRS</a> pattern:</p>
+<div class="mermaid" id="_id1"><pre class="mermaid_src" style="display: none">graph LR
+  web-client --&gt; public-server
+  subgraph public-server
+    public-server --&gt; commands
+    public-server --&gt; queries
+    queries --&gt; commands
+  end
+</pre></div>
+<p>The <code class="hljs">public-server</code> itself will delegate commands processing
+to the <code class="hljs">commands</code> microservice and queries processing to the <code class="hljs">queries</code>
+microservice.</p>
+<p>In case you are not familiar with CQRS, the idea is to have distinct microservices
+handle <em>queries</em> (actions that <em>read</em> the state of the application) and <em>commands</em>
+(actions that <em>update</em> the state of the application). As a benefit, the system is
+more resilient (if the commands service is down, the system still works in
+read-only) and more scalable (we could add multiple <code class="hljs">queries</code> nodes).</p>
+<p>The <code class="hljs">commands</code> microservice will validate commands and
+update the state of the system. State changes will be represented as
+an infinitely growing sequence of events. Then, the <code class="hljs">queries</code> microservice
+will build a model from these events (hence the arrow from <code class="hljs">queries</code> to
+<code class="hljs">commands</code>). This pattern is known as
+<a href="https://martinfowler.com/eaaDev/EventSourcing.html">event sourcing</a>.</p>
+<p>So, our work consists in implementing these four applications and
+make them communicate by using the endpoints library.</p>
+<p>Let’s start with the <a href="commands.html">implementation of the <code class="hljs">commands</code> microservice</a>.</p>
+
+              </main>
+              
+              
+                <div data-sticky-container class="small-12 medium-12 large-2 large-order-1 columns a_sitenav_container">
+                  <nav class="a_sitenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                    
+                  <ul>
+                     
+  <li >
+    
+      <a href="../index.html">Introduction</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../overview.html">Overview</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../installation.html">Installation</a>
+    
+    
+  </li>
+  
+  <li  class="a_thispage" >
+    
+      <a href="introduction.html">Tutorial</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../design.html">Design</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../interfaces-and-interpreters.html">Interfaces and interpreters</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../comparison.html">Comparison with similar tools</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../talks.html">Talks</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../changelog.html">Changelog</a>
+    
+    
+  </li>
+ 
+                  </ul>
+                  </nav>
+                </div>
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer class="small-12 medium-12 large-12 columns align-self-bottom a_footer">
+        <div class="row">
+          <div class="small-12 medium-12 large-12 columns top-bar">
+            <div class="top-bar-left">
+              
+            </div>
+            <div class="top-bar-right">
+              <p>Generated with <a href="https://github.com/szeiger/ornate">Ornate</a>.</p>
+
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="../theme/js/jquery.min.js"></script>
+    <script src="../theme/js/what-input.min.js"></script>
+    <script src="../theme/js/foundation.min.js"></script>
+     <script src="../theme/js/mermaidAPI-0.5.8.min.js"></script> 
+    <script src="../theme/js/app.js"></script>
+    
+  </body>
+</html>
