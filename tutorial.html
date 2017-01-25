@@ -151,7 +151,7 @@ provides means of describing HTTP endpoints:</p>
     endpoint(get(path / <span class="hljs-string">"events"</span> /? optQs[<span class="hljs-type">Long</span>](<span class="hljs-string">"since"</span>)), jsonResponse[<span class="hljs-type">Seq</span>[<span class="hljs-type">StoredEvent</span>]])
 
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/examples/cqrs/commands-endpoints/src/main/scala/cqrs/commands/CommandsEndpoints.scala#L11-L30" class="a_sourcelink">CommandsEndpoints.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/master/examples/cqrs/commands-endpoints/src/main/scala/cqrs/commands/CommandsEndpoints.scala#L11-L30" class="a_sourcelink">CommandsEndpoints.scala</a></div></div>
 <p>Let’s explain this code line by line.</p>
 <p>First, we import the <code class="hljs">Endpoints</code> and <code class="hljs">CirceEntities</code> traits from the <code class="hljs">endpoints.algebra</code> package.
 All the traits that live in the <code class="hljs">algebra</code> package provide methods for <em>describing</em> HTTP endpoints.
@@ -243,7 +243,7 @@ server as follows:</p>
   )
 
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/examples/cqrs/commands/src/main/scala/cqrs/commands/Commands.scala#L5-L18" class="a_sourcelink">Commands.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/master/examples/cqrs/commands/src/main/scala/cqrs/commands/Commands.scala#L5-L18" class="a_sourcelink">Commands.scala</a></div></div>
 <p>Again, let’s detail line by line the above code.</p>
 <p>First, we import the <a href="api/0.2-SNAPSHOT/index.html#endpoints.play.routing.Endpoints"><code class="hljs">Endpoints</code></a> and
 <a href="api/0.2-SNAPSHOT/index.html#endpoints.play.routing.CirceEntities"><code class="hljs">CirceEntities</code></a> <em>interpreters</em> from the
@@ -274,7 +274,7 @@ and <code class="hljs">events</code>:</p>
   *         before the given optional timestamp are discarded.
   */</span>
 <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">events</span></span>(maybeSince: <span class="hljs-type">Option</span>[<span class="hljs-type">Long</span>]): <span class="hljs-type">Vector</span>[<span class="hljs-type">StoredEvent</span>] = <span class="hljs-comment">// …</span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/examples/cqrs/commands/src/main/scala/cqrs/commands/CommandsService.scala#L20-L66" class="a_sourcelink">CommandsService.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/master/examples/cqrs/commands/src/main/scala/cqrs/commands/CommandsService.scala#L20-L66" class="a_sourcelink">CommandsService.scala</a></div></div>
 <p>As you can see, the <code class="hljs">play.routing</code> interpreter takes care of decoding HTTP requests and
 encoding HTTP responses according to our endpoint descriptions, so that we can focus
 on implementing the actual logic of our service in terms of high-level data types.</p>
@@ -321,7 +321,7 @@ a client as follows:</p>
   <span class="hljs-keyword">extends</span> <span class="hljs-type">Endpoints</span>(commandsBaseUrl, wsClient)
     <span class="hljs-keyword">with</span> <span class="hljs-type">CirceEntities</span>
     <span class="hljs-keyword">with</span> <span class="hljs-type">CommandsEndpoints</span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/examples/cqrs/queries/src/main/scala/cqrs/queries/QueriesService.scala#L31-L37" class="a_sourcelink">QueriesService.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/master/examples/cqrs/queries/src/main/scala/cqrs/queries/QueriesService.scala#L31-L37" class="a_sourcelink">QueriesService.scala</a></div></div>
 <p>The pattern is similar to the code applying a server interpreter: we extend our <code class="hljs">CommandsEndpoints</code>
 trait and mix the <a href="api/0.2-SNAPSHOT/index.html#endpoints.play.client.Endpoints"><code class="hljs">endpoints.play.client.Endpoints</code></a>
 and <a href="api/0.2-SNAPSHOT/index.html#endpoints.play.client.CirceEntities"><code class="hljs">endpoints.play.client.CirceEntities</code></a> interpreters to it.</p>
@@ -337,7 +337,7 @@ service as follows:</p>
   eventLog.events(maybeLastEventTimestamp).map { (newEvents: <span class="hljs-type">Seq</span>[<span class="hljs-type">StoredEvent</span>]) =&gt;
     atomicallyApplyEvents(newEvents)
   }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/examples/cqrs/queries/src/main/scala/cqrs/queries/QueriesService.scala#L87-L90" class="a_sourcelink">QueriesService.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/master/examples/cqrs/queries/src/main/scala/cqrs/queries/QueriesService.scala#L87-L90" class="a_sourcelink">QueriesService.scala</a></div></div>
 <p>From the perspective of a client, and endpoint is modeled as a function that takes as parameter
 the information carried by the request and eventually returns the information carried by
 the response.</p>
@@ -358,14 +358,14 @@ interpreters. Our client interpreter defines the <code class="hljs">Endpoint</co
   * Communication failures and protocol failures are represented by a `Future.failed`.
   */</span>
 <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Endpoint</span>[<span class="hljs-type">A</span>, <span class="hljs-type">B</span>] </span>= <span class="hljs-type">A</span> =&gt; <span class="hljs-type">Future</span>[<span class="hljs-type">B</span>]</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/play-client/src/main/scala/endpoints/play/client/Endpoints.scala#L61-L66" class="a_sourcelink">Endpoints.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/master/play-client/src/main/scala/endpoints/play/client/Endpoints.scala#L61-L66" class="a_sourcelink">Endpoints.scala</a></div></div>
 <p>Let’s read again the code that invokes the <code class="hljs">events</code> endpoint:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> eventuallyUpdatedState: <span class="hljs-type">Future</span>[<span class="hljs-type">State</span>] =
   eventLog.events(maybeLastEventTimestamp).map { (newEvents: <span class="hljs-type">Seq</span>[<span class="hljs-type">StoredEvent</span>]) =&gt;
     atomicallyApplyEvents(newEvents)
   }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/examples/cqrs/queries/src/main/scala/cqrs/queries/QueriesService.scala#L87-L90" class="a_sourcelink">QueriesService.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/master/examples/cqrs/queries/src/main/scala/cqrs/queries/QueriesService.scala#L87-L90" class="a_sourcelink">QueriesService.scala</a></div></div>
 <p>We supply a parameter, <code class="hljs">maybeLastEventTimestamp</code>, that contains the timestamp of the last event that
 we applied to our projection (or <code class="hljs">None</code> if we want to rebuild the entire projection).</p>
 <p>The invocation returns a <code class="hljs">Future[Seq[StoredEvent]]</code>, we <code class="hljs">map</code> it transform the events into
