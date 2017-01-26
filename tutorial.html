@@ -19,7 +19,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.2-SNAPSHOT</p>
+                  <p>endpoints 0.2.0-SNAPSHOT</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -155,8 +155,8 @@ provides means of describing HTTP endpoints:</p>
 <p>Let’s explain this code line by line.</p>
 <p>First, we import the <code class="hljs">Endpoints</code> and <code class="hljs">CirceEntities</code> traits from the <code class="hljs">endpoints.algebra</code> package.
 All the traits that live in the <code class="hljs">algebra</code> package provide methods for <em>describing</em> HTTP endpoints.
-In our case, the <a href="api/0.2-SNAPSHOT/index.html#endpoints.algebra.Endpoints">Endpoints</a> trait provides the core methods
-while the (optional) <a href="api/0.2-SNAPSHOT/index.html#endpoints.algebra.CirceEntities">CirceEntities</a> trait allows us to
+In our case, the <a href="api/0.2.0-SNAPSHOT/index.html#endpoints.algebra.Endpoints">Endpoints</a> trait provides the core methods
+while the (optional) <a href="api/0.2.0-SNAPSHOT/index.html#endpoints.algebra.CirceEntities">CirceEntities</a> trait allows us to
 use <a href="https://circe.github.io/circe/">circe</a> encoders and decoders to marshal JSON entities in
 requests and responses.</p>
 <p>Second, we define our communication protocol within a trait, <code class="hljs">CommandsEndpoints</code>, that extends
@@ -245,8 +245,8 @@ server as follows:</p>
 }</code></pre>
 <a href="https://github.com/julienrf/endpoints/blob/master/examples/cqrs/commands/src/main/scala/cqrs/commands/Commands.scala#L5-L18" class="a_sourcelink">Commands.scala</a></div></div>
 <p>Again, let’s detail line by line the above code.</p>
-<p>First, we import the <a href="api/0.2-SNAPSHOT/index.html#endpoints.play.routing.Endpoints"><code class="hljs">Endpoints</code></a> and
-<a href="api/0.2-SNAPSHOT/index.html#endpoints.play.routing.CirceEntities"><code class="hljs">CirceEntities</code></a> <em>interpreters</em> from the
+<p>First, we import the <a href="api/0.2.0-SNAPSHOT/index.html#endpoints.play.routing.Endpoints"><code class="hljs">Endpoints</code></a> and
+<a href="api/0.2.0-SNAPSHOT/index.html#endpoints.play.routing.CirceEntities"><code class="hljs">CirceEntities</code></a> <em>interpreters</em> from the
 <code class="hljs">endpoints.play.routing</code> package. Interpreters always have the same name as the
 algebra interface they implement, but they are not located in the <code class="hljs">endpoints.algebra</code>
 package. The <code class="hljs">endpoints.play.routing</code> package contains interpreters that rely
@@ -323,8 +323,8 @@ a client as follows:</p>
     <span class="hljs-keyword">with</span> <span class="hljs-type">CommandsEndpoints</span></code></pre>
 <a href="https://github.com/julienrf/endpoints/blob/master/examples/cqrs/queries/src/main/scala/cqrs/queries/QueriesService.scala#L31-L37" class="a_sourcelink">QueriesService.scala</a></div></div>
 <p>The pattern is similar to the code applying a server interpreter: we extend our <code class="hljs">CommandsEndpoints</code>
-trait and mix the <a href="api/0.2-SNAPSHOT/index.html#endpoints.play.client.Endpoints"><code class="hljs">endpoints.play.client.Endpoints</code></a>
-and <a href="api/0.2-SNAPSHOT/index.html#endpoints.play.client.CirceEntities"><code class="hljs">endpoints.play.client.CirceEntities</code></a> interpreters to it.</p>
+trait and mix the <a href="api/0.2.0-SNAPSHOT/index.html#endpoints.play.client.Endpoints"><code class="hljs">endpoints.play.client.Endpoints</code></a>
+and <a href="api/0.2.0-SNAPSHOT/index.html#endpoints.play.client.CirceEntities"><code class="hljs">endpoints.play.client.CirceEntities</code></a> interpreters to it.</p>
 <p>The <code class="hljs">commandsBaseUrl</code> and <code class="hljs">wsClient</code> parameters (whose definition is not shown here for brevity)
 define the base URL of the commands service
 (e.g. <code class="hljs">http://192.168.1.50</code>) and the Play <code class="hljs">WSClient</code> instance to use to effectively perform
