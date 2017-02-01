@@ -51,7 +51,7 @@
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Interpreter for <a href="../algebra/LowLevelEndpoints.html" class="extype" name="endpoints.algebra.LowLevelEndpoints">algebra.LowLevelEndpoints</a> that represents the response as a
 <span class="extype" name="XMLHttpRequest">XMLHttpRequest</span> value.
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/julienrf/endpoints/blob/v0.2.0-SNAPSHOT/xhr-client/src/main/scala/endpoints/xhr/LowLevelEndpoints.scala" target="_blank">LowLevelEndpoints.scala</a></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/xhr-client/src/main/scala/endpoints/xhr/LowLevelEndpoints.scala" target="_blank">LowLevelEndpoints.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="Endpoints.html" class="extype" name="endpoints.xhr.Endpoints">Endpoints</a>, <a href="Methods.html" class="extype" name="endpoints.xhr.Methods">Methods</a>, <a href="Urls.html" class="extype" name="endpoints.xhr.Urls">Urls</a>, <a href="../algebra/LowLevelEndpoints.html" class="extype" name="endpoints.algebra.LowLevelEndpoints">algebra.LowLevelEndpoints</a>, <a href="../algebra/Endpoints.html" class="extype" name="endpoints.algebra.Endpoints">algebra.Endpoints</a>, <a href="../algebra/Methods.html" class="extype" name="endpoints.algebra.Methods">algebra.Methods</a>, <a href="../algebra/Urls.html" class="extype" name="endpoints.algebra.Urls">algebra.Urls</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -93,7 +93,7 @@
         <div id="types" class="types members">
               <h3>Type Members</h3>
               <ol><li name="endpoints.xhr.Endpoints.Endpoint" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="Endpoint[A,B]=scala.scalajs.js.Function1[A,Endpoints.this.Task[B]]"></a>
+      <a id="Endpoint[A,B]=scala.scalajs.js.Function1[A,Endpoints.this.Result[B]]"></a>
       <a id="Endpoint[A,B]:Endpoint[A,B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -101,10 +101,10 @@
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">Endpoint</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> = <a href="http://www.scala-js.org/api/scalajs-library/0.6.14/index.html#scala.scalajs.js.Function1" class="extype" target="_top">Function1</a>[<span class="extype" name="endpoints.xhr.Endpoints.Endpoint.A">A</span>, <a href="#Task[A]" class="extmbr" name="endpoints.xhr.LowLevelEndpoints.Task">Task</a>[<span class="extype" name="endpoints.xhr.Endpoints.Endpoint.B">B</span>]]</span>
+        <span class="name">Endpoint</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> = <a href="http://www.scala-js.org/api/scalajs-library/0.6.14/index.html#scala.scalajs.js.Function1" class="extype" target="_top">Function1</a>[<span class="extype" name="endpoints.xhr.Endpoints.Endpoint.A">A</span>, <a href="#Result[A]" class="extmbr" name="endpoints.xhr.LowLevelEndpoints.Result">Result</a>[<span class="extype" name="endpoints.xhr.Endpoints.Endpoint.B">B</span>]]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#endpoints.xhr.LowLevelEndpoints@Endpoint[A,B]=scala.scalajs.js.Function1[A,Endpoints.this.Task[B]]" title="Permalink" target="_top">
+      <a href="../../index.html#endpoints.xhr.LowLevelEndpoints@Endpoint[A,B]=scala.scalajs.js.Function1[A,Endpoints.this.Result[B]]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -349,6 +349,25 @@ and sets up some headers on it.
       <p class="shortcomment cmt">Attempts to decode an <code>A</code> from an XMLHttpRequest’s response
 </p><div class="fullcomment"><div class="comment cmt"><p>Attempts to decode an <code>A</code> from an XMLHttpRequest’s response
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Endpoints.html" class="extype" name="endpoints.xhr.Endpoints">Endpoints</a> → <a href="../algebra/Endpoints.html" class="extype" name="endpoints.algebra.Endpoints">Endpoints</a></dd></dl></div>
+    </li><li name="endpoints.xhr.Endpoints.Result" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="Result[A]"></a>
+      <a id="Result[A]:Result[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Result</span><span class="tparams">[<span name="A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#endpoints.xhr.LowLevelEndpoints@Result[A]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A value that eventually yields an <code>A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>A value that eventually yields an <code>A</code>.</p><p>Typically, concrete representation of <code>Result</code> will have an instance of <code>MonadError</code>, so
+that we can perform requests (sequentially and in parallel) and recover errors.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Endpoints.html" class="extype" name="endpoints.xhr.Endpoints">Endpoints</a></dd></dl></div>
     </li><li name="endpoints.xhr.Urls.Segment" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="Segment[A]extendsAnyRef"></a>
       <a id="Segment[A]:Segment[A]"></a>
@@ -366,25 +385,6 @@ and sets up some headers on it.
       </a>
     </span>
       <p class="shortcomment cmt">Defines how to build a path segment from an <code>A</code></p><div class="fullcomment"><div class="comment cmt"><p>Defines how to build a path segment from an <code>A</code></p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Urls.html" class="extype" name="endpoints.xhr.Urls">Urls</a></dd></dl></div>
-    </li><li name="endpoints.xhr.Endpoints.Task" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="Task[A]"></a>
-      <a id="Task[A]:Task[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">type</span>
-      </span>
-      <span class="symbol">
-        <span class="name">Task</span><span class="tparams">[<span name="A">A</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#endpoints.xhr.LowLevelEndpoints@Task[A]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">A task that eventually yields an <code>A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>A task that eventually yields an <code>A</code>.</p><p>Typically, concrete representation of <code>Task</code> will have an instance of <code>MonadError</code>, so
-that we can perform requests (sequentially and in parallel) and recover errors.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Endpoints.html" class="extype" name="endpoints.xhr.Endpoints">Endpoints</a></dd></dl></div>
     </li><li name="endpoints.xhr.Urls.Url" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="Url[A]extendsAnyRef"></a>
       <a id="Url[A]:Url[A]"></a>
@@ -416,7 +416,7 @@ that we can perform requests (sequentially and in parallel) and recover errors.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">endpoint</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="request">request: <a href="#Request[A]=scala.scalajs.js.Function1[A,(org.scalajs.dom.XMLHttpRequest,Option[scala.scalajs.js.Any])]" class="extmbr" name="endpoints.xhr.LowLevelEndpoints.Request">Request</a>[<span class="extype" name="endpoints.algebra.Endpoints.endpoint.A">A</span>]</span>, <span name="response">response: <a href="#Response[A]=scala.scalajs.js.Function1[org.scalajs.dom.XMLHttpRequest,Either[Exception,A]]" class="extmbr" name="endpoints.xhr.LowLevelEndpoints.Response">Response</a>[<span class="extype" name="endpoints.algebra.Endpoints.endpoint.B">B</span>]</span>)</span><span class="result">: <a href="#Endpoint[A,B]=scala.scalajs.js.Function1[A,Endpoints.this.Task[B]]" class="extmbr" name="endpoints.xhr.LowLevelEndpoints.Endpoint">Endpoint</a>[<span class="extype" name="endpoints.algebra.Endpoints.endpoint.A">A</span>, <span class="extype" name="endpoints.algebra.Endpoints.endpoint.B">B</span>]</span>
+        <span class="name">endpoint</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="request">request: <a href="#Request[A]=scala.scalajs.js.Function1[A,(org.scalajs.dom.XMLHttpRequest,Option[scala.scalajs.js.Any])]" class="extmbr" name="endpoints.xhr.LowLevelEndpoints.Request">Request</a>[<span class="extype" name="endpoints.algebra.Endpoints.endpoint.A">A</span>]</span>, <span name="response">response: <a href="#Response[A]=scala.scalajs.js.Function1[org.scalajs.dom.XMLHttpRequest,Either[Exception,A]]" class="extmbr" name="endpoints.xhr.LowLevelEndpoints.Response">Response</a>[<span class="extype" name="endpoints.algebra.Endpoints.endpoint.B">B</span>]</span>)</span><span class="result">: <a href="#Endpoint[A,B]=scala.scalajs.js.Function1[A,Endpoints.this.Result[B]]" class="extmbr" name="endpoints.xhr.LowLevelEndpoints.Endpoint">Endpoint</a>[<span class="extype" name="endpoints.algebra.Endpoints.endpoint.A">A</span>, <span class="extype" name="endpoints.algebra.Endpoints.endpoint.B">B</span>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#endpoints.xhr.LowLevelEndpoints@endpoint[A,B](request:Endpoints.this.Request[A],response:Endpoints.this.Response[B]):Endpoints.this.Endpoint[A,B]" title="Permalink" target="_top">

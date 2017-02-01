@@ -66,7 +66,7 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="endpoints.algebra.Assets" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+              <ol><li name="endpoints.algebra.Assets" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="AssetsextendsEndpoints"></a>
       <a id="Assets:Assets"></a>
       <h4 class="signature">
@@ -82,7 +82,7 @@
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt">Describes endpoints related to static assets (e.g.</p><div class="fullcomment"><div class="comment cmt"><p>Describes endpoints related to static assets (e.g. medias, scripts, stylesheets, etc.)</p></div></div>
     </li><li name="endpoints.algebra.BasicAuthentication" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="BasicAuthenticationextendsEndpoints"></a>
       <a id="BasicAuthentication:BasicAuthentication"></a>
@@ -99,7 +99,7 @@
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Provides vocabulary to define endpoints that use Basic HTTP authentication.</p><div class="fullcomment"><div class="comment cmt"><p>Provides vocabulary to define endpoints that use Basic HTTP authentication.</p><p>This trait works fine, but developers are likely to implement their own
+      <p class="shortcomment cmt">Provides vocabulary to describe endpoints that use Basic HTTP authentication.</p><div class="fullcomment"><div class="comment cmt"><p>Provides vocabulary to describe endpoints that use Basic HTTP authentication.</p><p>This trait works fine, but developers are likely to implement their own
 authentication mechanism, specific to their application.
 </p></div></div>
     </li><li name="endpoints.algebra.CirceEntities" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
@@ -139,11 +139,11 @@ thus guaranteeing consistency between both sides.</p><p>Typical usage:</p><pre><
   <span class="kw">val</span> myEndpoint = endpoint(get(path), jsonResponse[MyDto])
 }</pre><pre><span class="cmt">/* client MyEndpointsClient.scala */</span>
 
-<span class="kw">object</span> MyEndpointsClient <span class="kw">extends</span> MyEndpoints <span class="kw">with</span> CirceCodecXhrClient <span class="kw">with</span> XhrClientFaithful
+<span class="kw">object</span> MyEndpointsClient <span class="kw">extends</span> MyEndpoints <span class="kw">with</span> xhr.CirceEntities <span class="kw">with</span> xhr.faithful.Endpoints
 
 MyEndpointsClient.myEndpoint().map(myDto <span class="kw">=&gt;</span> println(myDto.i))</pre><pre><span class="cmt">/* server MyEndpointsServer.scala */</span>
 
-<span class="kw">object</span> MyEndpointsServer <span class="kw">extends</span> MyEndpoints <span class="kw">with</span> CirceCodecPlayRouting {
+<span class="kw">object</span> MyEndpointsServer <span class="kw">extends</span> MyEndpoints <span class="kw">with</span> play.routing.CirceEntities {
 
   <span class="kw">val</span> routes = routesFromEndpoints(
     myEndpoint.implementedBy(_ <span class="kw">=&gt;</span> MyDto(<span class="num">42</span>, <span class="lit">"foo"</span>))
@@ -200,7 +200,7 @@ MyEndpointsClient.myEndpoint().map(myDto <span class="kw">=&gt;</span> println(m
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Algebra interface for defining endpoints made of requests and responses.</p><div class="fullcomment"><div class="comment cmt"><p>Algebra interface for defining endpoints made of requests and responses.</p><p>Requests and responses contain headers and entity.
+      <p class="shortcomment cmt">Algebra interface for describing endpoints made of requests and responses.</p><div class="fullcomment"><div class="comment cmt"><p>Algebra interface for describing endpoints made of requests and responses.</p><p>Requests and responses contain headers and entity.
 </p></div></div>
     </li><li name="endpoints.algebra.JsonEntities" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="JsonEntitiesextendsEndpoints"></a>
@@ -218,7 +218,7 @@ MyEndpointsClient.myEndpoint().map(myDto <span class="kw">=&gt;</span> println(m
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Algebra interface for defining JSON entities in requests and responses.</p>
+      <p class="shortcomment cmt">Algebra interface for describing JSON entities in requests and responses.</p>
     </li><li name="endpoints.algebra.LowLevelEndpoints" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="LowLevelEndpointsextendsEndpoints"></a>
       <a id="LowLevelEndpoints:LowLevelEndpoints"></a>
@@ -311,7 +311,7 @@ interpreters. However, it can be useful for transitioning legacy code.</p><p>Exa
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Algebra interface for defining URLs made of a path and a query string.</p><div class="fullcomment"><div class="comment cmt"><p>Algebra interface for defining URLs made of a path and a query string.</p><p>A path is itself made of segments chained together.</p><p>A query string is made of named parameters.
+      <p class="shortcomment cmt">Algebra interface for describing URLs made of a path and a query string.</p><div class="fullcomment"><div class="comment cmt"><p>Algebra interface for describing URLs made of a path and a query string.</p><p>A path is itself made of segments chained together.</p><p>A query string is made of named parameters.
 </p></div></div>
     </li></ol>
             </div>

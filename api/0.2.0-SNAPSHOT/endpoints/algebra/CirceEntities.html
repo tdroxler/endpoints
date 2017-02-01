@@ -71,22 +71,22 @@ thus guaranteeing consistency between both sides.</p><p>Typical usage:</p><pre><
   <span class="kw">val</span> myEndpoint = endpoint(get(path), jsonResponse[MyDto])
 }</pre><pre><span class="cmt">/* client MyEndpointsClient.scala */</span>
 
-<span class="kw">object</span> MyEndpointsClient <span class="kw">extends</span> MyEndpoints <span class="kw">with</span> CirceCodecXhrClient <span class="kw">with</span> XhrClientFaithful
+<span class="kw">object</span> MyEndpointsClient <span class="kw">extends</span> MyEndpoints <span class="kw">with</span> xhr.CirceEntities <span class="kw">with</span> xhr.faithful.Endpoints
 
 MyEndpointsClient.myEndpoint().map(myDto <span class="kw">=&gt;</span> println(myDto.i))</pre><pre><span class="cmt">/* server MyEndpointsServer.scala */</span>
 
-<span class="kw">object</span> MyEndpointsServer <span class="kw">extends</span> MyEndpoints <span class="kw">with</span> CirceCodecPlayRouting {
+<span class="kw">object</span> MyEndpointsServer <span class="kw">extends</span> MyEndpoints <span class="kw">with</span> play.routing.CirceEntities {
 
   <span class="kw">val</span> routes = routesFromEndpoints(
     myEndpoint.implementedBy(_ <span class="kw">=&gt;</span> MyDto(<span class="num">42</span>, <span class="lit">"foo"</span>))
   )
 
-}</pre></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/julienrf/endpoints/blob/v0.2.0-SNAPSHOT/algebra-circe/src/main/scala/endpoints/algebra/CirceEntities.scala" target="_blank">CirceEntities.scala</a></dd></dl><div class="toggleContainer block">
+}</pre></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/algebra-circe/src/main/scala/endpoints/algebra/CirceEntities.scala" target="_blank">CirceEntities.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="JsonEntities.html" class="extype" name="endpoints.algebra.JsonEntities">JsonEntities</a>, <a href="Endpoints.html" class="extype" name="endpoints.algebra.Endpoints">Endpoints</a>, <a href="Methods.html" class="extype" name="endpoints.algebra.Methods">Methods</a>, <a href="Urls.html" class="extype" name="endpoints.algebra.Urls">Urls</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div><div class="toggleContainer block">
             <span class="toggle">Known Subclasses</span>
-            <div class="subClasses hiddenContent"><a href="../play/routing/CirceEntities.html" class="extype" name="endpoints.play.routing.CirceEntities">CirceEntities</a>, <a href="../xhr/CirceEntities.html" class="extype" name="endpoints.xhr.CirceEntities">CirceEntities</a>, <a href="../play/client/CirceEntities.html" class="extype" name="endpoints.play.client.CirceEntities">CirceEntities</a></div>
+            <div class="subClasses hiddenContent"><a href="../xhr/CirceEntities.html" class="extype" name="endpoints.xhr.CirceEntities">CirceEntities</a>, <a href="../play/routing/CirceEntities.html" class="extype" name="endpoints.play.routing.CirceEntities">CirceEntities</a>, <a href="../play/client/CirceEntities.html" class="extype" name="endpoints.play.client.CirceEntities">CirceEntities</a></div>
           </div></div>
         
 

@@ -55,12 +55,12 @@ miss the opportunity to share a consistent protocol between client and server
 interpreters. However, it can be useful for transitioning legacy code.</p><p>Example of endpoint definition:</p><pre><span class="kw">val</span> someEndpoint = endpoint(post(path, rawRequestEntity), rawResponseEntity)</pre><p>Endpoint implementation:</p><pre>someEndpoint.implementedBy { request <span class="kw">=&gt;</span>
   Ok(request.body.asText.getOrElse(<span class="lit">"Unable to decode request entity"</span>))
 }</pre><p>XMLHttpRequest call:</p><pre>someEndpoint(xhr <span class="kw">=&gt;</span> <span class="lit">"Foo"</span>)
-  .map(response <span class="kw">=&gt;</span> println(response.responseText))</pre></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/julienrf/endpoints/blob/v0.2.0-SNAPSHOT/algebra/src/main/scala/endpoints/algebra/LowLevelEndpoints.scala" target="_blank">LowLevelEndpoints.scala</a></dd></dl><div class="toggleContainer block">
+  .map(response <span class="kw">=&gt;</span> println(response.responseText))</pre></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/julienrf/endpoints/blob/v0.2-SNAPSHOT/algebra/src/main/scala/endpoints/algebra/LowLevelEndpoints.scala" target="_blank">LowLevelEndpoints.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="Endpoints.html" class="extype" name="endpoints.algebra.Endpoints">Endpoints</a>, <a href="Methods.html" class="extype" name="endpoints.algebra.Methods">Methods</a>, <a href="Urls.html" class="extype" name="endpoints.algebra.Urls">Urls</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div><div class="toggleContainer block">
             <span class="toggle">Known Subclasses</span>
-            <div class="subClasses hiddenContent"><a href="../xhr/LowLevelEndpoints.html" class="extype" name="endpoints.xhr.LowLevelEndpoints">LowLevelEndpoints</a>, <a href="../play/routing/LowLevelEndpoints.html" class="extype" name="endpoints.play.routing.LowLevelEndpoints">LowLevelEndpoints</a></div>
+            <div class="subClasses hiddenContent"><a href="../play/routing/LowLevelEndpoints.html" class="extype" name="endpoints.play.routing.LowLevelEndpoints">LowLevelEndpoints</a>, <a href="../xhr/LowLevelEndpoints.html" class="extype" name="endpoints.xhr.LowLevelEndpoints">LowLevelEndpoints</a></div>
           </div></div>
         
 

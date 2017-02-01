@@ -50,10 +50,10 @@
 <p>Typically, a project is broken down into several sub-projects:</p>
 <div class="mermaid" id="_id0"><pre class="mermaid_src" style="display: none">graph BT
   endpoints
-  server --&gt; endpoints
-  client --&gt; endpoints
+  server -.-&gt; endpoints
+  client -.-&gt; endpoints
 </pre></div>
-<p>The <code class="hljs">endpoints</code> sub-project contains the <em>definition</em> of the communication
+<p>The <code class="hljs">endpoints</code> sub-project contains the <em>description</em> of the communication
 protocol. The <code class="hljs">server</code> sub-project <em>implements</em> this communication protocol.
 The <code class="hljs">client</code> sub-project <em>uses</em> the protocol to communicate with the <code class="hljs">server</code>.</p>
 <h2 id="description-of-the-http-endpoints" class="a_section" data-magellan-target="description-of-the-http-endpoints">Description of the HTTP endpoints<a class="a_hlink" href="#description-of-the-http-endpoints"></a></h2>
