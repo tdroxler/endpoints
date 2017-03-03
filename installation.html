@@ -81,17 +81,6 @@ name <code class="hljs">org.julienrf</code>.</p>
 </code></pre>
 </div></div>
 <h3 id="client-interpreters" class="a_section" data-magellan-target="client-interpreters">Client interpreters<a class="a_hlink" href="#client-interpreters"></a></h3>
-<h4 id="client-based-on-play-framework-jvm-only" class="a_section" data-magellan-target="client-based-on-play-framework-jvm-only">Client based on Play framework (JVM only)<a class="a_hlink" href="#client-based-on-play-framework-jvm-only"></a></h4>
-<p>Add the following dependencies to your <code class="hljs">client</code> sub-project:</p>
-<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
-  <span class="hljs-comment">// client based on Play framework</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-client"</span> % <span class="hljs-string">"0.2.0-SNAPSHOT"</span>,
-  <span class="hljs-comment">// JSON serialization using circe.io</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-client-circe"</span> % <span class="hljs-string">"0.2.0-SNAPSHOT"</span>
-)
-</code></pre>
-</div></div>
 <h4 id="scala.js-client-using-native-xmlhttprequests" class="a_section" data-magellan-target="scala.js-client-using-native-xmlhttprequests">Scala.js client using native <code class="hljs">XMLHttpRequest</code>s<a class="a_hlink" href="#scala.js-client-using-native-xmlhttprequests"></a></h4>
 <p>Add the following dependencies to your <code class="hljs">client</code> sub-project:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
@@ -104,6 +93,17 @@ name <code class="hljs">org.julienrf</code>.</p>
 )
 </code></pre>
 </div></div>
+<h4 id="client-based-on-play-framework-jvm-only" class="a_section" data-magellan-target="client-based-on-play-framework-jvm-only">Client based on Play framework (JVM only)<a class="a_hlink" href="#client-based-on-play-framework-jvm-only"></a></h4>
+<p>Add the following dependencies to your <code class="hljs">client</code> sub-project:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
+  <span class="hljs-comment">// client based on Play framework</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-client"</span> % <span class="hljs-string">"0.2.0-SNAPSHOT"</span>,
+  <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-client-circe"</span> % <span class="hljs-string">"0.2.0-SNAPSHOT"</span>
+)
+</code></pre>
+</div></div>
 <h3 id="server-interpreters" class="a_section" data-magellan-target="server-interpreters">Server interpreters<a class="a_hlink" href="#server-interpreters"></a></h3>
 <h4 id="server-based-on-play-framework" class="a_section" data-magellan-target="server-based-on-play-framework">Server based on Play framework<a class="a_hlink" href="#server-based-on-play-framework"></a></h4>
 <p>Add the following dependencies to your <code class="hljs">server</code> sub-project:</p>
@@ -113,6 +113,17 @@ name <code class="hljs">org.julienrf</code>.</p>
   <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-server"</span> % <span class="hljs-string">"0.2.0-SNAPSHOT"</span>,
   <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
   <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-server-circe"</span> % <span class="hljs-string">"0.2.0-SNAPSHOT"</span>
+)
+</code></pre>
+</div></div>
+<h4 id="server-based-on-akka-http" class="a_section" data-magellan-target="server-based-on-akka-http">Server based on Akka-HTTP<a class="a_hlink" href="#server-based-on-akka-http"></a></h4>
+<p>Add the following dependencies to your <code class="hljs">server</code> sub-project:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
+  <span class="hljs-comment">// server based on akka-http</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-server"</span> % <span class="hljs-string">"0.2.0-SNAPSHOT"</span>,
+  <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-server-circe"</span> % <span class="hljs-string">"0.2.0-SNAPSHOT"</span>
 )
 </code></pre>
 </div></div>
@@ -234,14 +245,14 @@ name <code class="hljs">org.julienrf</code>.</p>
       <ul class="vertical menu">  
   <li>
     
-       <a href="#client-based-on-play-framework-jvm-only">Client based on Play framework (JVM only)</a> 
+       <a href="#scala.js-client-using-native-xmlhttprequests">Scala.js client using native XMLHttpRequests</a> 
     
     
   </li>
   
   <li>
     
-       <a href="#scala.js-client-using-native-xmlhttprequests">Scala.js client using native XMLHttpRequests</a> 
+       <a href="#client-based-on-play-framework-jvm-only">Client based on Play framework (JVM only)</a> 
     
     
   </li>
@@ -258,6 +269,13 @@ name <code class="hljs">org.julienrf</code>.</p>
   <li>
     
        <a href="#server-based-on-play-framework">Server based on Play framework</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#server-based-on-akka-http">Server based on Akka-HTTP</a> 
     
     
   </li>
