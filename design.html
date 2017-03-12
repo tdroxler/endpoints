@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Design</title>
+    <title>Design in a nutshell</title>
     <link rel="stylesheet" href="theme/css/foundation.min.css">
     <link rel="stylesheet" href="theme/css/app.css">
      <link rel="stylesheet" href="theme/highlight.js/styles/github-gist.css"> 
@@ -19,7 +19,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.2.0-SNAPSHOT</p>
+                  <p>endpoints 0.3.0-SNAPSHOT</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -41,7 +41,7 @@
               
               <main class="columns large-order-2 sections" id="_sections">
                 
-                <h1 id="design" class="a_section" data-magellan-target="design">Design<a class="a_hlink" href="#design"></a></h1>
+                <h1 id="design-in-a-nutshell" class="a_section" data-magellan-target="design-in-a-nutshell">Design in a nutshell<a class="a_hlink" href="#design-in-a-nutshell"></a></h1>
 <p>The <code class="hljs">endpoints.algebra.Endpoints</code> trait used in the <a href="overview.html">overview</a> provides members that
 bring <strong>vocabulary</strong> to describe HTTP endpoints (e.g. the <code class="hljs">endpoint</code>, <code class="hljs">get</code>, <code class="hljs">post</code>,
 etc. methods), but these members are all abstract. Furthermore,
@@ -72,19 +72,19 @@ is what is <strong>provided</strong> when processing a <code class="hljs">Reques
 </div></div>
 <p>As previously said, from a client point of view we want to send requests and get responses. So, <code class="hljs">Request[A]</code>
 has the semantics of a recipe to build an <code class="hljs">XMLHttpRequest</code> out of an <code class="hljs">A</code> value.</p>
-<p>Here is the semantics given by the <code class="hljs">endpoints.play.routing.Endpoints</code> trait:</p>
+<p>Here is the semantics given by the <code class="hljs">endpoints.play.server.Endpoints</code> trait:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">Endpoints</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">algebra</span>.<span class="hljs-title">Endpoints</span> </span>{
   <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Request</span>[<span class="hljs-type">A</span>] </span>= <span class="hljs-type">RequestHeader</span> =&gt; <span class="hljs-type">Option</span>[<span class="hljs-type">BodyParser</span>[<span class="hljs-type">A</span>]]
 }
 </code></pre>
 </div></div>
-<p>The aim of the <code class="hljs">endpoints.play.routing.Endpoints</code> trait is to provide a Play router for a given set of HTTP endpoints. So,
+<p>The aim of the <code class="hljs">endpoints.play.server.Endpoints</code> trait is to provide a Play router for a given set of HTTP endpoints. So,
 a <code class="hljs">Request[A]</code> is a function that checks if an incoming request matches this endpoint, and in such
 a case it returns a <code class="hljs">BodyParser[A]</code> that pulls an <code class="hljs">A</code> out of the request.</p>
 <p>As you can see, each implementation brings its own <strong>concrete semantic type</strong> for <code class="hljs">Request[A]</code>.</p>
 <p>According to B. Oliveira [1], we say that <code class="hljs">endpoints.algebra.Endpoints</code> is an <em>object algebra interface</em> and that <code class="hljs">endpoints.xhr.Endpoints</code>
-and <code class="hljs">endpoints.play.routing.Endpoints</code> are <em>object algebras</em>. Note that we use an encoding borrowed from C. Hofer [2], which encodes
+and <code class="hljs">endpoints.play.server.Endpoints</code> are <em>object algebras</em>. Note that we use an encoding borrowed from C. Hofer [2], which encodes
 <em>carrier types</em> with type members rather than type parameters.</p>
 <ul>
 <li>[1] B. C. d. S. Oliveira et. al. Extensibility for the Masses, Practical Extensibility with Object Algebras, ECOOP,
@@ -130,14 +130,14 @@ and <code class="hljs">endpoints.play.routing.Endpoints</code> are <em>object al
   
   <li  class="a_thispage" >
     
-      <a href="design.html">Design</a>
+      <a href="design.html">Design in a nutshell</a>
     
     
   </li>
   
   <li >
     
-      <a href="interfaces-and-interpreters.html">Interfaces and interpreters</a>
+      <a href="interfaces-and-interpreters.html">Algebra interfaces and their interpreters</a>
     
     
   </li>

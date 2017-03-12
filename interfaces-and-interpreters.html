@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interfaces and interpreters</title>
+    <title>Algebra interfaces and their interpreters</title>
     <link rel="stylesheet" href="theme/css/foundation.min.css">
     <link rel="stylesheet" href="theme/css/app.css">
-    
+     <link rel="stylesheet" href="theme/highlight.js/styles/github-gist.css"> 
     
   </head>
   <body>
@@ -19,7 +19,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.2.0-SNAPSHOT</p>
+                  <p>endpoints 0.3.0-SNAPSHOT</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -41,8 +41,63 @@
               
               <main class="columns large-order-2 sections" id="_sections">
                 
-                <h1 id="interfaces-and-interpreters" class="a_section" data-magellan-target="interfaces-and-interpreters">Interfaces and interpreters<a class="a_hlink" href="#interfaces-and-interpreters"></a></h1>
-<p>TODO</p>
+                <h1 id="algebra-interfaces-and-their-interpreters" class="a_section" data-magellan-target="algebra-interfaces-and-their-interpreters">Algebra interfaces and their interpreters<a class="a_hlink" href="#algebra-interfaces-and-their-interpreters"></a></h1>
+<p>Because of this library’s modular design it might be difficult to find which
+modules are relevant for a given use case. This page aims to make it easier to
+navigate through the algebra interfaces hierarchy.</p>
+<h2 id="naming-conventions" class="a_section" data-magellan-target="naming-conventions">Naming conventions<a class="a_hlink" href="#naming-conventions"></a></h2>
+<ul>
+<li>algebra interfaces are defined as traits in the <code class="hljs">endpoints.algebra</code>
+package ;
+<ul>
+<li>e.g. the <a href="api/0.3.0-SNAPSHOT/index.html#endpoints.algebra.Urls"><code class="hljs">Urls</code></a> trait defines an algebra
+interface for describing URLs.</li>
+</ul>
+</li>
+<li>algebra interfaces dependencies can be found in their super types ;</li>
+<li>interpreters are traits that have the same name of the corresponding
+algebra interface (they can also be found by looking at the “known
+subclasses” of an algebra interface, in the Scaladoc) ;</li>
+<li>compatible interpreters are in the same package ;
+<ul>
+<li>e.g. the <a href="api/0.3.0-SNAPSHOT/index.html#endpoints.play.client.package"><code class="hljs">endpoints.play.client</code></a>
+package provides interpreters that turn endpoints descriptions into
+clients using <a href="https://github.com/playframework/play-ws">play-ws</a> under
+the hood.</li>
+</ul>
+</li>
+</ul>
+<h2 id="algebra-interfaces" class="a_section" data-magellan-target="algebra-interfaces">Algebra interfaces<a class="a_hlink" href="#algebra-interfaces"></a></h2>
+<div class="row"><div class="small-expand columns a_xscroll a_table"><table>
+<thead>
+<tr><th>Name</th><th>Description</th><th>Artifact id</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="api/0.3.0-SNAPSHOT/index.html#endpoints.algebra.Assets"><code class="hljs">Assets</code></a></td><td>Asset segments, endpoints serving fingerprinted assets</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
+<tr><td><a href="api/0.3.0-SNAPSHOT/index.html#endpoints.algebra.BasicAuthentication"><code class="hljs">BasicAuthentication</code></a></td><td>HTTP Basic authentication</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
+<tr><td><a href="api/0.3.0-SNAPSHOT/index.html#endpoints.algebra.Endpoints"><code class="hljs">Endpoints</code></a></td><td>HTTP endpoints (main algebra interface)</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
+<tr><td><a href="api/0.3.0-SNAPSHOT/index.html#endpoints.algebra.JsonEntities"><code class="hljs">JsonEntities</code></a></td><td>JSON request and response entities</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
+<tr><td><a href="api/0.3.0-SNAPSHOT/index.html#endpoints.algebra.OptionalResponses"><code class="hljs">OptionalResponses</code></a></td><td>Optional response entities</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
+<tr><td><a href="api/0.3.0-SNAPSHOT/index.html#endpoints.algebra.CirceEntities"><code class="hljs">CirceEntities</code></a></td><td>JSON request and response entities using Circe codecs</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra-circe">endpoints-algebra-circe</a></td></tr>
+</tbody>
+</table></div></div>
+<h2 id="interpreters" class="a_section" data-magellan-target="interpreters">Interpreters<a class="a_hlink" href="#interpreters"></a></h2>
+<div class="row"><div class="small-expand columns a_xscroll a_table"><table>
+<thead>
+<tr><th>Artifact id</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-akka-http-server">endpoints-akka-http-server</a></td><td>Server backed by Akka-http</td></tr>
+<tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-akka-http-server">endpoints-akka-http-server-circe</a></td><td>Interpreter for <code class="hljs">CirceEntities</code> compatible with <code class="hljs">endpoints-akka-http-server</code></td></tr>
+<tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-play-client">endpoints-play-client</a></td><td>Client backed by Play framework</td></tr>
+<tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-play-client-circe">endpoints-play-client-circe</a></td><td>Interpreter for <code class="hljs">CirceEntities</code> compatible with <code class="hljs">endpoints-play-client</code></td></tr>
+<tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-play-server">endpoints-play-server</a></td><td>Server backed by Play framework</td></tr>
+<tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-play-server-circe">endpoints-play-server-circe</a></td><td>Interpreter for <code class="hljs">CirceEntities</code> compatible with <code class="hljs">endpoints-play-server</code></td></tr>
+<tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-xhr-client">endpoints-xhr-client</a></td><td>Scala.js clients using <code class="hljs">XMLHttpRequest</code> and returning responses in <code class="hljs">Future</code> or <code class="hljs">js.Thenable</code> values</td></tr>
+<tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-xhr-client-circe">endpoints-xhr-client-circe</a></td><td>Interpreter for <code class="hljs">CirceEntities</code> compatible with <code class="hljs">endpoints-xhr-client</code></td></tr>
+<tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-xhr-client-faithful">endpoints-xhr-client-faithful</a></td><td>Scala.js client returning responses <a href="https://github.com/julienrf/faithful">faithful</a>’s <code class="hljs">Future</code> values</td></tr>
+</tbody>
+</table></div></div>
 
               </main>
               
@@ -82,14 +137,14 @@
   
   <li >
     
-      <a href="design.html">Design</a>
+      <a href="design.html">Design in a nutshell</a>
     
     
   </li>
   
   <li  class="a_thispage" >
     
-      <a href="interfaces-and-interpreters.html">Interfaces and interpreters</a>
+      <a href="interfaces-and-interpreters.html">Algebra interfaces and their interpreters</a>
     
     
   </li>
@@ -120,6 +175,46 @@
                 </div>
               
               
+              
+                <div class="small-12 medium-12 large-2 large-order-3 columns a_show-for-xlarge" data-sticky-container>
+                  <nav class="a_pagenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                     <header><p>On This Page</p>
+</header> 
+                    <ul class="vertical menu" data-magellan>
+                       
+  <li>
+    
+       <a href="#algebra-interfaces-and-their-interpreters">Algebra interfaces and their interpreters</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#naming-conventions">Naming conventions</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#algebra-interfaces">Algebra interfaces</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#interpreters">Interpreters</a> 
+    
+    
+  </li>
+  </ul>
+    
+  </li>
+ 
+                    </ul>
+                  </nav>
+                </div>
               
             </div>
           </div>

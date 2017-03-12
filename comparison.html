@@ -19,7 +19,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.2.0-SNAPSHOT</p>
+                  <p>endpoints 0.3.0-SNAPSHOT</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -43,14 +43,15 @@
                 
                 <h1 id="comparison-with-similar-tools" class="a_section" data-magellan-target="comparison-with-similar-tools">Comparison with similar tools<a class="a_hlink" href="#comparison-with-similar-tools"></a></h1>
 <h2 id="autowire" class="a_section" data-magellan-target="autowire">Autowire<a class="a_hlink" href="#autowire"></a></h2>
-<p>With autowire, all the communications typically go through a single HTTP endpoint and
-use a single marshalling format. This has the following consequences :</p>
-<ul>
-<li>You can hardly define RESTful APIs ;</li>
-<li>You can hardly control response caching ;</li>
-<li>You can hardly serve assets.</li>
-</ul>
-<p>Another difference is that <code class="hljs">endpoints</code> uses no macros at all.</p>
+<p>Autowire's purpose is to handle client/server remote procedure calls.
+The purpose of the endpoints library is to work with HTTP endpoints, which
+includes (but is not limited to) client/server remote procedure calls.</p>
+<p>If you just want to perform RPC and that the underlying protocol does
+not matter, you should probably just pick Autowire.</p>
+<p>If you want to perform RPC but at the same time define the
+unerlying HTTP requests and responses, if you want to serve media resources,
+or if you experience troubles with Autowire’s macros, you should give a try
+to the endpoints library.</p>
 <h2 id="swagger" class="a_section" data-magellan-target="swagger">Swagger<a class="a_hlink" href="#swagger"></a></h2>
 <p>Swagger provides a set of tools producing documentation resources from an API specification.
 The drawback of Swagger is that you have to maintain both the implementation and the
@@ -59,7 +60,7 @@ are only able to automate a small part of the specification generation).</p>
 <p>With <code class="hljs">endpoints</code> you can write an object algebra producing documentation resources for
 endpoint definitions, so that your documentation is derived from the exact same code
 that is used to implement the API, hence being always consistent.</p>
-<h2 id="thrift-finch-rho-lagom-remotely-fintrospect" class="a_section" data-magellan-target="thrift-finch-rho-lagom-remotely-fintrospect">Thrift? Finch? Rho? Lagom? Remotely? Fintrospect?<a class="a_hlink" href="#thrift-finch-rho-lagom-remotely-fintrospect"></a></h2>
+<h2 id="thrift-finch-rho-lagom-remotely-fintrospect-scala-json-rpc" class="a_section" data-magellan-target="thrift-finch-rho-lagom-remotely-fintrospect-scala-json-rpc">Thrift? Finch? Rho? Lagom? Remotely? Fintrospect? Scala-json-rpc?<a class="a_hlink" href="#thrift-finch-rho-lagom-remotely-fintrospect-scala-json-rpc"></a></h2>
 
               </main>
               
@@ -99,14 +100,14 @@ that is used to implement the API, hence being always consistent.</p>
   
   <li >
     
-      <a href="design.html">Design</a>
+      <a href="design.html">Design in a nutshell</a>
     
     
   </li>
   
   <li >
     
-      <a href="interfaces-and-interpreters.html">Interfaces and interpreters</a>
+      <a href="interfaces-and-interpreters.html">Algebra interfaces and their interpreters</a>
     
     
   </li>
@@ -166,7 +167,7 @@ that is used to implement the API, hence being always consistent.</p>
   
   <li>
     
-       <a href="#thrift-finch-rho-lagom-remotely-fintrospect">Thrift? Finch? Rho? Lagom? Remotely? Fintrospect?</a> 
+       <a href="#thrift-finch-rho-lagom-remotely-fintrospect-scala-json-rpc">Thrift? Finch? Rho? Lagom? Remotely? Fintrospect? Scala-json-rpc?</a> 
     
     
   </li>
