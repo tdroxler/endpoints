@@ -19,7 +19,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.2.0</p>
+                  <p>endpoints 0.3.0</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -48,14 +48,26 @@ applications.</p>
 <ul>
 <li>endpoints descriptions are <strong>first-class Scala values</strong>, which can be reused,
 combined and abstracted over ;</li>
-<li><strong>consistent client and server implementations</strong> can be derived from endpoint descriptions ;</li>
-<li><strong>high extensibility</strong>: you can introduce both
+<li>a <em>same</em> endpoint description can be interpreted in <em>multiple</em> ways:
 <ul>
-<li>new descriptions that are specific to your application (e.g. the usage
-of a particular HTTP header),</li>
-<li>new interpreters for endpoint descriptions (e.g. generation of a swagger-like documentation).</li>
+<li>a <strong>client</strong> implementation (JVM and/or Scala.js),</li>
+<li>a <strong>server</strong> implementation,</li>
+<li>an <strong>OpenAPI</strong> definition file,</li>
+<li>thus, your client and documentation are always consistent with the actual
+implementation of your server,</li>
 </ul>
 </li>
+<li><strong>type safety</strong>: you get a compile-time error if you invoke an endpoint but supply incorrect data
+(requests are guaranteed to be well constructed),</li>
+<li><strong>extensibility</strong>: you can introduce both
+<ul>
+<li>new <em>descriptions</em> that are specific to your application (e.g. the usage
+of a particular HTTP header),</li>
+<li>new <em>interpreters</em> for endpoint descriptions (e.g. generation of a RAML documentation),</li>
+</ul>
+</li>
+<li><strong>vanilla Scala</strong>: being written in pure Scala (no macros), the implementation is easy to
+reason about and IDE friendly.</li>
 </ul>
 <h2 id="getting-started" class="a_section" data-magellan-target="getting-started">Getting started<a class="a_hlink" href="#getting-started"></a></h2>
 <ul>
@@ -63,7 +75,7 @@ of a particular HTTP header),</li>
 the library does and how its usage look like ;</li>
 <li><a href="installation.html">Install</a> the library and follow the
 <a href="tutorial.html">tutorial</a> to progressively learn all the features ;</li>
-<li>Explore the <a href="api/0.2.0/index.html#endpoints.algebra.package">API documentation</a> ;</li>
+<li>Explore the <a href="api/0.3.0/index.html#endpoints.algebra.package">API documentation</a> ;</li>
 <li>Get in touch in the <a href="https://gitter.im/julienrf/endpoints">gitter room</a>.</li>
 </ul>
 <h2 id="contributing" class="a_section" data-magellan-target="contributing">Contributing<a class="a_hlink" href="#contributing"></a></h2>

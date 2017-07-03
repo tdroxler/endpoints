@@ -19,7 +19,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.2.0</p>
+                  <p>endpoints 0.3.0</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -48,7 +48,7 @@ The purpose of the endpoints library is to work with HTTP endpoints, which
 includes (but is not limited to) client/server remote procedure calls.</p>
 <p>If you just want to perform RPC and that the underlying protocol does
 not matter, you should probably just pick Autowire.</p>
-<p>If you want to perform RPC but at the same time define the
+<p>If you want to perform RPC but at the same time define the structure of the
 unerlying HTTP requests and responses, if you want to serve media resources,
 or if you experience troubles with Autowire’s macros, you should give a try
 to the endpoints library.</p>
@@ -57,9 +57,10 @@ to the endpoints library.</p>
 The drawback of Swagger is that you have to maintain both the implementation and the
 specification and to keep them consistent (even when using the available “integrations”, which
 are only able to automate a small part of the specification generation).</p>
-<p>With <code class="hljs">endpoints</code> you can write an object algebra producing documentation resources for
-endpoint definitions, so that your documentation is derived from the exact same code
-that is used to implement the API, hence being always consistent.</p>
+<p><code class="hljs">endpoints</code> takes an opposite approach: we generate an OpenAPI definition
+file from a description of endpoints written in Scala. The benefit is that the
+documentation is always consistent with the server and client implementations
+(as long as they are all derived from the same description of endpoints).</p>
 <h2 id="thrift-finch-rho-lagom-remotely-fintrospect-scala-json-rpc" class="a_section" data-magellan-target="thrift-finch-rho-lagom-remotely-fintrospect-scala-json-rpc">Thrift? Finch? Rho? Lagom? Remotely? Fintrospect? Scala-json-rpc?<a class="a_hlink" href="#thrift-finch-rho-lagom-remotely-fintrospect-scala-json-rpc"></a></h2>
 
               </main>

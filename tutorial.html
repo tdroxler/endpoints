@@ -19,7 +19,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.2.0</p>
+                  <p>endpoints 0.3.0</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -151,12 +151,12 @@ provides means of describing HTTP endpoints:</p>
     endpoint(get(path / <span class="hljs-string">"events"</span> /? optQs[<span class="hljs-type">Long</span>](<span class="hljs-string">"since"</span>)), jsonResponse[<span class="hljs-type">Seq</span>[<span class="hljs-type">StoredEvent</span>]])
 
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/examples/cqrs/commands-endpoints/src/main/scala/cqrs/commands/CommandsEndpoints.scala#L11-L30" class="a_sourcelink">CommandsEndpoints.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/commands-endpoints/src/main/scala/cqrs/commands/CommandsEndpoints.scala#L11-L30" class="a_sourcelink">CommandsEndpoints.scala</a></div></div>
 <p>Let’s explain this code line by line.</p>
 <p>First, we import the <code class="hljs">Endpoints</code> and <code class="hljs">CirceEntities</code> traits from the <code class="hljs">endpoints.algebra</code> package.
 All the traits that live in the <code class="hljs">algebra</code> package provide methods for <em>describing</em> HTTP endpoints.
-In our case, the <a href="api/0.2.0/index.html#endpoints.algebra.Endpoints">Endpoints</a> trait provides the core methods
-while the (optional) <a href="api/0.2.0/index.html#endpoints.algebra.CirceEntities">CirceEntities</a> trait allows us to
+In our case, the <a href="api/0.3.0/index.html#endpoints.algebra.Endpoints">Endpoints</a> trait provides the core methods
+while the (optional) <a href="api/0.3.0/index.html#endpoints.algebra.CirceEntities">CirceEntities</a> trait allows us to
 use <a href="https://circe.github.io/circe/">circe</a> encoders and decoders to marshal JSON entities in
 requests and responses.</p>
 <p>Second, we define our communication protocol within a trait, <code class="hljs">CommandsEndpoints</code>, that extends
@@ -244,10 +244,10 @@ server as follows:</p>
   )
 
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/examples/cqrs/commands/src/main/scala/cqrs/commands/Commands.scala#L5-L18" class="a_sourcelink">Commands.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/commands/src/main/scala/cqrs/commands/Commands.scala#L5-L18" class="a_sourcelink">Commands.scala</a></div></div>
 <p>Again, let’s detail line by line the above code.</p>
-<p>First, we import the <a href="api/0.2.0/index.html#endpoints.play.server.Endpoints"><code class="hljs">Endpoints</code></a> and
-<a href="api/0.2.0/index.html#endpoints.play.server.CirceEntities"><code class="hljs">CirceEntities</code></a> <em>interpreters</em> from the
+<p>First, we import the <a href="api/0.3.0/index.html#endpoints.play.server.Endpoints"><code class="hljs">Endpoints</code></a> and
+<a href="api/0.3.0/index.html#endpoints.play.server.CirceEntities"><code class="hljs">CirceEntities</code></a> <em>interpreters</em> from the
 <code class="hljs">endpoints.play.server</code> package. Interpreters always have the same name as the
 algebra interface they implement, but they are not located in the <code class="hljs">endpoints.algebra</code>
 package. The <code class="hljs">endpoints.play.server</code> package contains interpreters that rely
@@ -275,7 +275,7 @@ and <code class="hljs">events</code>:</p>
   *         before the given optional timestamp are discarded.
   */</span>
 <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">events</span></span>(maybeSince: <span class="hljs-type">Option</span>[<span class="hljs-type">Long</span>]): <span class="hljs-type">Vector</span>[<span class="hljs-type">StoredEvent</span>] = <span class="hljs-comment">// …</span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/examples/cqrs/commands/src/main/scala/cqrs/commands/CommandsService.scala#L20-L66" class="a_sourcelink">CommandsService.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/commands/src/main/scala/cqrs/commands/CommandsService.scala#L20-L66" class="a_sourcelink">CommandsService.scala</a></div></div>
 <p>As you can see, the <code class="hljs">play.server</code> interpreter takes care of decoding HTTP requests and
 encoding HTTP responses according to our endpoint descriptions, so that we can focus
 on implementing the actual logic of our service in terms of high-level data types.</p>
@@ -322,10 +322,10 @@ a client as follows:</p>
   <span class="hljs-keyword">extends</span> <span class="hljs-type">Endpoints</span>(commandsBaseUrl, wsClient)
     <span class="hljs-keyword">with</span> <span class="hljs-type">CirceEntities</span>
     <span class="hljs-keyword">with</span> <span class="hljs-type">CommandsEndpoints</span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/examples/cqrs/queries/src/main/scala/cqrs/queries/QueriesService.scala#L31-L37" class="a_sourcelink">QueriesService.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/queries/src/main/scala/cqrs/queries/QueriesService.scala#L31-L37" class="a_sourcelink">QueriesService.scala</a></div></div>
 <p>The pattern is similar to the code applying a server interpreter: we extend our <code class="hljs">CommandsEndpoints</code>
-trait and mix the <a href="api/0.2.0/index.html#endpoints.play.client.Endpoints"><code class="hljs">endpoints.play.client.Endpoints</code></a>
-and <a href="api/0.2.0/index.html#endpoints.play.client.CirceEntities"><code class="hljs">endpoints.play.client.CirceEntities</code></a> interpreters to it.</p>
+trait and mix the <a href="api/0.3.0/index.html#endpoints.play.client.Endpoints"><code class="hljs">endpoints.play.client.Endpoints</code></a>
+and <a href="api/0.3.0/index.html#endpoints.play.client.CirceEntities"><code class="hljs">endpoints.play.client.CirceEntities</code></a> interpreters to it.</p>
 <p>The <code class="hljs">commandsBaseUrl</code> and <code class="hljs">wsClient</code> parameters (whose definition is not shown here for brevity)
 define the base URL of the commands service
 (e.g. <code class="hljs">http://192.168.1.50</code>) and the Play <code class="hljs">WSClient</code> instance to use to effectively perform
@@ -338,7 +338,7 @@ service as follows:</p>
   eventLog.events(maybeLastEventTimestamp).map { (newEvents: <span class="hljs-type">Seq</span>[<span class="hljs-type">StoredEvent</span>]) =&gt;
     atomicallyApplyEvents(newEvents)
   }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/examples/cqrs/queries/src/main/scala/cqrs/queries/QueriesService.scala#L87-L90" class="a_sourcelink">QueriesService.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/queries/src/main/scala/cqrs/queries/QueriesService.scala#L87-L90" class="a_sourcelink">QueriesService.scala</a></div></div>
 <p>From the perspective of a client, and endpoint is modeled as a function that takes as parameter
 the information carried by the request and eventually returns the information carried by
 the response.</p>
@@ -359,14 +359,14 @@ interpreters. Our client interpreter defines the <code class="hljs">Endpoint</co
   * Communication failures and protocol failures are represented by a `Future.failed`.
   */</span>
 <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Endpoint</span>[<span class="hljs-type">A</span>, <span class="hljs-type">B</span>] </span>= <span class="hljs-type">A</span> =&gt; <span class="hljs-type">Future</span>[<span class="hljs-type">B</span>]</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/play-client/src/main/scala/endpoints/play/client/Endpoints.scala#L61-L66" class="a_sourcelink">Endpoints.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/play-client/src/main/scala/endpoints/play/client/Endpoints.scala#L64-L69" class="a_sourcelink">Endpoints.scala</a></div></div>
 <p>Let’s read again the code that invokes the <code class="hljs">events</code> endpoint:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> eventuallyUpdatedState: <span class="hljs-type">Future</span>[<span class="hljs-type">State</span>] =
   eventLog.events(maybeLastEventTimestamp).map { (newEvents: <span class="hljs-type">Seq</span>[<span class="hljs-type">StoredEvent</span>]) =&gt;
     atomicallyApplyEvents(newEvents)
   }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/examples/cqrs/queries/src/main/scala/cqrs/queries/QueriesService.scala#L87-L90" class="a_sourcelink">QueriesService.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/queries/src/main/scala/cqrs/queries/QueriesService.scala#L87-L90" class="a_sourcelink">QueriesService.scala</a></div></div>
 <p>We supply a parameter, <code class="hljs">maybeLastEventTimestamp</code>, that contains the timestamp of the last event that
 we applied to our projection (or <code class="hljs">None</code> if we want to rebuild the entire projection).</p>
 <p>The invocation returns a <code class="hljs">Future[Seq[StoredEvent]]</code>, we <code class="hljs">map</code> it transform the events into
@@ -399,7 +399,7 @@ actual type of the request.</p>
 for the “find by id” operation would describe a request carrying an id
 of type <code class="hljs">String</code> and a response carrying an <code class="hljs">Option[Meter]</code>. The resulting
 endpoint would have type
-<a href="api/0.2.0/index.html#endpoints.algebra.Endpoints@Endpoint[A,B]"><code class="hljs">Endpoint[String, Option[Meter]]</code></a>.</p>
+<a href="api/0.3.0/index.html#endpoints.algebra.Endpoints@Endpoint[A,B]"><code class="hljs">Endpoint[String, Option[Meter]]</code></a>.</p>
 <p>If we wanted to also handle the “find all” operation with the same endpoint,
 what would be the type of the response description? In the case of the “find
 by id” operation, this would still be <code class="hljs">Option[Meter]</code>, but in the case of the
@@ -412,9 +412,9 @@ Non-multiplexed endpoints can not express that.</p>
   <span class="hljs-keyword">val</span> request = post(path / <span class="hljs-string">"query"</span>, jsonRequest[<span class="hljs-type">Json</span>])
   muxEndpoint[<span class="hljs-type">QueryReq</span>, <span class="hljs-type">QueryResp</span>, <span class="hljs-type">Json</span>](request, jsonResponse)
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/examples/cqrs/queries-endpoints/src/main/scala/cqrs/queries/QueriesEndpoints.scala#L20-L23" class="a_sourcelink">QueriesEndpoints.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/queries-endpoints/src/main/scala/cqrs/queries/QueriesEndpoints.scala#L20-L23" class="a_sourcelink">QueriesEndpoints.scala</a></div></div>
 <p>The type of this multiplexed endpoint is
-<a href="api/0.2.0/index.html#endpoints.algebra.Endpoints@MuxEndpoint[Req%3C:endpoints.algebra.MuxRequest,Resp,Transport]"><code class="hljs">MuxEndpoint[QueryReq, QueryResp, Json]</code></a>.
+<a href="api/0.3.0/index.html#endpoints.algebra.Endpoints@MuxEndpoint[Req%3C:endpoints.algebra.MuxRequest,Resp,Transport]"><code class="hljs">MuxEndpoint[QueryReq, QueryResp, Json]</code></a>.
 It describes an HTTP endpoint that handles request types that are subtypes of <code class="hljs">QueryReq</code>
 and response types that subtypes of <code class="hljs">QueryResp</code>, and that uses JSON documents to marshal information.</p>
 <p>The <code class="hljs">QueryReq</code> type defines the possible types of requests:</p>
@@ -422,7 +422,7 @@ and response types that subtypes of <code class="hljs">QueryResp</code>, and tha
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">sealed</span> <span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">QueryReq</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">MuxRequest</span></span>
 <span class="hljs-keyword">final</span> <span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FindById</span>(<span class="hljs-params">id: <span class="hljs-type">UUID</span>, after: <span class="hljs-type">Option</span>[<span class="hljs-type">Long</span>]</span>) <span class="hljs-keyword">extends</span> <span class="hljs-title">QueryReq</span> </span>{ <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Response</span> </span>= <span class="hljs-type">MaybeResource</span> }
 <span class="hljs-keyword">final</span> <span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">FindAll</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">QueryReq</span> </span>{ <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Response</span> </span>= <span class="hljs-type">ResourceList</span> }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/examples/cqrs/queries-endpoints/src/main/scala/cqrs/queries/QueriesEndpoints.scala#L30-L32" class="a_sourcelink">QueriesEndpoints.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/queries-endpoints/src/main/scala/cqrs/queries/QueriesEndpoints.scala#L30-L32" class="a_sourcelink">QueriesEndpoints.scala</a></div></div>
 <p>It is defined as a <code class="hljs">sealed trait</code> that extends <code class="hljs">MuxRequest</code> and whose each alternative (<code class="hljs">FindAll</code>
 and <code class="hljs">FindById</code>) sets the <code class="hljs">Response</code> type member to its corresponding response type.</p>
 <p>The <code class="hljs">FindById</code> request type carries the information of the “find by id” operation:
@@ -439,7 +439,7 @@ algebraic data type:</p>
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">sealed</span> <span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">QueryResp</span></span>
 <span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MaybeResource</span>(<span class="hljs-params">value: <span class="hljs-type">Option</span>[<span class="hljs-type">Meter</span>]</span>) <span class="hljs-keyword">extends</span> <span class="hljs-title">QueryResp</span></span>
 <span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ResourceList</span>(<span class="hljs-params">value: <span class="hljs-type">List</span>[<span class="hljs-type">Meter</span>]</span>) <span class="hljs-keyword">extends</span> <span class="hljs-title">QueryResp</span></span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/examples/cqrs/queries-endpoints/src/main/scala/cqrs/queries/QueriesEndpoints.scala#L44-L46" class="a_sourcelink">QueriesEndpoints.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/queries-endpoints/src/main/scala/cqrs/queries/QueriesEndpoints.scala#L44-L46" class="a_sourcelink">QueriesEndpoints.scala</a></div></div>
 <p>The <code class="hljs">MaybeResource</code> type carries the information of a response to a “find
 by id” request (an optional <code class="hljs">Meter</code>), and the <code class="hljs">ResourceList</code> type carries
 the information of a response to a “find all” request (a list of <code class="hljs">Meter</code>s).</p>
@@ -461,7 +461,7 @@ the endpoint descriptions:</p>
   <span class="hljs-keyword">extends</span> <span class="hljs-type">Endpoints</span>(baseUrl, wsClient)
     <span class="hljs-keyword">with</span> <span class="hljs-type">CirceEntities</span>
     <span class="hljs-keyword">with</span> <span class="hljs-type">QueriesEndpoints</span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/examples/cqrs/public-server/src/main/scala/cqrs/publicserver/QueriesClient.scala" class="a_sourcelink">QueriesClient.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/public-server/src/main/scala/cqrs/publicserver/QueriesClient.scala" class="a_sourcelink">QueriesClient.scala</a></div></div>
 <p>The process is the same as in the first part of the tutorial: we extend
 the trait that defines the endpoint descriptions (<code class="hljs">QueriesEndpoints</code>)
 with traits that provide a client implementation (here, using the play framework
@@ -471,13 +471,13 @@ like so:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> queriesClient = <span class="hljs-keyword">new</span> <span class="hljs-type">QueriesClient</span>(queriesBaseUrl, wsClient)
 <span class="hljs-keyword">val</span> metersList: <span class="hljs-type">Future</span>[<span class="hljs-type">ResourceList</span>] = queriesClient.query(<span class="hljs-type">FindAll</span>)</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/examples/cqrs/public-server/src/main/scala/cqrs/publicserver/PublicServer.scala" class="a_sourcelink">PublicServer.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/public-server/src/main/scala/cqrs/publicserver/PublicServer.scala" class="a_sourcelink">PublicServer.scala</a></div></div>
 <p>We first instantiate the client and then invoke the <code class="hljs">query</code> endpoint with a <code class="hljs">FindAll</code> request.
 We get a result of type <code class="hljs">Future[ResourceList]</code>.</p>
 <p>We can also invoke the “find by id” operation as follows:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> maybeMeter: <span class="hljs-type">Future</span>[<span class="hljs-type">MaybeResource</span>] = queriesClient.query(<span class="hljs-type">FindById</span>(id, after = <span class="hljs-type">Some</span>(t)))</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/examples/cqrs/public-server/src/main/scala/cqrs/publicserver/PublicServer.scala" class="a_sourcelink">PublicServer.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/public-server/src/main/scala/cqrs/publicserver/PublicServer.scala" class="a_sourcelink">PublicServer.scala</a></div></div>
 <p>Note that here the return type is <code class="hljs">Future[MaybeResource]</code>.</p>
 <p>In order to get the <code class="hljs">query</code> endpoint return different result types according to the type
 of the value that is passed as parameter (<code class="hljs">FindAll</code> vs <code class="hljs">FindById</code>), we use an advanced
@@ -505,7 +505,7 @@ parameter:</p>
   <span class="hljs-keyword">case</span> <span class="hljs-type">FindById</span>(id, t) =&gt; service.findById(id, t).map(<span class="hljs-type">MaybeResource</span>)
   <span class="hljs-keyword">case</span> <span class="hljs-type">FindAll</span>         =&gt; service.findAll().map(<span class="hljs-type">ResourceList</span>)
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/examples/cqrs/queries/src/main/scala/cqrs/queries/Queries.scala#L22-L25" class="a_sourcelink">Queries.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/queries/src/main/scala/cqrs/queries/Queries.scala#L22-L25" class="a_sourcelink">Queries.scala</a></div></div>
 <p>Here we use a <code class="hljs">service</code> abstraction that contains the actual implementation of the operations.
 We just transform the results of these operations into the <code class="hljs">Response</code> type corresponding
 to each <code class="hljs">QueryReq</code> (e.g. <code class="hljs">MaybeResource</code> in the case of <code class="hljs">FindById</code>, etc.).</p>
@@ -524,7 +524,7 @@ to each <code class="hljs">QueryReq</code> (e.g. <code class="hljs">MaybeResourc
   })
 
 )</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/examples/cqrs/queries/src/main/scala/cqrs/queries/Queries.scala#L15-L29" class="a_sourcelink">Queries.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/queries/src/main/scala/cqrs/queries/Queries.scala#L15-L29" class="a_sourcelink">Queries.scala</a></div></div>
 <p>We wrapped our match expression into a <code class="hljs">MuxHandlerAsync</code>, whose definition is the following:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-comment">/**
@@ -537,7 +537,7 @@ to each <code class="hljs">QueryReq</code> (e.g. <code class="hljs">MaybeResourc
 <span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">MuxHandlerAsync</span>[<span class="hljs-type">Req</span> &lt;: <span class="hljs-type">MuxRequest</span>, <span class="hljs-type">Resp</span>] </span>{
   <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">apply</span></span>[<span class="hljs-type">R</span> &lt;: <span class="hljs-type">Resp</span>](req: <span class="hljs-type">Req</span> { <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Response</span> </span>= <span class="hljs-type">R</span> }): <span class="hljs-type">Future</span>[<span class="hljs-type">R</span>]
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/play-server/src/main/scala/endpoints/play/server/Endpoints.scala#L287-L296" class="a_sourcelink">Endpoints.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/play-server/src/main/scala/endpoints/play/server/Endpoints.scala#L290-L299" class="a_sourcelink">Endpoints.scala</a></div></div>
 <p>This complex type signature is necessary to check that our implementation effectively
 returns a value that corresponds to the <code class="hljs">Response</code> type member of the passed request.</p>
 <h3 id="summary-3" class="a_section" data-magellan-target="summary-3">Summary<a class="a_hlink" href="#summary-3"></a></h3>
@@ -602,13 +602,13 @@ and <code class="hljs">addRecord</code>:</p>
   <span class="hljs-keyword">implicit</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">uuidSegment</span></span>: <span class="hljs-type">Segment</span>[<span class="hljs-type">UUID</span>]
 
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/examples/cqrs/public-endpoints/src/main/scala/cqrs/publicserver/PublicEndpoints.scala#L19-L46" class="a_sourcelink">PublicEndpoints.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/public-endpoints/src/main/scala/cqrs/publicserver/PublicEndpoints.scala#L19-L46" class="a_sourcelink">PublicEndpoints.scala</a></div></div>
 <p>We have already seen most of the used combinators that describe the endpoints. The <code class="hljs">getMeter</code> endpoint
 uses some new combinators, though:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> getMeter: <span class="hljs-type">Endpoint</span>[<span class="hljs-type">UUID</span>, <span class="hljs-type">Option</span>[<span class="hljs-type">Meter</span>]] =
   endpoint(get(metersPath / segment[<span class="hljs-type">UUID</span>]), option(jsonResponse[<span class="hljs-type">Meter</span>]))</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/examples/cqrs/public-endpoints/src/main/scala/cqrs/publicserver/PublicEndpoints.scala#L32-L33" class="a_sourcelink">PublicEndpoints.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/public-endpoints/src/main/scala/cqrs/publicserver/PublicEndpoints.scala#L32-L33" class="a_sourcelink">PublicEndpoints.scala</a></div></div>
 <p>The URL is described by the expression <code class="hljs">metersPath / segment[UUID]</code>, which means the <code class="hljs">/meters</code>
 URL prefix followed by a segment containing an <code class="hljs">UUID</code>. A <code class="hljs">segment[X]</code> expression describes
 a path segment that maps to a value of type <code class="hljs">X</code>.</p>
@@ -639,7 +639,7 @@ server interpreter based on Play, the <code class="hljs">Segment</code> type is 
   <span class="hljs-comment">/** @return URL encoded path segment */</span>
   <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">encode</span></span>(a: <span class="hljs-type">A</span>): <span class="hljs-type">String</span>
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/play-server/src/main/scala/endpoints/play/server/Urls.scala#L53-L59" class="a_sourcelink">Urls.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/play-server/src/main/scala/endpoints/play/server/Urls.scala#L53-L59" class="a_sourcelink">Urls.scala</a></div></div>
 <p>The <code class="hljs">decode</code> method is used when routing an incoming request, while the <code class="hljs">encode</code> method is
 used for “reverse routing” (ie to generate (valid) URLs of endpoints).</p>
 <p>The implementation of the <code class="hljs">uuidSegment</code> member is straightforward:</p>
@@ -649,7 +649,7 @@ used for “reverse routing” (ie to generate (valid) URLs of endpoints).</p>
     <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">decode</span></span>(segment: <span class="hljs-type">String</span>): <span class="hljs-type">Option</span>[<span class="hljs-type">UUID</span>] = <span class="hljs-type">Try</span>(<span class="hljs-type">UUID</span>.fromString(segment)).toOption
     <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">encode</span></span>(uuid: <span class="hljs-type">UUID</span>): <span class="hljs-type">String</span> = <span class="hljs-type">URLEncoder</span>.encode(uuid.toString, utf8Name)
   }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/examples/cqrs/public-server/src/main/scala/cqrs/publicserver/PublicServer.scala#L78-L82" class="a_sourcelink">PublicServer.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/public-server/src/main/scala/cqrs/publicserver/PublicServer.scala#L78-L82" class="a_sourcelink">PublicServer.scala</a></div></div>
 <p>The client implementation is also straightforward: we create a type that inherits from
 <code class="hljs">PublicEndpoints</code> and the relevant interpreters. In our case, we use an interpreter that
 derives a client performing <code class="hljs">XMLHttpRequest</code>s to invoke the endpoints.</p>
@@ -661,18 +661,18 @@ is defined as follows:</p>
   <span class="hljs-comment">/** @return An URL encoded path segment (e.g. "foo%2Fbar") */</span>
   <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">encode</span></span>(a: <span class="hljs-type">A</span>): <span class="hljs-type">String</span>
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/xhr-client/src/main/scala/endpoints/xhr/Urls.scala#L14-L18" class="a_sourcelink">Urls.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/xhr-client/src/main/scala/endpoints/xhr/Urls.scala#L14-L18" class="a_sourcelink">Urls.scala</a></div></div>
 <p>Thus, we define the <code class="hljs">uuidSegment</code> like so:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">implicit</span> <span class="hljs-keyword">lazy</span> <span class="hljs-keyword">val</span> uuidSegment: <span class="hljs-type">Segment</span>[<span class="hljs-type">UUID</span>] =
   (uuid: <span class="hljs-type">UUID</span>) =&gt; stringSegment.encode(uuid.toString)</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/examples/cqrs/web-client/src/main/scala/cqrs/webclient/PublicEndpoints.scala#L14-L15" class="a_sourcelink">PublicEndpoints.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/web-client/src/main/scala/cqrs/webclient/PublicEndpoints.scala#L14-L15" class="a_sourcelink">PublicEndpoints.scala</a></div></div>
 <p>Finally, here is an example of invocation of the <code class="hljs">listMeters</code> endpoint from the Scala.js client:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-type">PublicEndpoints</span>.listMeters(()).map { fetchedMeters =&gt;
   metersVar := fetchedMeters.map(meter =&gt; meter.id -&gt; meter).toMap
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.2.0/examples/cqrs/web-client/src/main/scala/cqrs/webclient/Main.scala#L25-L27" class="a_sourcelink">Main.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/web-client/src/main/scala/cqrs/webclient/Main.scala#L25-L27" class="a_sourcelink">Main.scala</a></div></div>
 <h3 id="summary-4" class="a_section" data-magellan-target="summary-4">Summary<a class="a_hlink" href="#summary-4"></a></h3>
 <p>In this section we have seen that deriving a Scala.js client works the same way as deriving a JVM
 client.</p>
@@ -681,6 +681,199 @@ be extended according to application-specific needs. In our case we saw how the 
 introduced a new method for describing responses such that empty responses are mapped to
 a 404 (Not Found) response. We also saw how support for custom data types (e.g. <code class="hljs">UUID</code>) can
 be introduced.</p>
+<h2 id="deriving-an-openapi-definition-file-from-a-service-description" class="a_section" data-magellan-target="deriving-an-openapi-definition-file-from-a-service-description">Deriving an OpenAPI definition file from a service description<a class="a_hlink" href="#deriving-an-openapi-definition-file-from-a-service-description"></a></h2>
+<p>The <a href="https://www.openapis.org/">OpenAPI</a> initiative standardizes a description format that
+can be processed by tools like <a href="https://swagger.io/swagger-ui/">swagger-ui</a> or
+<a href="http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-import-api.html">Amazon API Gateway</a>.</p>
+<h3 id="documented-service-description" class="a_section" data-magellan-target="documented-service-description">Documented service description<a class="a_hlink" href="#documented-service-description"></a></h3>
+<p>The OpenAPI format requires richer service descriptions than what we currently have. For instance,
+each response must have a human readable description. Because of such differences, we use
+different algebra interfaces to define our service description. These algebra interfaces
+are provided by the <code class="hljs">endpoints-openapi</code> artifact:</p>
+<div class="mermaid" id="_id8"><pre class="mermaid_src" style="display: none">graph BT
+  web-client -.-&gt; interpreter2[&quot;endpoints-xhr-client-circe&quot;]
+  web-client -.-&gt; public-endpoints
+  web-client --&gt; public-server
+  public-server -.-&gt; public-endpoints
+  public-endpoints -.-&gt; openapi[&quot;endpoints-openapi-circe&quot;]
+  public-server -.-&gt; interpreter[&quot;endpoints-play-server-circe&quot;]
+  style algebra fill:#eee;
+  style interpreter fill:#eee;
+  style interpreter2 fill:#eee;
+  style openapi fill:#eee;
+</pre></div>
+<p>The “documented” description of the public endpoints looks like the following:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.documented.algebra.{<span class="hljs-type">CirceEntities</span>, <span class="hljs-type">Endpoints</span>, <span class="hljs-type">OptionalResponses</span>}
+
+<span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">PublicEndpoints</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Endpoints</span> <span class="hljs-keyword">with</span> <span class="hljs-title">CirceEntities</span> <span class="hljs-keyword">with</span> <span class="hljs-title">OptionalResponses</span> </span>{
+
+  <span class="hljs-comment">/** Common path prefix for endpoints: “/meters” */</span>
+  <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> metersPath = path / <span class="hljs-string">"meters"</span>
+  <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> meterId = segment[<span class="hljs-type">UUID</span>](<span class="hljs-string">"id"</span>)
+
+  <span class="hljs-comment">/** Lists all the registered meters */</span>
+  <span class="hljs-keyword">val</span> listMeters: <span class="hljs-type">Endpoint</span>[<span class="hljs-type">Unit</span>, <span class="hljs-type">List</span>[<span class="hljs-type">Meter</span>]] =
+    endpoint(
+      get(metersPath),
+      jsonResponse[<span class="hljs-type">List</span>[<span class="hljs-type">Meter</span>]](documentation = <span class="hljs-string">"All the meters"</span>)
+    )
+
+  <span class="hljs-comment">/** Find a meter by id */</span>
+  <span class="hljs-keyword">val</span> getMeter: <span class="hljs-type">Endpoint</span>[<span class="hljs-type">UUID</span>, <span class="hljs-type">Option</span>[<span class="hljs-type">Meter</span>]] =
+    endpoint(
+      get(metersPath / meterId),
+      option(
+        jsonResponse[<span class="hljs-type">Meter</span>](documentation = <span class="hljs-string">"The meter identified by 'id'"</span>),
+        notFoundDocumentation = <span class="hljs-string">"Meter not found"</span>
+      )
+    )
+
+  <span class="hljs-comment">/** Registers a new meter */</span>
+  <span class="hljs-keyword">val</span> createMeter<span class="hljs-comment">/*: Endpoint[CreateMeter, Meter]*/</span> =
+    endpoint(
+      post(metersPath, jsonRequest[<span class="hljs-type">CreateMeter</span>](documentation = <span class="hljs-type">Some</span>(<span class="hljs-string">"The meter to create"</span>))),
+      jsonResponse[<span class="hljs-type">Meter</span>](documentation = <span class="hljs-string">"The created meter"</span>)
+    )
+
+  <span class="hljs-comment">/** Add a record to an existing meter */</span>
+  <span class="hljs-keyword">val</span> addRecord<span class="hljs-comment">/*: Endpoint[(UUID, AddRecord), Meter]*/</span> =
+    endpoint(
+      post(metersPath / meterId / <span class="hljs-string">"records"</span>, jsonRequest[<span class="hljs-type">AddRecord</span>](documentation = <span class="hljs-type">Some</span>(<span class="hljs-string">"The record to add"</span>))),
+      jsonResponse[<span class="hljs-type">Meter</span>](documentation = <span class="hljs-string">"The updated meter"</span>)
+    )
+
+  <span class="hljs-keyword">implicit</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">uuidSegment</span></span>: <span class="hljs-type">Segment</span>[<span class="hljs-type">UUID</span>]
+
+}</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/public-endpoints/src/main/scala/cqrs/publicserver/documented/PublicEndpoints.scala#L18-L65" class="a_sourcelink">PublicEndpoints.scala</a></div></div>
+<p>A first difference with the previous definition of <code class="hljs">PublicEndpoints</code> is that now we
+import our algebra interfaces from the
+<a href="api/0.3.0/index.html#endpoints.documented.algebra.package">endpoints.documented.algebra</a> package instead
+of <code class="hljs">endpoints.algebra</code>. Though the name of the package is different, the names of the traits
+are the same, and their methods are very similar but sometimes take additional parameters. Let’s
+detail them:</p>
+<ul>
+<li>Responses now have a human readable documentation. For instance, the documentation for the
+<code class="hljs">listMeters</code> endpoint response is “All the meters”,</li>
+</ul>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> listMeters: <span class="hljs-type">Endpoint</span>[<span class="hljs-type">Unit</span>, <span class="hljs-type">List</span>[<span class="hljs-type">Meter</span>]] =
+  endpoint(
+    get(metersPath),
+    jsonResponse[<span class="hljs-type">List</span>[<span class="hljs-type">Meter</span>]](documentation = <span class="hljs-string">"All the meters"</span>)
+  )</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/public-endpoints/src/main/scala/cqrs/publicserver/documented/PublicEndpoints.scala#L30-L34" class="a_sourcelink">PublicEndpoints.scala</a></div></div>
+<ul>
+<li>Path parameters have an associated identifier. This one is used as a placeholder in the
+OpenAPI file. For instance, the identifier of the meter id, in the <code class="hljs">getMeter</code> endpoint,
+is “id”. Consequently, the OpenAPI file definition shows the following path template
+for this endpoint: <code class="hljs">/meters/{id}</code>.</li>
+</ul>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> meterId = segment[<span class="hljs-type">UUID</span>](<span class="hljs-string">"id"</span>)
+<span class="hljs-keyword">val</span> getMeter: <span class="hljs-type">Endpoint</span>[<span class="hljs-type">UUID</span>, <span class="hljs-type">Option</span>[<span class="hljs-type">Meter</span>]] =
+  endpoint(
+    get(metersPath / meterId),
+    option(
+      jsonResponse[<span class="hljs-type">Meter</span>](documentation = <span class="hljs-string">"The meter identified by 'id'"</span>),
+      notFoundDocumentation = <span class="hljs-string">"Meter not found"</span>
+    )
+  )</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/public-endpoints/src/main/scala/cqrs/publicserver/documented/PublicEndpoints.scala#L39-L46" class="a_sourcelink">PublicEndpoints.scala</a></div></div>
+<p>The <code class="hljs">endpoints.documented.algebra</code> package contains algebra interface definitions that have
+the same name and same methods as those that are in the <code class="hljs">endpoints.algebra</code> package, but their
+methods sometimes take additional parameters carrying documentation information. Thus, if you
+want to turn a service description into a <em>documented</em> service description, all you have to do
+is to change one import and supply the missing parameters here and there.</p>
+<h3 id="deriving-an-openapi-file-definition-from-a-documented-service-description" class="a_section" data-magellan-target="deriving-an-openapi-file-definition-from-a-documented-service-description">Deriving an OpenAPI file definition from a documented service description<a class="a_hlink" href="#deriving-an-openapi-file-definition-from-a-documented-service-description"></a></h3>
+<p>To derive an OpenAPI file definition from our endpoint descriptions we use
+the interpreters defined in the
+<a href="api/0.3.0/index.html#endpoints.documented.openapi.package">endpoints.documented.openapi</a> package:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.documented.openapi
+<span class="hljs-keyword">import</span> endpoints.documented.openapi.{<span class="hljs-type">Info</span>, <span class="hljs-type">OpenApi</span>}
+
+<span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">PublicEndpointsDocumentation</span></span>
+  <span class="hljs-keyword">extends</span> <span class="hljs-type">PublicEndpoints</span>
+    <span class="hljs-keyword">with</span> openapi.<span class="hljs-type">Endpoints</span>
+    <span class="hljs-keyword">with</span> openapi.<span class="hljs-type">CirceEntities</span>
+    <span class="hljs-keyword">with</span> openapi.<span class="hljs-type">OptionalResponses</span> {
+
+  <span class="hljs-keyword">val</span> documentation: <span class="hljs-type">OpenApi</span> =
+    openApi(<span class="hljs-type">Info</span>(title = <span class="hljs-string">"API to manipulate meters"</span>, version = <span class="hljs-string">"1.0.0"</span>))(
+      listMeters, getMeter, createMeter, addRecord
+    )
+
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">uuidSegment</span></span>: <span class="hljs-type">Unit</span> = ()
+
+}</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/public-server/src/main/scala/cqrs/publicserver/documented/PublicEndpointsDocumentation.scala#L4-L20" class="a_sourcelink">PublicEndpointsDocumentation.scala</a></div></div>
+<p>Here, the
+<a href="api/0.3.0/index.html#endpoints.documented.openapi.Endpoints@openApi(info:endpoints.documented.openapi.Info)(endpoints:Endpoints.this.DocumentedEndpoint*):endpoints.documented.openapi.OpenApi">openApi</a>
+method generates an abstract <a href="api/0.3.0/index.html#endpoints.documented.openapi.OpenApi">OpenApi</a> model, which
+can eventually be serialized in JSON.</p>
+<h3 id="deriving-clients-and-servers-from-a-documented-service-description" class="a_section" data-magellan-target="deriving-clients-and-servers-from-a-documented-service-description">Deriving clients and servers from a documented service description<a class="a_hlink" href="#deriving-clients-and-servers-from-a-documented-service-description"></a></h3>
+<p>Since our documented endpoints are not defined by the algebra interfaces provided in the
+<code class="hljs">endpoints.algebra</code> package, we can not directly apply the interpreters introduced in the previous
+sections. We have to use <em>delegation</em> to apply them.</p>
+<p>For instance, here is the beginning of the <code class="hljs">PublicServer</code> class definition, which applies
+interpreters of the <code class="hljs">endpoints.play.server</code> package to the <code class="hljs">documented.PublicEndpoints</code>:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.documented.delegate
+<span class="hljs-keyword">import</span> endpoints.play
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PublicServer</span>(<span class="hljs-params">
+  commandsBaseUrl: <span class="hljs-type">String</span>,
+  queriesBaseUrl: <span class="hljs-type">String</span>,
+  wsClient: <span class="hljs-type">WSClient</span></span>)(<span class="hljs-params">implicit
+  ec: <span class="hljs-type">ExecutionContext</span>
+</span>) <span class="hljs-keyword">extends</span> <span class="hljs-title">PublicEndpoints</span></span>
+  <span class="hljs-keyword">with</span> delegate.<span class="hljs-type">Endpoints</span>
+  <span class="hljs-keyword">with</span> delegate.<span class="hljs-type">CirceEntities</span>
+  <span class="hljs-keyword">with</span> delegate.<span class="hljs-type">OptionalResponses</span> {
+
+  <span class="hljs-keyword">lazy</span> <span class="hljs-keyword">val</span> delegate =
+    <span class="hljs-keyword">new</span> play.server.<span class="hljs-type">Endpoints</span>
+      <span class="hljs-keyword">with</span> play.server.<span class="hljs-type">CirceEntities</span>
+      <span class="hljs-keyword">with</span> play.server.<span class="hljs-type">OptionalResponses</span>
+</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/public-server/src/main/scala/cqrs/publicserver/documented/PublicServer.scala#L19-L44" class="a_sourcelink">PublicServer.scala</a></div></div>
+<p>Here is the definition of the client interpreter:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">package</span> cqrs.webclient.documented
+
+<span class="hljs-keyword">import</span> java.util.<span class="hljs-type">UUID</span>
+
+<span class="hljs-keyword">import</span> endpoints.documented.delegate
+<span class="hljs-keyword">import</span> endpoints.xhr
+
+<span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">PublicEndpoints</span></span>
+  <span class="hljs-keyword">extends</span> cqrs.publicserver.documented.<span class="hljs-type">PublicEndpoints</span>
+    <span class="hljs-keyword">with</span> delegate.<span class="hljs-type">Endpoints</span>
+    <span class="hljs-keyword">with</span> delegate.<span class="hljs-type">CirceEntities</span>
+    <span class="hljs-keyword">with</span> delegate.<span class="hljs-type">OptionalResponses</span>{
+
+  <span class="hljs-keyword">lazy</span> <span class="hljs-keyword">val</span> delegate =
+    <span class="hljs-keyword">new</span> xhr.faithful.<span class="hljs-type">Endpoints</span>
+      <span class="hljs-keyword">with</span> xhr.<span class="hljs-type">CirceEntities</span>
+      <span class="hljs-keyword">with</span> xhr.<span class="hljs-type">OptionalResponses</span>
+
+  <span class="hljs-keyword">implicit</span> <span class="hljs-keyword">lazy</span> <span class="hljs-keyword">val</span> uuidSegment: <span class="hljs-type">Segment</span>[<span class="hljs-type">UUID</span>] =
+    (uuid: <span class="hljs-type">UUID</span>) =&gt; stringSegment.encode(uuid.toString)
+
+}</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/examples/cqrs/web-client/src/main/scala/cqrs/webclient/documented/PublicEndpoints.scala" class="a_sourcelink">PublicEndpoints.scala</a></div></div>
+<h3 id="summary-5" class="a_section" data-magellan-target="summary-5">Summary<a class="a_hlink" href="#summary-5"></a></h3>
+<p>To generate an OpenAPI definition from your service description this one
+must be written using a different set of algebra interfaces, which live
+in the <code class="hljs">endpoints.documented.algebra</code> package.</p>
+<p>You can then derive an OpenAPI definition from your documented endpoints
+by applying the interpreters defined in the <code class="hljs">endpoints.documented.openapi</code>
+package.</p>
+<p>None of the “documented” and “non-documented” algebra interfaces is a
+subtype of each other, but “documented” interpreters can delegate to
+“non-documented” ones.</p>
 <h2 id="hateos" class="a_section" data-magellan-target="hateos">HATEOS<a class="a_hlink" href="#hateos"></a></h2>
 <p>TODO.</p>
 
@@ -902,6 +1095,43 @@ be introduced.</p>
   <li>
     
        <a href="#summary-4">Summary</a> 
+    
+    
+  </li>
+  </ul>
+    
+  </li>
+  
+  <li>
+    
+       <a href="#deriving-an-openapi-definition-file-from-a-service-description">Deriving an OpenAPI definition file from a service description</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#documented-service-description">Documented service description</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#deriving-an-openapi-file-definition-from-a-documented-service-description">Deriving an OpenAPI file definition from a documented service description</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#deriving-clients-and-servers-from-a-documented-service-description">Deriving clients and servers from a documented service description</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#summary-5">Summary</a> 
     
     
   </li>
