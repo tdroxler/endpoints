@@ -125,7 +125,7 @@ authentication mechanism, specific to their application.
 not implement the abstract methods.</p><div class="fullcomment"><div class="comment cmt"><p>Partial interpreter for <a href="JsonEntities.html" class="extype" name="endpoints.algebra.JsonEntities">JsonEntities</a>: only fixes the carrier types, but does
 not implement the abstract methods.</p><p>Uses <span class="extype" name="CirceCodec">CirceCodec</span> for both HTTP responses and requests.</p><p>It means that, from a client
 point of view, you will need a complete code even if you only want to build a request
-entity (despite that a <a href="https://travisbrown.github.io/circe/api/index.html#io.circe.Encoder" class="extype" target="_top">io.circe.Encoder</a> would have sufficed).</p><p>The idea is to share codecs between client-side and server-side code,
+entity (despite that a <a href="https://circe.github.io/circe/api/index.html#io.circe.Encoder" class="extype" target="_top">io.circe.Encoder</a> would have sufficed).</p><p>The idea is to share codecs between client-side and server-side code,
 thus guaranteeing consistency between both sides.</p><p>Typical usage:</p><pre><span class="cmt">/* shared MyDto.scala */</span>
 
 <span class="kw">case</span> <span class="kw">class</span> MyDto(i: <span class="std">Int</span>, s: <span class="std">String</span>)
@@ -162,7 +162,7 @@ MyEndpointsClient.myEndpoint().map(myDto <span class="kw">=&gt;</span> println(m
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="Decoder.html"><span class="name">Decoder</span></a><span class="tparams">[<span name="From">-From</span>, <span name="To">+To</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+        <a href="Decoder.html"><span class="name">Decoder</span></a><span class="tparams">[<span name="From">-From</span>, <span name="To">+To</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#endpoints.algebra.package@Decoder[-From,+To]extendsAnyRef" title="Permalink" target="_top">
@@ -179,7 +179,7 @@ MyEndpointsClient.myEndpoint().map(myDto <span class="kw">=&gt;</span> println(m
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="Encoder.html"><span class="name">Encoder</span></a><span class="tparams">[<span name="From">-From</span>, <span name="To">+To</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+        <a href="Encoder.html"><span class="name">Encoder</span></a><span class="tparams">[<span name="From">-From</span>, <span name="To">+To</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#endpoints.algebra.package@Encoder[-From,+To]extendsAnyRef" title="Permalink" target="_top">
@@ -266,7 +266,7 @@ interpreters. However, it can be useful for transitioning legacy code.</p><p>Exa
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="Methods.html"><span class="name">Methods</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+        <a href="Methods.html"><span class="name">Methods</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#endpoints.algebra.package@MethodsextendsAnyRef" title="Permalink" target="_top">
@@ -283,7 +283,7 @@ interpreters. However, it can be useful for transitioning legacy code.</p><p>Exa
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="MuxRequest.html"><span class="name">MuxRequest</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+        <a href="MuxRequest.html"><span class="name">MuxRequest</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#endpoints.algebra.package@MuxRequestextendsAnyRef" title="Permalink" target="_top">
@@ -338,7 +338,7 @@ interpreters. However, it can be useful for transitioning legacy code.</p><p>Exa
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="Responses.html"><span class="name">Responses</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+        <a href="Responses.html"><span class="name">Responses</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#endpoints.algebra.package@ResponsesextendsAnyRef" title="Permalink" target="_top">
@@ -355,7 +355,7 @@ interpreters. However, it can be useful for transitioning legacy code.</p><p>Exa
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="Urls.html"><span class="name">Urls</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.8/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+        <a href="Urls.html"><span class="name">Urls</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.11.11/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#endpoints.algebra.package@UrlsextendsAnyRef" title="Permalink" target="_top">

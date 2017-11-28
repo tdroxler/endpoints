@@ -7,7 +7,7 @@
     <title>Comparison with similar tools</title>
     <link rel="stylesheet" href="theme/css/foundation.min.css">
     <link rel="stylesheet" href="theme/css/app.css">
-     <link rel="stylesheet" href="theme/highlight.js/styles/github-gist.css"> 
+    
     
   </head>
   <body>
@@ -42,26 +42,54 @@
               <main class="columns large-order-2 sections" id="_sections">
                 
                 <h1 id="comparison-with-similar-tools" class="a_section" data-magellan-target="comparison-with-similar-tools">Comparison with similar tools<a class="a_hlink" href="#comparison-with-similar-tools"></a></h1>
-<h2 id="autowire" class="a_section" data-magellan-target="autowire">Autowire<a class="a_hlink" href="#autowire"></a></h2>
-<p>Autowire's purpose is to handle client/server remote procedure calls.
-The purpose of the endpoints library is to work with HTTP endpoints, which
-includes (but is not limited to) client/server remote procedure calls.</p>
-<p>If you just want to perform RPC and that the underlying protocol does
-not matter, you should probably just pick Autowire.</p>
-<p>If you want to perform RPC but at the same time define the structure of the
-unerlying HTTP requests and responses, if you want to serve media resources,
-or if you experience troubles with Autowire’s macros, you should give a try
-to the endpoints library.</p>
-<h2 id="swagger" class="a_section" data-magellan-target="swagger">Swagger<a class="a_hlink" href="#swagger"></a></h2>
-<p>Swagger provides a set of tools producing documentation resources from an API specification.
-The drawback of Swagger is that you have to maintain both the implementation and the
-specification and to keep them consistent (even when using the available “integrations”, which
-are only able to automate a small part of the specification generation).</p>
-<p><code class="hljs">endpoints</code> takes an opposite approach: we generate an OpenAPI definition
-file from a description of endpoints written in Scala. The benefit is that the
-documentation is always consistent with the server and client implementations
-(as long as they are all derived from the same description of endpoints).</p>
-<h2 id="thrift-finch-rho-lagom-remotely-fintrospect-scala-json-rpc" class="a_section" data-magellan-target="thrift-finch-rho-lagom-remotely-fintrospect-scala-json-rpc">Thrift? Finch? Rho? Lagom? Remotely? Fintrospect? Scala-json-rpc?<a class="a_hlink" href="#thrift-finch-rho-lagom-remotely-fintrospect-scala-json-rpc"></a></h2>
+<h2 id="autowire--remotely--lagom" class="a_section" data-magellan-target="autowire--remotely--lagom">Autowire / Remotely / Lagom<a class="a_hlink" href="#autowire--remotely--lagom"></a></h2>
+<p><a href="https://github.com/lihaoyi/autowire">Autowire</a> and
+<a href="http://verizon.github.io/remotely">Remotely</a> are Scala libraries automating
+remote proceduce calls between a server and a client.
+<a href="https://www.lagomframework.com/">Lagom</a> is
+a framework for implementing microservices. One difference with <em>endpoints</em> is
+that these tools are based on
+macros generating the client according to the interface (defined as a Scala trait)
+of the server. These macros make these solutions harder to reason about (since
+they synthesize code that is not seen by users) and their implementation might not
+support all edge cases (several issues have been reported about macro expansion:
+<a href="https://goo.gl/Spco7u">https://goo.gl/Spco7u</a>, <a href="https://goo.gl/F2E5Ev">https://goo.gl/F2E5Ev</a>
+and <a href="https://goo.gl/LCmVr8">https://goo.gl/LCmVr8</a>).</p>
+<p>A more fundamental difference is that in Autowire and Remotely, the underlying HTTP communication
+is viewed as an implementation detail, and all remote calls are multiplexed through
+a single HTTP endpoint. In contrast, the goal of <em>endpoints</em> is to embrace the features
+of the HTTP protocol (content negotiation, authorization, semantic verbs and status codes,
+etc.), so, in general, one HTTP endpoint is used for one remote call (though the library also
+supports multiplexing in case users don’t care about the underlying HTTP protocol).</p>
+<p>Last, Autowire, Remotely and Lagom can not generate documentation of the commmunication protocol.</p>
+<h2 id="swagger--thrift--protobuf" class="a_section" data-magellan-target="swagger--thrift--protobuf">Swagger / Thrift / Protobuf<a class="a_hlink" href="#swagger--thrift--protobuf"></a></h2>
+<p>Solutions such as Swagger, Thrift and Google Protocol Buffers generate
+the client and server code based on a protocol definition.
+We believe that generated code is hard to reason about and to integrate and keep
+in sync with code written by developers.
+Also, the protocol is defined in a dedicated language (JSON dialect or custom language) which
+is not extensible and not as convenient as using a fully-blown programming language like Scala.</p>
+<p>You can find a more elaborated article about the limitations of approaches based on
+code generation in
+<a href="http://julien.richard-foy.fr/blog/2016/01/24/my-problem-with-code-generation/">this blog post</a>.</p>
+<h2 id="rho--fintrospect" class="a_section" data-magellan-target="rho--fintrospect">Rho / Fintrospect<a class="a_hlink" href="#rho--fintrospect"></a></h2>
+<p><a href="http://fintrospect.io/">Fintrospect</a> and
+<a href="https://github.com/http4s/rho">Rho</a> are the libraries closest to <em>endpoints</em>.
+Their features and usage are similar: users describe their communication protocol in plain
+Scala and the library generates client (Fintrospect only), server and documentation.
+The key difference is that the communication protocol is described by a sealed AST,
+which is not extensible: users can not extend descriptions with application-specific concerns
+and interpreters can not be partial.</p>
+<h2 id="servant" class="a_section" data-magellan-target="servant">Servant<a class="a_hlink" href="#servant"></a></h2>
+<p><a href="https://haskell-servant.github.io/">Servant</a> is a Haskell library that uses generic
+programming to
+derive client, server and documentation from endpoint descriptions. The descriptions and
+interpreters are extensible. The difference with <em>endpoints</em> is that in
+Servant descriptions are <strong>types</strong>, whereas in <em>endpoints</em> they are <strong>values</strong>.</p>
+<p>Using types as descriptions has some benefits: they can directly be used to type instances of
+data (in contrast, in <em>endpoints</em> descriptions of data types have to mirror a
+corresponding type definition). On the other hand, we believe that abstracting and combining
+types using type-level computations is, in general, less convenient for users.</p>
 
               </main>
               
@@ -122,7 +150,7 @@ documentation is always consistent with the server and client implementations
   
   <li >
     
-      <a href="talks.html">Talks</a>
+      <a href="talks.html">Talks and Publications</a>
     
     
   </li>
@@ -154,21 +182,28 @@ documentation is always consistent with the server and client implementations
       <ul class="vertical menu">  
   <li>
     
-       <a href="#autowire">Autowire</a> 
+       <a href="#autowire--remotely--lagom">Autowire / Remotely / Lagom</a> 
     
     
   </li>
   
   <li>
     
-       <a href="#swagger">Swagger</a> 
+       <a href="#swagger--thrift--protobuf">Swagger / Thrift / Protobuf</a> 
     
     
   </li>
   
   <li>
     
-       <a href="#thrift-finch-rho-lagom-remotely-fintrospect-scala-json-rpc">Thrift? Finch? Rho? Lagom? Remotely? Fintrospect? Scala-json-rpc?</a> 
+       <a href="#rho--fintrospect">Rho / Fintrospect</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#servant">Servant</a> 
     
     
   </li>

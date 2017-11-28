@@ -359,7 +359,7 @@ interpreters. Our client interpreter defines the <code class="hljs">Endpoint</co
   * Communication failures and protocol failures are represented by a `Future.failed`.
   */</span>
 <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Endpoint</span>[<span class="hljs-type">A</span>, <span class="hljs-type">B</span>] </span>= <span class="hljs-type">A</span> =&gt; <span class="hljs-type">Future</span>[<span class="hljs-type">B</span>]</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/play-client/src/main/scala/endpoints/play/client/Endpoints.scala#L64-L69" class="a_sourcelink">Endpoints.scala</a></div></div>
+</div></div>
 <p>Let’s read again the code that invokes the <code class="hljs">events</code> endpoint:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> eventuallyUpdatedState: <span class="hljs-type">Future</span>[<span class="hljs-type">State</span>] =
@@ -537,7 +537,7 @@ to each <code class="hljs">QueryReq</code> (e.g. <code class="hljs">MaybeResourc
 <span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">MuxHandlerAsync</span>[<span class="hljs-type">Req</span> &lt;: <span class="hljs-type">MuxRequest</span>, <span class="hljs-type">Resp</span>] </span>{
   <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">apply</span></span>[<span class="hljs-type">R</span> &lt;: <span class="hljs-type">Resp</span>](req: <span class="hljs-type">Req</span> { <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Response</span> </span>= <span class="hljs-type">R</span> }): <span class="hljs-type">Future</span>[<span class="hljs-type">R</span>]
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/play-server/src/main/scala/endpoints/play/server/Endpoints.scala#L290-L299" class="a_sourcelink">Endpoints.scala</a></div></div>
+</div></div>
 <p>This complex type signature is necessary to check that our implementation effectively
 returns a value that corresponds to the <code class="hljs">Response</code> type member of the passed request.</p>
 <h3 id="summary-3" class="a_section" data-magellan-target="summary-3">Summary<a class="a_hlink" href="#summary-3"></a></h3>
@@ -639,7 +639,7 @@ server interpreter based on Play, the <code class="hljs">Segment</code> type is 
   <span class="hljs-comment">/** @return URL encoded path segment */</span>
   <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">encode</span></span>(a: <span class="hljs-type">A</span>): <span class="hljs-type">String</span>
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/play-server/src/main/scala/endpoints/play/server/Urls.scala#L53-L59" class="a_sourcelink">Urls.scala</a></div></div>
+</div></div>
 <p>The <code class="hljs">decode</code> method is used when routing an incoming request, while the <code class="hljs">encode</code> method is
 used for “reverse routing” (ie to generate (valid) URLs of endpoints).</p>
 <p>The implementation of the <code class="hljs">uuidSegment</code> member is straightforward:</p>
@@ -661,7 +661,7 @@ is defined as follows:</p>
   <span class="hljs-comment">/** @return An URL encoded path segment (e.g. "foo%2Fbar") */</span>
   <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">encode</span></span>(a: <span class="hljs-type">A</span>): <span class="hljs-type">String</span>
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.3.0/xhr-client/src/main/scala/endpoints/xhr/Urls.scala#L14-L18" class="a_sourcelink">Urls.scala</a></div></div>
+</div></div>
 <p>Thus, we define the <code class="hljs">uuidSegment</code> like so:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">implicit</span> <span class="hljs-keyword">lazy</span> <span class="hljs-keyword">val</span> uuidSegment: <span class="hljs-type">Segment</span>[<span class="hljs-type">UUID</span>] =
@@ -697,7 +697,6 @@ are provided by the <code class="hljs">endpoints-openapi</code> artifact:</p>
   public-server -.-&gt; public-endpoints
   public-endpoints -.-&gt; openapi[&quot;endpoints-openapi-circe&quot;]
   public-server -.-&gt; interpreter[&quot;endpoints-play-server-circe&quot;]
-  style algebra fill:#eee;
   style interpreter fill:#eee;
   style interpreter2 fill:#eee;
   style openapi fill:#eee;
@@ -936,7 +935,7 @@ subtype of each other, but “documented” interpreters can delegate to
   
   <li >
     
-      <a href="talks.html">Talks</a>
+      <a href="talks.html">Talks and Publications</a>
     
     
   </li>
