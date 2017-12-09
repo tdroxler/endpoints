@@ -86,7 +86,12 @@ for your endpoint descriptions, add the following dependency to the <code class=
 sub-project:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-openapi"</span> % <span class="hljs-string">"0.4.0"</span>
+  <span class="hljs-comment">// core API</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-openapi"</span> % <span class="hljs-string">"0.4.0"</span>,
+  <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-openapi-circe"</span> % <span class="hljs-string">"0.4.0"</span>,
+  <span class="hljs-comment">// (optional) generic derivation of JSON schemas</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-openapi-json-schema-generic"</span> % <span class="hljs-string">"0.4.0"</span>
 )
 </code></pre>
 </div></div>
@@ -125,6 +130,16 @@ other dependencies to your other sbt sub-projects.</p>
   <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-scalaj-client"</span> % <span class="hljs-string">"0.4.0"</span>,
   <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
   <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-scalaj-client-circe"</span> % <span class="hljs-string">"0.4.0"</span>
+)
+</code></pre>
+</div></div>
+<h4 id="client-backed-by-akka-http-jvm-only" class="a_section" data-magellan-target="client-backed-by-akka-http-jvm-only">Client backed by akka-http (JVM only)<a class="a_hlink" href="#client-backed-by-akka-http-jvm-only"></a></h4>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
+  <span class="hljs-comment">// client based on akka-http</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-client"</span> % <span class="hljs-string">"0.4.0"</span>,
+  <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-client-circe"</span> % <span class="hljs-string">"0.4.0"</span>
 )
 </code></pre>
 </div></div>
@@ -293,6 +308,13 @@ other dependencies to your other sbt sub-projects.</p>
   <li>
     
        <a href="#client-backed-by-scalaj-http">Client backed by scalaj-http</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#client-backed-by-akka-http-jvm-only">Client backed by akka-http (JVM only)</a> 
     
     
   </li>
