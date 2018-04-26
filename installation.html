@@ -19,7 +19,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.4.0</p>
+                  <p>endpoints 0.6.0-SNAPSHOT</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -74,9 +74,9 @@ name <code class="hljs">org.julienrf</code>.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
   <span class="hljs-comment">// core API</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra"</span> % <span class="hljs-string">"0.4.0"</span>,
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra"</span> % <span class="hljs-string">"0.6.0-SNAPSHOT"</span>,
   <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra-circe"</span> % <span class="hljs-string">"0.4.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra-circe"</span> % <span class="hljs-string">"0.6.0-SNAPSHOT"</span>
 )
 </code></pre>
 </div></div>
@@ -87,15 +87,15 @@ sub-project:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
   <span class="hljs-comment">// core API</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-openapi"</span> % <span class="hljs-string">"0.4.0"</span>,
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-openapi"</span> % <span class="hljs-string">"0.6.0-SNAPSHOT"</span>,
   <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-openapi-circe"</span> % <span class="hljs-string">"0.4.0"</span>,
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-openapi-circe"</span> % <span class="hljs-string">"0.6.0-SNAPSHOT"</span>,
   <span class="hljs-comment">// (optional) generic derivation of JSON schemas</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-openapi-json-schema-generic"</span> % <span class="hljs-string">"0.4.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-openapi-json-schema-generic"</span> % <span class="hljs-string">"0.6.0-SNAPSHOT"</span>
 )
 </code></pre>
 </div></div>
-<p>And then use the traits that live in the <a href="api/0.4.0/index.html#endpoints.documented.package">endpoints.documented</a>
+<p>And then use the traits that live in the <a href="api/0.6.0-SNAPSHOT/index.html#endpoints.documented.package">endpoints.documented</a>
 package.</p>
 <p>Note that this dependency comes with its own interpreters, so you don’t need to add
 other dependencies to your other sbt sub-projects.</p>
@@ -104,11 +104,11 @@ other dependencies to your other sbt sub-projects.</p>
 <p>Add the following dependencies to your <code class="hljs">client</code> sub-project:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">  <span class="hljs-comment">// client based on JavaScript’s XMLHttpRequest</span>
-  <span class="hljs-string">"org.julienrf"</span> %%% <span class="hljs-string">"endpoints-xhr-client"</span> % <span class="hljs-string">"0.4.0"</span>,
+  <span class="hljs-string">"org.julienrf"</span> %%% <span class="hljs-string">"endpoints-xhr-client"</span> % <span class="hljs-string">"0.6.0-SNAPSHOT"</span>,
   <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
-  <span class="hljs-string">"org.julienrf"</span> %%% <span class="hljs-string">"endpoints-xhr-client-circe"</span> % <span class="hljs-string">"0.4.0"</span>,
+  <span class="hljs-string">"org.julienrf"</span> %%% <span class="hljs-string">"endpoints-xhr-client-circe"</span> % <span class="hljs-string">"0.6.0-SNAPSHOT"</span>,
   <span class="hljs-comment">// (optional) uses faithful’s `Future`</span>
-  <span class="hljs-string">"org.julienrf"</span> %%% <span class="hljs-string">"endpoints-xhr-faithful"</span> % <span class="hljs-string">"0.4.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %%% <span class="hljs-string">"endpoints-xhr-client-faithful"</span> % <span class="hljs-string">"0.6.0-SNAPSHOT"</span>
 )
 </code></pre>
 </div></div>
@@ -117,9 +117,9 @@ other dependencies to your other sbt sub-projects.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
   <span class="hljs-comment">// client based on Play framework</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-client"</span> % <span class="hljs-string">"0.4.0"</span>,
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-client"</span> % <span class="hljs-string">"0.6.0-SNAPSHOT"</span>,
   <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-client-circe"</span> % <span class="hljs-string">"0.4.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-client-circe"</span> % <span class="hljs-string">"0.6.0-SNAPSHOT"</span>
 )
 </code></pre>
 </div></div>
@@ -127,9 +127,9 @@ other dependencies to your other sbt sub-projects.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
   <span class="hljs-comment">// client based on scalaj-http</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-scalaj-client"</span> % <span class="hljs-string">"0.4.0"</span>,
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-scalaj-client"</span> % <span class="hljs-string">"0.6.0-SNAPSHOT"</span>,
   <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-scalaj-client-circe"</span> % <span class="hljs-string">"0.4.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-scalaj-client-circe"</span> % <span class="hljs-string">"0.6.0-SNAPSHOT"</span>
 )
 </code></pre>
 </div></div>
@@ -137,9 +137,9 @@ other dependencies to your other sbt sub-projects.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
   <span class="hljs-comment">// client based on akka-http</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-client"</span> % <span class="hljs-string">"0.4.0"</span>,
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-client"</span> % <span class="hljs-string">"0.6.0-SNAPSHOT"</span>,
   <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-client-circe"</span> % <span class="hljs-string">"0.4.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-client-circe"</span> % <span class="hljs-string">"0.6.0-SNAPSHOT"</span>
 )
 </code></pre>
 </div></div>
@@ -149,9 +149,9 @@ other dependencies to your other sbt sub-projects.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
   <span class="hljs-comment">// server based on play framework</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-server"</span> % <span class="hljs-string">"0.4.0"</span>,
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-server"</span> % <span class="hljs-string">"0.6.0-SNAPSHOT"</span>,
   <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-server-circe"</span> % <span class="hljs-string">"0.4.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-server-circe"</span> % <span class="hljs-string">"0.6.0-SNAPSHOT"</span>
 )
 </code></pre>
 </div></div>
@@ -160,9 +160,9 @@ other dependencies to your other sbt sub-projects.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
   <span class="hljs-comment">// server based on akka-http</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-server"</span> % <span class="hljs-string">"0.4.0"</span>,
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-server"</span> % <span class="hljs-string">"0.6.0-SNAPSHOT"</span>,
   <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-server-circe"</span> % <span class="hljs-string">"0.4.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-server-circe"</span> % <span class="hljs-string">"0.6.0-SNAPSHOT"</span>
 )
 </code></pre>
 </div></div>
@@ -185,6 +185,13 @@ other dependencies to your other sbt sub-projects.</p>
   <li >
     
       <a href="overview.html">Overview</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="use-cases.html">Use Cases</a>
     
     
   </li>

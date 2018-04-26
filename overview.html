@@ -19,7 +19,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.4.0</p>
+                  <p>endpoints 0.6.0-SNAPSHOT</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -60,7 +60,8 @@ The <code class="hljs">client</code> sub-project <em>uses</em> the protocol to c
 <p>Let’s define a first artifact, cross-compiled for Scala.js, and containing a description of the
 endpoints of a web service.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.algebra.{<span class="hljs-type">Endpoints</span>, <span class="hljs-type">CirceEntities</span>}
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.algebra.<span class="hljs-type">Endpoints</span>
+<span class="hljs-keyword">import</span> endpoints.algebra.circe.<span class="hljs-type">JsonEntitiesFromCodec</span>
 <span class="hljs-keyword">import</span> io.circe.generic.<span class="hljs-type">JsonCodec</span>
 
 <span class="hljs-comment">/**
@@ -69,7 +70,7 @@ endpoints of a web service.</p>
   * and one for incrementing it.
   * It uses circe.io for JSON marshalling.
   */</span>
-<span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">CounterEndpoints</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Endpoints</span> <span class="hljs-keyword">with</span> <span class="hljs-title">CirceEntities</span> </span>{
+<span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">CounterEndpoints</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Endpoints</span> <span class="hljs-keyword">with</span> <span class="hljs-title">JsonEntitiesFromCodec</span> </span>{
 
   <span class="hljs-comment">/**
     * Get the counter current value.
@@ -93,7 +94,7 @@ endpoints of a web service.</p>
 
 <span class="hljs-meta">@JsonCodec</span>
 <span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Increment</span>(<span class="hljs-params">step: <span class="hljs-type">Int</span></span>)</span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.4.0/examples/overview/endpoints/src/main/scala/overview/CounterEndpoints.scala#L4-L36" class="a_sourcelink">CounterEndpoints.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.6.0-SNAPSHOT/examples/overview/endpoints/src/main/scala/overview/CounterEndpoints.scala#L4-L37" class="a_sourcelink">CounterEndpoints.scala</a></div></div>
 <h2 id="javascript-scala.js-client" class="a_section" data-magellan-target="javascript-scala.js-client">JavaScript (Scala.js) client<a class="a_hlink" href="#javascript-scala.js-client"></a></h2>
 <p>The following code, located in the <code class="hljs">client</code> sub-project, defines a Scala.js
 client for the web service.</p>
@@ -108,8 +109,8 @@ client for the web service.</p>
 <span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">CounterClient</span></span>
   <span class="hljs-keyword">extends</span> <span class="hljs-type">CounterEndpoints</span>
     <span class="hljs-keyword">with</span> xhr.thenable.<span class="hljs-type">Endpoints</span>
-    <span class="hljs-keyword">with</span> xhr.<span class="hljs-type">CirceEntities</span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.4.0/examples/overview/client/src/main/scala/overview/CounterClient.scala#L4-L14" class="a_sourcelink">CounterClient.scala</a></div></div>
+    <span class="hljs-keyword">with</span> xhr.<span class="hljs-type">JsonEntitiesFromCodec</span></code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.6.0-SNAPSHOT/examples/overview/client/src/main/scala/overview/CounterClient.scala#L4-L14" class="a_sourcelink">CounterClient.scala</a></div></div>
 <p>And then, this client can be used as follows:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> scala.scalajs.js
@@ -119,7 +120,7 @@ client for the web service.</p>
   * deserializes the JSON response as a `Counter`.
   */</span>
 <span class="hljs-keyword">val</span> eventuallyCounter: js.<span class="hljs-type">Thenable</span>[<span class="hljs-type">Counter</span>] = <span class="hljs-type">CounterClient</span>.currentValue(())</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.4.0/examples/overview/client/src/main/scala/overview/Usage.scala#L6-L12" class="a_sourcelink">Usage.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.6.0-SNAPSHOT/examples/overview/client/src/main/scala/overview/Usage.scala#L6-L12" class="a_sourcelink">Usage.scala</a></div></div>
 <p>And also:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-comment">/**
@@ -127,21 +128,23 @@ client for the web service.</p>
   * on the `increment` endpoint.
   */</span>
 <span class="hljs-keyword">val</span> eventuallyDone: js.<span class="hljs-type">Thenable</span>[<span class="hljs-type">Unit</span>] = <span class="hljs-type">CounterClient</span>.increment(<span class="hljs-type">Increment</span>(<span class="hljs-number">42</span>))</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.4.0/examples/overview/client/src/main/scala/overview/Usage.scala#L16-L20" class="a_sourcelink">Usage.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.6.0-SNAPSHOT/examples/overview/client/src/main/scala/overview/Usage.scala#L16-L20" class="a_sourcelink">Usage.scala</a></div></div>
 <h2 id="service-implementation-backed-by-play-framework" class="a_section" data-magellan-target="service-implementation-backed-by-play-framework">Service implementation (backed by Play framework)<a class="a_hlink" href="#service-implementation-backed-by-play-framework"></a></h2>
 <p>The following code, located in the <code class="hljs">server</code> sub-project, defines the implementation of
 the web service.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.play.server
+<span class="hljs-keyword">import</span> endpoints.play.server.<span class="hljs-type">PlayComponents</span>
+
 <span class="hljs-keyword">import</span> scala.concurrent.stm.<span class="hljs-type">Ref</span>
 
 <span class="hljs-comment">/**
   * Defines a Play router (and reverse router) for the endpoints described in the `CounterAlg` trait.
   */</span>
-<span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">CounterServer</span></span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CounterServer</span>(<span class="hljs-params">protected val playComponents: <span class="hljs-type">PlayComponents</span></span>)</span>
   <span class="hljs-keyword">extends</span> <span class="hljs-type">CounterEndpoints</span>
     <span class="hljs-keyword">with</span> server.<span class="hljs-type">Endpoints</span>
-    <span class="hljs-keyword">with</span> server.<span class="hljs-type">CirceEntities</span> {
+    <span class="hljs-keyword">with</span> server.<span class="hljs-type">JsonEntitiesFromCodec</span> {
 
   <span class="hljs-comment">/** Simple implementation of an in-memory counter */</span>
   <span class="hljs-keyword">val</span> counter = <span class="hljs-type">Ref</span>(<span class="hljs-number">0</span>)
@@ -157,16 +160,19 @@ the web service.</p>
   )
 
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.4.0/examples/overview/server/src/main/scala/overview/CounterServer.scala#L4-L28" class="a_sourcelink">CounterServer.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.6.0-SNAPSHOT/examples/overview/server/src/main/scala/overview/CounterServer.scala#L4-L30" class="a_sourcelink">CounterServer.scala</a></div></div>
 <p>The <code class="hljs">CounterServer.routes</code> value is just a <code class="hljs">play.api.routing.Router.Routes</code>.
 To get an executable Web server we need to setup a “main” like the following:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> play.core.server.<span class="hljs-type">NettyServer</span>
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.play.server.{<span class="hljs-type">DefaultPlayComponents</span>, <span class="hljs-type">HttpServer</span>}
+<span class="hljs-keyword">import</span> play.core.server.<span class="hljs-type">ServerConfig</span>
 
 <span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">Main</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">App</span> </span>{
-  <span class="hljs-type">NettyServer</span>.fromRouter()(<span class="hljs-type">CounterServer</span>.routes)
+  <span class="hljs-keyword">val</span> config = <span class="hljs-type">ServerConfig</span>()
+  <span class="hljs-keyword">val</span> playComponents = <span class="hljs-keyword">new</span> <span class="hljs-type">DefaultPlayComponents</span>(config)
+  <span class="hljs-type">HttpServer</span>(config, playComponents, <span class="hljs-keyword">new</span> <span class="hljs-type">CounterServer</span>(playComponents).routes)
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.4.0/examples/overview/server/src/main/scala/overview/Main.scala#L4-L8" class="a_sourcelink">Main.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.6.0-SNAPSHOT/examples/overview/server/src/main/scala/overview/Main.scala#L4-L11" class="a_sourcelink">Main.scala</a></div></div>
 <h2 id="what-else" class="a_section" data-magellan-target="what-else">What else?<a class="a_hlink" href="#what-else"></a></h2>
 <p>You can also get a Scala/JVM client (which uses <code class="hljs">play-ws</code> under the hood) as follows:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
@@ -177,8 +183,8 @@ To get an executable Web server we need to setup a “main” like the following
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CounterClient</span>(<span class="hljs-params">wsClient: <span class="hljs-type">WSClient</span></span>)(<span class="hljs-params">implicit ec: <span class="hljs-type">ExecutionContext</span></span>)</span>
   <span class="hljs-keyword">extends</span> client.<span class="hljs-type">Endpoints</span>(<span class="hljs-string">"http://my-counter.com"</span>, wsClient)
     <span class="hljs-keyword">with</span> <span class="hljs-type">CounterEndpoints</span>
-    <span class="hljs-keyword">with</span> client.<span class="hljs-type">CirceEntities</span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.4.0/examples/overview/play-client/src/main/scala/overview/CounterClient.scala#L4-L11" class="a_sourcelink">CounterClient.scala</a></div></div>
+    <span class="hljs-keyword">with</span> client.<span class="hljs-type">JsonEntitiesFromCodec</span></code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.6.0-SNAPSHOT/examples/overview/play-client/src/main/scala/overview/CounterClient.scala#L4-L11" class="a_sourcelink">CounterClient.scala</a></div></div>
 <p>Thus, you can distribute a (fully working) JVM client, which is independent of your implementation.</p>
 
               </main>
@@ -199,6 +205,13 @@ To get an executable Web server we need to setup a “main” like the following
   <li  class="a_thispage" >
     
       <a href="overview.html">Overview</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="use-cases.html">Use Cases</a>
     
     
   </li>

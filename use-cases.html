@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html class="no-js" lang="eng" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use Cases</title>
+    <link rel="stylesheet" href="theme/css/foundation.min.css">
+    <link rel="stylesheet" href="theme/css/app.css">
+     <link rel="stylesheet" href="theme/highlight.js/styles/github-gist.css"> 
+    
+  </head>
+  <body>
+    <div class="expanded row">
+      <div class="small-12 medium-12 large-12 columns align-self-top">
+        <div class="row">
+          
+          <header class="large-12 columns align-self-top a_header">
+            <div class="row">
+              <div class="large-12 columns a_limited top-bar">
+                <div class="top-bar-left">
+                  <p>endpoints 0.6.0-SNAPSHOT</p>
+
+                </div>
+                <div class="top-bar-right align-right row">
+                  
+                  
+                    <form action="site-search.html" method="get" class="align-right a_search">
+                      <input name="q" type="search"  placeholder="Search
+" >
+                      <button><img alt="&#1F50D;" src="theme/images/search.svg" /></button>
+                    </form>
+                  
+                </div>
+              </div>
+            </div>
+          </header>
+          
+          <div class="small-12 medium-12 large-12 columns align-self-top a_limited a_main">
+            <div class="row">
+              
+              <main class="columns large-order-2 sections" id="_sections">
+                
+                <h1 id="use-cases" class="a_section" data-magellan-target="use-cases">Use Cases<a class="a_hlink" href="#use-cases"></a></h1>
+<p>This page lists a few use cases where <em>endpoints</em> helps.</p>
+<p>Combinations of these use cases multiply the value brought by <em>endpoints</em>!</p>
+<h2 id="microservices" class="a_section" data-magellan-target="microservices">Microservices<a class="a_hlink" href="#microservices"></a></h2>
+<p>Describe the HTTP APIs between the services, and let <em>endpoints</em> implement
+the clients and servers for these APIs:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">/**
+  * Application of a command.
+  *
+  * Returns the produced event, or `None` in case of failure (aggregate
+  * not found or invalid command).
+  */</span>
+<span class="hljs-keyword">val</span> command =
+  endpoint(post(path / <span class="hljs-string">"command"</span>, jsonRequest[<span class="hljs-type">Command</span>]), jsonResponse[<span class="hljs-type">Option</span>[<span class="hljs-type">StoredEvent</span>]])
+<span class="hljs-comment">// command: Endpoint[Command, Option[StoredEvent]]</span></code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.6.0-SNAPSHOT/examples/cqrs/commands-endpoints/src/main/scala/cqrs/commands/CommandsEndpoints.scala#L17-L25" class="a_sourcelink">CommandsEndpoints.scala</a></div></div>
+<p>Invoking a service from another is as simple as a method call:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> eventuallyMaybeEvent: <span class="hljs-type">Future</span>[<span class="hljs-type">Option</span>[<span class="hljs-type">StoredEvent</span>]] =
+  commandsClient.command(<span class="hljs-type">CreateMeter</span>(createData.label))</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.6.0-SNAPSHOT/examples/cqrs/public-server/src/main/scala/cqrs/publicserver/PublicServer.scala#L54-L55" class="a_sourcelink">PublicServer.scala</a></div></div>
+<p><em>endpoints</em> takes care of correctly constructing the request and
+decoding the response according to the HTTP API description.</p>
+<p>Maintenance effort is reduced: you only maintain the description of
+the HTTP API, not it’s client and server implementations.</p>
+<h2 id="web-applications" class="a_section" data-magellan-target="web-applications">Web Applications<a class="a_hlink" href="#web-applications"></a></h2>
+<p>Thanks to Scala.js it is possible to write the client-side part of a
+web application in Scala. Then, <em>endpoints</em> simplify client-server
+communication by turning method calls into remote invocations.</p>
+<p>Endpoint definition:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">/** Registers a new meter */</span>
+<span class="hljs-keyword">val</span> createMeter =
+  endpoint(post(metersPath, jsonRequest[<span class="hljs-type">CreateMeter</span>]), jsonResponse[<span class="hljs-type">Meter</span>])
+<span class="hljs-comment">// createMeter: Endpoint[CreateMeter, Meter]</span></code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.6.0-SNAPSHOT/examples/cqrs/public-endpoints/src/main/scala/cqrs/publicserver/PublicEndpoints.scala#L37-L40" class="a_sourcelink">PublicEndpoints.scala</a></div></div>
+<p>Endpoint invocation:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> eventuallyCreatedMeter: <span class="hljs-type">Future</span>[<span class="hljs-type">Meter</span>] = <span class="hljs-type">PublicEndpoints</span>.createMeter(<span class="hljs-type">CreateMeter</span>(name))</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.6.0-SNAPSHOT/examples/cqrs/web-client/src/main/scala/cqrs/webclient/Main.scala" class="a_sourcelink">Main.scala</a></div></div>
+<h2 id="documenting-a-web-service" class="a_section" data-magellan-target="documenting-a-web-service">Documenting a Web Service<a class="a_hlink" href="#documenting-a-web-service"></a></h2>
+<p>Thanks to the separation between the description of an HTTP API and
+its implementation, <em>endpoints</em> can also generate an OpenAPI document
+for a given HTTP API description.</p>
+<p>For instance, given the following endpoint description:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.documented.{algebra, generic}
+
+<span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">CounterEndpoints</span></span>
+  <span class="hljs-keyword">extends</span> algebra.<span class="hljs-type">Endpoints</span>
+    <span class="hljs-keyword">with</span> algebra.<span class="hljs-type">JsonSchemaEntities</span>
+    <span class="hljs-keyword">with</span> generic.<span class="hljs-type">JsonSchemas</span> {
+
+  <span class="hljs-comment">// HTTP endpoint for querying the current value of the counter. Uses the HTTP</span>
+  <span class="hljs-comment">// verb ''GET'' and the path ''/counter''. Returns the current value of the counter</span>
+  <span class="hljs-comment">// in a JSON object. (see below for the `counterJson` definition)</span>
+  <span class="hljs-keyword">val</span> currentValue = endpoint(get(path / <span class="hljs-string">"counter"</span>), counterJson)
+
+  <span class="hljs-comment">// HTTP endpoint for updating the value of the counter. Uses the HTTP verb ''POST''</span>
+  <span class="hljs-comment">// and the path ''/counter''. The request entity contains an `Operation` object encoded</span>
+  <span class="hljs-comment">// in JSON. The endpoint returns the current value of the counter in a JSON object.</span>
+  <span class="hljs-keyword">val</span> update = endpoint(
+    post(path / <span class="hljs-string">"counter"</span>, jsonRequest[<span class="hljs-type">Operation</span>](documentation = <span class="hljs-type">Some</span>(<span class="hljs-string">"The operation to apply to the counter"</span>))),
+    counterJson
+  )
+
+  <span class="hljs-comment">// Since both the `currentValue` and `update` endpoints return the same</span>
+  <span class="hljs-comment">// information, we define it once and just reuse it. Here, we say</span>
+  <span class="hljs-comment">// that they return an HTTP response whose entity contains a JSON document</span>
+  <span class="hljs-comment">// with the counter value</span>
+  <span class="hljs-keyword">lazy</span> <span class="hljs-keyword">val</span> counterJson =
+    jsonResponse[<span class="hljs-type">Counter</span>](documentation = <span class="hljs-string">"The counter current value"</span>)
+
+  <span class="hljs-comment">// We generically derive a data type schema. This schema</span>
+  <span class="hljs-comment">// describes that the case class `Counter` has one field</span>
+  <span class="hljs-comment">// of type `Int` named “value”</span>
+  <span class="hljs-keyword">implicit</span> <span class="hljs-keyword">lazy</span> <span class="hljs-keyword">val</span> jsonSchemaCounter: <span class="hljs-type">JsonSchema</span>[<span class="hljs-type">Counter</span>] = genericJsonSchema
+
+  <span class="hljs-comment">// Again, we generically derive a schema for the `Operation`</span>
+  <span class="hljs-comment">// data type. This schema describes that `Operation` can be</span>
+  <span class="hljs-comment">// either `Set` or `Add`, and that `Set` has one `Int` field</span>
+  <span class="hljs-comment">// name `value`, and `Add` has one `Int` field named `delta`</span>
+  <span class="hljs-keyword">implicit</span> <span class="hljs-keyword">lazy</span> <span class="hljs-keyword">val</span> jsonSchemaOperation: <span class="hljs-type">JsonSchema</span>[<span class="hljs-type">Operation</span>] = genericJsonSchema
+
+}</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.6.0-SNAPSHOT/examples/documented/src/main/scala/counter/Counter.scala#L32-L70" class="a_sourcelink">Counter.scala</a></div></div>
+<p><em>endpoints</em> can produce the
+<a href="https://documented-counter.herokuapp.com/documentation.json">following OpenApi document</a>.</p>
+
+              </main>
+              
+              
+                <div data-sticky-container class="small-12 medium-12 large-2 large-order-1 columns a_sitenav_container">
+                  <nav class="a_sitenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                    
+                  <ul>
+                     
+  <li >
+    
+      <a href="index.html">Introduction</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="overview.html">Overview</a>
+    
+    
+  </li>
+  
+  <li  class="a_thispage" >
+    
+      <a href="use-cases.html">Use Cases</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="installation.html">Installation</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="tutorial.html">Tutorial — Microservices and Web Client</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="tutorial-openapi.html">Tutorial — OpenAPI</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="design.html">Design in a nutshell</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="interfaces-and-interpreters.html">Algebra interfaces and their interpreters</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="comparison.html">Comparison with similar tools</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="talks.html">Talks and Publications</a>
+    
+    
+  </li>
+ 
+                  </ul>
+                  </nav>
+                </div>
+              
+              
+              
+                <div class="small-12 medium-12 large-2 large-order-3 columns a_show-for-xlarge" data-sticky-container>
+                  <nav class="a_pagenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                     <header><p>On This Page</p>
+</header> 
+                    <ul class="vertical menu" data-magellan>
+                       
+  <li>
+    
+       <a href="#use-cases">Use Cases</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#microservices">Microservices</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#web-applications">Web Applications</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#documenting-a-web-service">Documenting a Web Service</a> 
+    
+    
+  </li>
+  </ul>
+    
+  </li>
+ 
+                    </ul>
+                  </nav>
+                </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer class="small-12 medium-12 large-12 columns align-self-bottom a_footer">
+        <div class="row">
+          <div class="small-12 medium-12 large-12 columns top-bar">
+            <div class="top-bar-left">
+              
+            </div>
+            <div class="top-bar-right">
+              <p>Generated with <a href="https://github.com/szeiger/ornate">Ornate</a>.</p>
+
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="theme/js/jquery.min.js"></script>
+    <script src="theme/js/what-input.min.js"></script>
+    <script src="theme/js/foundation.min.js"></script>
+    
+    <script src="theme/js/app.js"></script>
+    
+  </body>
+</html>

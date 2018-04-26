@@ -19,7 +19,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.4.0</p>
+                  <p>endpoints 0.6.0-SNAPSHOT</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -50,7 +50,7 @@ navigate through the algebra interfaces hierarchy.</p>
 <li>algebra interfaces are defined as traits in the <code class="hljs">endpoints.algebra</code>
 package ;
 <ul>
-<li>e.g. the <a href="api/0.4.0/index.html#endpoints.algebra.Urls"><code class="hljs">Urls</code></a> trait defines an algebra
+<li>e.g. the <a href="api/0.6.0-SNAPSHOT/index.html#endpoints.algebra.Urls"><code class="hljs">Urls</code></a> trait defines an algebra
 interface for describing URLs.</li>
 </ul>
 </li>
@@ -60,7 +60,7 @@ algebra interface (they can also be found by looking at the “known
 subclasses” of an algebra interface, in the Scaladoc) ;</li>
 <li>compatible interpreters are in the same package ;
 <ul>
-<li>e.g. the <a href="api/0.4.0/index.html#endpoints.play.client.package"><code class="hljs">endpoints.play.client</code></a>
+<li>e.g. the <a href="api/0.6.0-SNAPSHOT/index.html#endpoints.play.client.package"><code class="hljs">endpoints.play.client</code></a>
 package provides interpreters that turn endpoints descriptions into
 clients using <a href="https://github.com/playframework/play-ws">play-ws</a> under
 the hood.</li>
@@ -73,22 +73,23 @@ the hood.</li>
 <tr><th>Name</th><th>Description</th><th>Artifact id</th></tr>
 </thead>
 <tbody>
-<tr><td><a href="api/0.4.0/index.html#endpoints.algebra.Assets"><code class="hljs">Assets</code></a></td><td>Asset segments, endpoints serving fingerprinted assets</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
-<tr><td><a href="api/0.4.0/index.html#endpoints.algebra.BasicAuthentication"><code class="hljs">BasicAuthentication</code></a></td><td>HTTP Basic authentication</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
-<tr><td><a href="api/0.4.0/index.html#endpoints.algebra.Endpoints"><code class="hljs">Endpoints</code></a></td><td>HTTP endpoints (main algebra interface)</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
-<tr><td><a href="api/0.4.0/index.html#endpoints.algebra.JsonEntities"><code class="hljs">JsonEntities</code></a></td><td>JSON request and response entities</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
-<tr><td><a href="api/0.4.0/index.html#endpoints.algebra.OptionalResponses"><code class="hljs">OptionalResponses</code></a></td><td>Optional response entities</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
-<tr><td><a href="api/0.4.0/index.html#endpoints.algebra.CirceEntities"><code class="hljs">CirceEntities</code></a></td><td>JSON request and response entities using Circe codecs</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra-circe">endpoints-algebra-circe</a></td></tr>
+<tr><td><a href="api/0.6.0-SNAPSHOT/index.html#endpoints.algebra.Assets"><code class="hljs">Assets</code></a></td><td>Asset segments, endpoints serving fingerprinted assets</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
+<tr><td><a href="api/0.6.0-SNAPSHOT/index.html#endpoints.algebra.BasicAuthentication"><code class="hljs">BasicAuthentication</code></a></td><td>HTTP Basic authentication</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
+<tr><td><a href="api/0.6.0-SNAPSHOT/index.html#endpoints.algebra.Endpoints"><code class="hljs">Endpoints</code></a></td><td>HTTP endpoints (main algebra interface)</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
+<tr><td><a href="api/0.6.0-SNAPSHOT/index.html#endpoints.algebra.JsonEntities"><code class="hljs">JsonEntities</code></a></td><td>JSON request and response entities</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
+<tr><td><a href="api/0.6.0-SNAPSHOT/index.html#endpoints.algebra.OptionalResponses"><code class="hljs">OptionalResponses</code></a></td><td>Optional response entities</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
+<tr><td><a href="api/0.6.0-SNAPSHOT/index.html#endpoints.algebra.circe.JsonEntitiesFromCodec"><code class="hljs">circe.JsonEntitiesFromCodec</code></a></td><td>JSON request and response entities using Circe codecs</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra-circe">endpoints-algebra-circe</a></td></tr>
+<tr><td><a href="api/0.6.0-SNAPSHOT/index.html#endpoints.algebra.playjson.JsonEntitiesFromCodec"><code class="hljs">playjson.JsonEntitiesFromCodec</code></a></td><td>JSON request and response entities using Play JSON codecs</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra-playjson">endpoints-algebra-playjson</a></td></tr>
 </tbody>
 </table></div></div>
 <p><strong>Note</strong>: A similar but slightly different set of algebra interfaces can be used to define endpoint
 descriptions containing documentation. These algebra interfaces have the same names as those
 described in above table, but live in the
-<a href="api/0.4.0/index.html#endpoints.documented.algebra.package">endpoints.documented.algebra</a> package and are provided
+<a href="api/0.6.0-SNAPSHOT/index.html#endpoints.documented.algebra.package">endpoints.documented.algebra</a> package and are provided
 by the <a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-openapi">endpoints-openapi</a>
 artifact. This artifact also provides its interpreters (in the
-<a href="api/0.4.0/index.html#endpoints.documented.openapi.package">endpoints.documented.openapi</a> and
-<a href="api/0.4.0/index.html#endpoints.documented.delegate.package">endpoints.documented.delegate</a> packages).</p>
+<a href="api/0.6.0-SNAPSHOT/index.html#endpoints.documented.openapi.package">endpoints.documented.openapi</a> and
+<a href="api/0.6.0-SNAPSHOT/index.html#endpoints.documented.delegate.package">endpoints.documented.delegate</a> packages).</p>
 <h2 id="interpreters" class="a_section" data-magellan-target="interpreters">Interpreters<a class="a_hlink" href="#interpreters"></a></h2>
 <div class="row"><div class="small-expand columns a_xscroll a_table"><table>
 <thead>
@@ -96,18 +97,14 @@ artifact. This artifact also provides its interpreters (in the
 </thead>
 <tbody>
 <tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-akka-http-server">endpoints-akka-http-server</a></td><td>Server backed by Akka-http</td></tr>
-<tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-akka-http-server">endpoints-akka-http-server-circe</a></td><td>Interpreter for <code class="hljs">CirceEntities</code> compatible with <code class="hljs">endpoints-akka-http-server</code></td></tr>
 <tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-akka-client">endpoints-akka-http-client</a></td><td>Client backed by Akka-http</td></tr>
-<tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-akka-http-client-circe">endpoints-akka-http-client-circe</a></td><td>Interpreter for <code class="hljs">CirceEntities</code> compatible with <code class="hljs">endpoints-akka-http-client</code></td></tr>
 <tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-play-client">endpoints-play-client</a></td><td>Client backed by Play framework</td></tr>
-<tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-play-client-circe">endpoints-play-client-circe</a></td><td>Interpreter for <code class="hljs">CirceEntities</code> compatible with <code class="hljs">endpoints-play-client</code></td></tr>
 <tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-play-server">endpoints-play-server</a></td><td>Server backed by Play framework</td></tr>
-<tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-play-server-circe">endpoints-play-server-circe</a></td><td>Interpreter for <code class="hljs">CirceEntities</code> compatible with <code class="hljs">endpoints-play-server</code></td></tr>
+<tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-play-server-circe">endpoints-play-server-circe</a></td><td>Interpreter for <code class="hljs">JsonEntities</code> that uses Circe to decode requests and encode responses, and which is compatible with <code class="hljs">endpoints-play-server</code></td></tr>
 <tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-xhr-client">endpoints-xhr-client</a></td><td>Scala.js clients using <code class="hljs">XMLHttpRequest</code> and returning responses in <code class="hljs">Future</code> or <code class="hljs">js.Thenable</code> values</td></tr>
-<tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-xhr-client-circe">endpoints-xhr-client-circe</a></td><td>Interpreter for <code class="hljs">CirceEntities</code> compatible with <code class="hljs">endpoints-xhr-client</code></td></tr>
+<tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-xhr-client-circe">endpoints-xhr-client-circe</a></td><td>Interpreter for <code class="hljs">JsonEntities</code> that uses Circe to encode requests and decode responses, and which is compatible with <code class="hljs">endpoints-xhr-client</code></td></tr>
 <tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-xhr-client-faithful">endpoints-xhr-client-faithful</a></td><td>Scala.js client returning responses <a href="https://github.com/julienrf/faithful">faithful</a>’s <code class="hljs">Future</code> values</td></tr>
 <tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-scalaj-client">endpoints-scalaj-client</a></td><td>JVM client backed by <a href="https://github.com/scalaj/scalaj-http">scalaj-http</a></td></tr>
-<tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-scalaj-client-circe">endpoints-scalaj-client-circe</a></td><td>Interpreter for <code class="hljs">CirceEntities</code> compatible with <code class="hljs">endpoints-scalaj-client</code></td></tr>
 </tbody>
 </table></div></div>
 
@@ -129,6 +126,13 @@ artifact. This artifact also provides its interpreters (in the
   <li >
     
       <a href="overview.html">Overview</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="use-cases.html">Use Cases</a>
     
     
   </li>
