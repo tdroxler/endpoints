@@ -19,7 +19,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.6.0-SNAPSHOT</p>
+                  <p>endpoints 0.5.0</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -109,7 +109,7 @@ types:</p>
   <span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Add</span>(<span class="hljs-params">delta: <span class="hljs-type">Int</span></span>) <span class="hljs-keyword">extends</span> <span class="hljs-title">Operation</span></span>
 
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.6.0-SNAPSHOT/examples/documented/src/main/scala/counter/Counter.scala#L15-L27" class="a_sourcelink">Counter.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.5.0/examples/documented/src/main/scala/counter/Counter.scala#L15-L27" class="a_sourcelink">Counter.scala</a></div></div>
 <h2 id="description-of-the-http-endpoints" class="a_section" data-magellan-target="description-of-the-http-endpoints">Description of the HTTP endpoints<a class="a_hlink" href="#description-of-the-http-endpoints"></a></h2>
 <p>We want to define two endpoints: one for querying the counter value and one for
 modifying it.</p>
@@ -153,9 +153,9 @@ modifying it.</p>
   <span class="hljs-keyword">implicit</span> <span class="hljs-keyword">lazy</span> <span class="hljs-keyword">val</span> jsonSchemaOperation: <span class="hljs-type">JsonSchema</span>[<span class="hljs-type">Operation</span>] = genericJsonSchema
 
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.6.0-SNAPSHOT/examples/documented/src/main/scala/counter/Counter.scala#L32-L70" class="a_sourcelink">Counter.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.5.0/examples/documented/src/main/scala/counter/Counter.scala#L32-L70" class="a_sourcelink">Counter.scala</a></div></div>
 <p>Note that we first import
-<a href="api/0.6.0-SNAPSHOT/index.html#endpoints.documented.algebra.package">endpoints.documented.algebra</a>. The algebra
+<a href="api/0.5.0/index.html#endpoints.documented.algebra.package">endpoints.documented.algebra</a>. The algebra
 interfaces available in this package allow us to supply documentation information such as
 human readable descriptions of request and response entities.</p>
 <p>For instance, the <code class="hljs">counterJson</code> value describes an HTTP response whose JSON entity contains
@@ -179,7 +179,7 @@ to repeat it.</p>
 <h2 id="deriving-an-openapi-file-definition-from-a-documented-service-description" class="a_section" data-magellan-target="deriving-an-openapi-file-definition-from-a-documented-service-description">Deriving an OpenAPI file definition from a documented service description<a class="a_hlink" href="#deriving-an-openapi-file-definition-from-a-documented-service-description"></a></h2>
 <p>To derive an OpenAPI file definition from our endpoint descriptions we use
 the interpreters defined in the
-<a href="api/0.6.0-SNAPSHOT/index.html#endpoints.documented.openapi.package">endpoints.documented.openapi</a> package:</p>
+<a href="api/0.5.0/index.html#endpoints.documented.openapi.package">endpoints.documented.openapi</a> package:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.documented.openapi
 <span class="hljs-keyword">import</span> endpoints.documented.openapi.model.{<span class="hljs-type">Info</span>, <span class="hljs-type">OpenApi</span>}
@@ -195,10 +195,10 @@ the interpreters defined in the
     )(currentValue, update)
 
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.6.0-SNAPSHOT/examples/documented/src/main/scala/counter/Counter.scala#L75-L88" class="a_sourcelink">Counter.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.5.0/examples/documented/src/main/scala/counter/Counter.scala#L75-L88" class="a_sourcelink">Counter.scala</a></div></div>
 <p>Here, the
-<a href="api/0.6.0-SNAPSHOT/index.html#endpoints.documented.openapi.Endpoints@openApi(info:endpoints.documented.openapi.Info)(endpoints:Endpoints.this.DocumentedEndpoint*):endpoints.documented.openapi.OpenApi">openApi</a>
-method generates an abstract <a href="api/0.6.0-SNAPSHOT/index.html#endpoints.documented.openapi.OpenApi">OpenApi</a> model, which
+<a href="api/0.5.0/index.html#endpoints.documented.openapi.Endpoints@openApi(info:endpoints.documented.openapi.Info)(endpoints:Endpoints.this.DocumentedEndpoint*):endpoints.documented.openapi.OpenApi">openApi</a>
+method generates an abstract <a href="api/0.5.0/index.html#endpoints.documented.openapi.OpenApi">OpenApi</a> model, which
 can eventually be serialized in JSON.</p>
 <h2 id="deriving-an-http-server-from-a-documented-service-description" class="a_section" data-magellan-target="deriving-an-http-server-from-a-documented-service-description">Deriving an HTTP server from a documented service description<a class="a_hlink" href="#deriving-an-http-server-from-a-documented-service-description"></a></h2>
 <p>Since our documented endpoints are not defined by the algebra interfaces provided in the
@@ -217,7 +217,7 @@ interpreters of the <code class="hljs">endpoints.play.server</code> package to t
 
   <span class="hljs-comment">// We delegate the implementation of the HTTP server to Play framework</span>
   <span class="hljs-keyword">lazy</span> <span class="hljs-keyword">val</span> delegate = <span class="hljs-keyword">new</span> play.server.<span class="hljs-type">Endpoints</span> <span class="hljs-keyword">with</span> play.server.circe.<span class="hljs-type">JsonEntitiesFromCodec</span> { <span class="hljs-keyword">lazy</span> <span class="hljs-keyword">val</span> playComponents = parent.playComponents }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.6.0-SNAPSHOT/examples/documented/src/main/scala/counter/Counter.scala#L93-L102" class="a_sourcelink">Counter.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.5.0/examples/documented/src/main/scala/counter/Counter.scala#L93-L102" class="a_sourcelink">Counter.scala</a></div></div>
 <p>We first mix interpreters provided in the <code class="hljs">delegate</code> package to our <code class="hljs">CounterEndpoints</code>
 trait, and then we define a value named <code class="hljs">delegate</code>, which contains the interpreter
 that matches algebra interfaces provided in the <code class="hljs">endpoints.algebra</code> package. In our
@@ -249,7 +249,7 @@ case we use an interpreter based on Play framework.</p>
   }
 
 )</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.6.0-SNAPSHOT/examples/documented/src/main/scala/counter/Counter.scala#L105-L128" class="a_sourcelink">Counter.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.5.0/examples/documented/src/main/scala/counter/Counter.scala#L105-L128" class="a_sourcelink">Counter.scala</a></div></div>
 <p>There is nothing specific to “documented” endpoints here: we create Play routes
 by attaching a business logic to each HTTP endpoint.</p>
 <p>And here the JVM entry point, which starts the HTTP server:</p>
@@ -283,7 +283,7 @@ by attaching a business logic to each HTTP endpoint.</p>
 
   <span class="hljs-keyword">lazy</span> <span class="hljs-keyword">val</span> digests = <span class="hljs-type">AssetsDigests</span>.digests
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.6.0-SNAPSHOT/examples/documented/src/main/scala/counter/Counter.scala#L134-L162" class="a_sourcelink">Counter.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.5.0/examples/documented/src/main/scala/counter/Counter.scala#L134-L162" class="a_sourcelink">Counter.scala</a></div></div>
 <p>The <code class="hljs">DocumentationServer</code> object contains both description and implementation of HTTP
 endpoints needed to serve the documentation. The most important one is <code class="hljs">documentation</code>,
 which serves the OpenAPI document defined by the <code class="hljs">CounterDocumentation</code> object.</p>
