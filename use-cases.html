@@ -19,7 +19,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.5.0</p>
+                  <p>endpoints 0.6.0</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -45,7 +45,7 @@
 <p>This page lists a few use cases where <em>endpoints</em> helps.</p>
 <p>Combinations of these use cases multiply the value brought by <em>endpoints</em>!</p>
 <h2 id="microservices" class="a_section" data-magellan-target="microservices">Microservices<a class="a_hlink" href="#microservices"></a></h2>
-<p>Describe the HTTP APIs between the services, and let <em>endpoints</em> implement
+<p>Describe the HTTP APIs between the services, and let <em>endpoints</em> implements
 the clients and servers for these APIs:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-comment">/**
@@ -55,40 +55,40 @@ the clients and servers for these APIs:</p>
   * not found or invalid command).
   */</span>
 <span class="hljs-keyword">val</span> command =
-  endpoint(post(path / <span class="hljs-string">"command"</span>, jsonRequest[<span class="hljs-type">Command</span>]), jsonResponse[<span class="hljs-type">Option</span>[<span class="hljs-type">StoredEvent</span>]])
+  endpoint(post(path / <span class="hljs-string">"command"</span>, jsonRequest[<span class="hljs-type">Command</span>]()), jsonResponse[<span class="hljs-type">Option</span>[<span class="hljs-type">StoredEvent</span>]]())
 <span class="hljs-comment">// command: Endpoint[Command, Option[StoredEvent]]</span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.5.0/examples/cqrs/commands-endpoints/src/main/scala/cqrs/commands/CommandsEndpoints.scala#L17-L25" class="a_sourcelink">CommandsEndpoints.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.6.0/examples/cqrs/commands-endpoints/src/main/scala/cqrs/commands/CommandsEndpoints.scala#L17-L25" class="a_sourcelink">CommandsEndpoints.scala</a></div></div>
 <p>Invoking a service from another is as simple as a method call:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> eventuallyMaybeEvent: <span class="hljs-type">Future</span>[<span class="hljs-type">Option</span>[<span class="hljs-type">StoredEvent</span>]] =
   commandsClient.command(<span class="hljs-type">CreateMeter</span>(createData.label))</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.5.0/examples/cqrs/public-server/src/main/scala/cqrs/publicserver/PublicServer.scala#L54-L55" class="a_sourcelink">PublicServer.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.6.0/examples/cqrs/public-server/src/main/scala/cqrs/publicserver/PublicServer.scala#L53-L54" class="a_sourcelink">PublicServer.scala</a></div></div>
 <p><em>endpoints</em> takes care of correctly constructing the request and
-decoding the response according to the HTTP API description.</p>
+decoding the response according to the HTTP endpoint description.</p>
 <p>Maintenance effort is reduced: you only maintain the description of
 the HTTP API, not it’s client and server implementations.</p>
 <h2 id="web-applications" class="a_section" data-magellan-target="web-applications">Web Applications<a class="a_hlink" href="#web-applications"></a></h2>
 <p>Thanks to Scala.js it is possible to write the client-side part of a
-web application in Scala. Then, <em>endpoints</em> simplify client-server
+web application in Scala. Then, <em>endpoints</em> simplifies client-server
 communication by turning method calls into remote invocations.</p>
 <p>Endpoint definition:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-comment">/** Registers a new meter */</span>
 <span class="hljs-keyword">val</span> createMeter =
-  endpoint(post(metersPath, jsonRequest[<span class="hljs-type">CreateMeter</span>]), jsonResponse[<span class="hljs-type">Meter</span>])
+  endpoint(post(metersPath, jsonRequest[<span class="hljs-type">CreateMeter</span>]()), jsonResponse[<span class="hljs-type">Meter</span>]())
 <span class="hljs-comment">// createMeter: Endpoint[CreateMeter, Meter]</span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.5.0/examples/cqrs/public-endpoints/src/main/scala/cqrs/publicserver/PublicEndpoints.scala#L37-L40" class="a_sourcelink">PublicEndpoints.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.6.0/examples/cqrs/public-endpoints/src/main/scala/cqrs/publicserver/PublicEndpoints.scala#L37-L40" class="a_sourcelink">PublicEndpoints.scala</a></div></div>
 <p>Endpoint invocation:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> eventuallyCreatedMeter: <span class="hljs-type">Future</span>[<span class="hljs-type">Meter</span>] = <span class="hljs-type">PublicEndpoints</span>.createMeter(<span class="hljs-type">CreateMeter</span>(name))</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.5.0/examples/cqrs/web-client/src/main/scala/cqrs/webclient/Main.scala" class="a_sourcelink">Main.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.6.0/examples/cqrs/web-client/src/main/scala/cqrs/webclient/Main.scala" class="a_sourcelink">Main.scala</a></div></div>
 <h2 id="documenting-a-web-service" class="a_section" data-magellan-target="documenting-a-web-service">Documenting a Web Service<a class="a_hlink" href="#documenting-a-web-service"></a></h2>
 <p>Thanks to the separation between the description of an HTTP API and
 its implementation, <em>endpoints</em> can also generate an OpenAPI document
 for a given HTTP API description.</p>
 <p>For instance, given the following endpoint description:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.documented.{algebra, generic}
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.{algebra, generic}
 
 <span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">CounterEndpoints</span></span>
   <span class="hljs-keyword">extends</span> algebra.<span class="hljs-type">Endpoints</span>
@@ -104,7 +104,7 @@ for a given HTTP API description.</p>
   <span class="hljs-comment">// and the path ''/counter''. The request entity contains an `Operation` object encoded</span>
   <span class="hljs-comment">// in JSON. The endpoint returns the current value of the counter in a JSON object.</span>
   <span class="hljs-keyword">val</span> update = endpoint(
-    post(path / <span class="hljs-string">"counter"</span>, jsonRequest[<span class="hljs-type">Operation</span>](documentation = <span class="hljs-type">Some</span>(<span class="hljs-string">"The operation to apply to the counter"</span>))),
+    post(path / <span class="hljs-string">"counter"</span>, jsonRequest[<span class="hljs-type">Operation</span>](docs = <span class="hljs-type">Some</span>(<span class="hljs-string">"The operation to apply to the counter"</span>))),
     counterJson
   )
 
@@ -113,7 +113,7 @@ for a given HTTP API description.</p>
   <span class="hljs-comment">// that they return an HTTP response whose entity contains a JSON document</span>
   <span class="hljs-comment">// with the counter value</span>
   <span class="hljs-keyword">lazy</span> <span class="hljs-keyword">val</span> counterJson =
-    jsonResponse[<span class="hljs-type">Counter</span>](documentation = <span class="hljs-string">"The counter current value"</span>)
+    jsonResponse[<span class="hljs-type">Counter</span>](docs = <span class="hljs-type">Some</span>(<span class="hljs-string">"The counter current value"</span>))
 
   <span class="hljs-comment">// We generically derive a data type schema. This schema</span>
   <span class="hljs-comment">// describes that the case class `Counter` has one field</span>
@@ -126,8 +126,9 @@ for a given HTTP API description.</p>
   <span class="hljs-comment">// name `value`, and `Add` has one `Int` field named `delta`</span>
   <span class="hljs-keyword">implicit</span> <span class="hljs-keyword">lazy</span> <span class="hljs-keyword">val</span> jsonSchemaOperation: <span class="hljs-type">JsonSchema</span>[<span class="hljs-type">Operation</span>] = genericJsonSchema
 
-}</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.5.0/examples/documented/src/main/scala/counter/Counter.scala#L32-L70" class="a_sourcelink">Counter.scala</a></div></div>
+}
+</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.6.0/examples/documented/src/main/scala/counter/Counter.scala#L30-L69" class="a_sourcelink">Counter.scala</a></div></div>
 <p><em>endpoints</em> can produce the
 <a href="https://documented-counter.herokuapp.com/documentation.json">following OpenApi document</a>.</p>
 
