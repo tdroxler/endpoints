@@ -136,10 +136,8 @@ object Parameter {
           List(
             parameter.description.map(s => "description" -> Json.fromString(s))
           ).flatten
-      JsonObject.fromIterable(
-        if (parameter.required) "required" -> Json.fromBoolean(true) :: fields
-        else fields
-      )
+      val maybeRequiredField = if (parameter.required) Some("required" -> Json.fromBoolean(true)) else None
+      JsonObject.fromIterable(maybeRequiredField +?: fields)
     }
 
 }
@@ -158,13 +156,15 @@ object In {
 
 }
 
-case class MediaType(schema: Option[Schema])
+case class MediaType(schema: Option[Schema]/*, example: Option[Json]*/)
 
 object MediaType {
 
   def jsonMediaTypes(mediaTypes: Map[String, MediaType]): Json =
     Json.fromFields(mediaTypes.map { case (tpe, mediaType) =>
-      tpe -> Json.obj("schema" -> mediaType.schema.fold[Json](Json.obj())(_.asJson))
+      val maybeSchemaField = mediaType.schema.map(schema => ("schema", schema.asJson))
+      // val maybeExampleField = mediaType.example.map(example => ("example", example))
+      tpe -> Json.fromFields(maybeSchemaField +?: /*maybeExampleField +?: */Nil)
     })
 
 }
@@ -200,29 +200,24 @@ object Schema {
           "type" -> Json.fromString("object") ::
             "properties" -> Json.fromFields(
               properties.map { property =>
-                val propertyFields =
-                  property.description match {
-                    case None => jsonEncoder.apply(property.schema)
-                    case Some(s) => Json.fromFields(("description" -> Json.fromString(s)) +: jsonEncoder.encodeObject(property.schema).toVector)
-                  }
-                property.name -> propertyFields
+                val maybeDescriptionField = property.description.map(s => ("description", Json.fromString(s)))
+                property.name -> Json.fromFields(maybeDescriptionField +?: jsonEncoder.encodeObject(property.schema).toList)
               }
             ) ::
             Nil
-        val fieldsWithDescription =
-          description.fold(fields)(s => "description" -> Json.fromString(s) :: fields)
+        val maybeDescriptionField =
+          description.map(s => "description" -> Json.fromString(s))
         val requiredProperties = properties.filter(_.isRequired)
-        val fieldsWithRequired =
-          if (requiredProperties.isEmpty) fieldsWithDescription
-          else "required" -> Json.arr(requiredProperties.map(p => Json.fromString(p.name)): _*) :: fieldsWithDescription
-        JsonObject.fromIterable(fieldsWithRequired)
+        val maybeRequiredField =
+          if (requiredProperties.isEmpty) None
+          else Some("required" -> Json.arr(requiredProperties.map(p => Json.fromString(p.name)): _*))
+        JsonObject.fromIterable(maybeRequiredField +?: maybeDescriptionField +?: fields)
       case OneOf(alternatives, description) =>
         val fields =
             "oneOf" -> Json.fromValues(alternatives.map(jsonEncoder.apply)) ::
             Nil
-        val fieldsWithDescription =
-          description.fold(fields)(s => "description" -> Json.fromString(s) :: fields)
-        JsonObject.fromIterable(fieldsWithDescription)
+        val maybeDescriptionField = description.map(s => "description" -> Json.fromString(s))
+        JsonObject.fromIterable(maybeDescriptionField +?: fields)
     }
 
 }
