@@ -19,7 +19,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.6.0</p>
+                  <p>endpoints 0.7.0</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -50,7 +50,7 @@ navigate through the algebra interfaces hierarchy.</p>
 <li>algebra interfaces are defined as traits in the <code class="hljs">endpoints.algebra</code>
 package ;
 <ul>
-<li>e.g. the <a href="api/0.6.0/index.html#endpoints.algebra.Urls"><code class="hljs">Urls</code></a> trait defines an algebra
+<li>e.g. the <a href="api/0.7.0/index.html#endpoints.algebra.Urls"><code class="hljs">Urls</code></a> trait defines an algebra
 interface for describing URLs.</li>
 </ul>
 </li>
@@ -60,7 +60,7 @@ algebra interface (they can also be found by looking at the “known
 subclasses” of an algebra interface, in the Scaladoc) ;</li>
 <li>compatible interpreters are in the same package ;
 <ul>
-<li>e.g. the <a href="api/0.6.0/index.html#endpoints.play.client.package"><code class="hljs">endpoints.play.client</code></a>
+<li>e.g. the <a href="api/0.7.0/index.html#endpoints.play.client.package"><code class="hljs">endpoints.play.client</code></a>
 package provides interpreters that turn endpoints descriptions into
 clients using <a href="https://github.com/playframework/play-ws">play-ws</a> under
 the hood.</li>
@@ -73,12 +73,12 @@ the hood.</li>
 <tr><th>Name</th><th>Description</th><th>Artifact id</th></tr>
 </thead>
 <tbody>
-<tr><td><a href="api/0.6.0/index.html#endpoints.algebra.Assets"><code class="hljs">Assets</code></a></td><td>Asset segments, endpoints serving fingerprinted assets</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
-<tr><td><a href="api/0.6.0/index.html#endpoints.algebra.BasicAuthentication"><code class="hljs">BasicAuthentication</code></a></td><td>HTTP Basic authentication</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
-<tr><td><a href="api/0.6.0/index.html#endpoints.algebra.Endpoints"><code class="hljs">Endpoints</code></a></td><td>HTTP endpoints (main algebra interface)</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
-<tr><td><a href="api/0.6.0/index.html#endpoints.algebra.JsonEntities"><code class="hljs">JsonEntities</code></a></td><td>JSON request and response entities</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
-<tr><td><a href="api/0.6.0/index.html#endpoints.algebra.circe.JsonEntitiesFromCodec"><code class="hljs">circe.JsonEntitiesFromCodec</code></a></td><td>JSON request and response entities using Circe codecs</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra-circe">endpoints-algebra-circe</a></td></tr>
-<tr><td><a href="api/0.6.0/index.html#endpoints.algebra.playjson.JsonEntitiesFromCodec"><code class="hljs">playjson.JsonEntitiesFromCodec</code></a></td><td>JSON request and response entities using Play JSON codecs</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra-playjson">endpoints-algebra-playjson</a></td></tr>
+<tr><td><a href="api/0.7.0/index.html#endpoints.algebra.Assets"><code class="hljs">Assets</code></a></td><td>Asset segments, endpoints serving fingerprinted assets</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
+<tr><td><a href="api/0.7.0/index.html#endpoints.algebra.BasicAuthentication"><code class="hljs">BasicAuthentication</code></a></td><td>HTTP Basic authentication</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
+<tr><td><a href="api/0.7.0/index.html#endpoints.algebra.Endpoints"><code class="hljs">Endpoints</code></a></td><td>HTTP endpoints (main algebra interface)</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
+<tr><td><a href="api/0.7.0/index.html#endpoints.algebra.JsonEntities"><code class="hljs">JsonEntities</code></a></td><td>JSON request and response entities</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
+<tr><td><a href="api/0.7.0/index.html#endpoints.algebra.circe.JsonEntitiesFromCodec"><code class="hljs">circe.JsonEntitiesFromCodec</code></a></td><td>JSON request and response entities using Circe codecs</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra-circe">endpoints-algebra-circe</a></td></tr>
+<tr><td><a href="api/0.7.0/index.html#endpoints.algebra.playjson.JsonEntitiesFromCodec"><code class="hljs">playjson.JsonEntitiesFromCodec</code></a></td><td>JSON request and response entities using Play JSON codecs</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra-playjson">endpoints-algebra-playjson</a></td></tr>
 </tbody>
 </table></div></div>
 <h2 id="interpreters" class="a_section" data-magellan-target="interpreters">Interpreters<a class="a_hlink" href="#interpreters"></a></h2>
@@ -100,6 +100,7 @@ the hood.</li>
 <tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-openapi">endpoints-openapi</a></td><td>Interpreter that creates OpenAPI json from endpoints description</td></tr>
 <tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-json-schema-generic">endpoints-json-schema-generic</a></td><td>Interpreter that allows generic derivation of json-schema</td></tr>
 <tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-json-schema-circe">endpoints-json-schema-circe</a></td><td>Interpreter that produces circe codec based on schema definition</td></tr>
+<tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-json-schema-playjson">endpoints-json-schema-playjson</a></td><td>Interpreter that produces Play JSON Reads and Writes based on schema definition</td></tr>
 </tbody>
 </table></div></div>
 
