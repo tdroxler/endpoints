@@ -43,7 +43,7 @@
                 
                 <h1 id="algebra-interfaces-and-their-interpreters" class="a_section" data-magellan-target="algebra-interfaces-and-their-interpreters">Algebra interfaces and their interpreters<a class="a_hlink" href="#algebra-interfaces-and-their-interpreters"></a></h1>
 <p>Because of the modular design of <em>endpoints</em> it might be difficult to find which
-modules are relevant for a given use case. This page aims to make it easier to
+modules are needed for a given use case. This page aims to make it easier to
 navigate through the algebra interfaces hierarchy.</p>
 <h2 id="naming-conventions" class="a_section" data-magellan-target="naming-conventions">Naming conventions<a class="a_hlink" href="#naming-conventions"></a></h2>
 <ul>
@@ -79,6 +79,7 @@ the hood.</li>
 <tr><td><a href="api/0.7.0/index.html#endpoints.algebra.JsonEntities"><code class="hljs">JsonEntities</code></a></td><td>JSON request and response entities</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra">endpoints-algebra</a></td></tr>
 <tr><td><a href="api/0.7.0/index.html#endpoints.algebra.circe.JsonEntitiesFromCodec"><code class="hljs">circe.JsonEntitiesFromCodec</code></a></td><td>JSON request and response entities using Circe codecs</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra-circe">endpoints-algebra-circe</a></td></tr>
 <tr><td><a href="api/0.7.0/index.html#endpoints.algebra.playjson.JsonEntitiesFromCodec"><code class="hljs">playjson.JsonEntitiesFromCodec</code></a></td><td>JSON request and response entities using Play JSON codecs</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra-playjson">endpoints-algebra-playjson</a></td></tr>
+<tr><td><a href="api/0.7.0/index.html#endpoints.algebra.JsonSchemas"><code class="hljs">JsonSchemas</code></a></td><td>JSON schemas of data types</td><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-algebra-json-schema">endpoints-algebra-json-schema</a></td></tr>
 </tbody>
 </table></div></div>
 <h2 id="interpreters" class="a_section" data-magellan-target="interpreters">Interpreters<a class="a_hlink" href="#interpreters"></a></h2>
@@ -98,7 +99,7 @@ the hood.</li>
 <tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-scalaj-client">endpoints-scalaj-client</a></td><td>JVM client backed by <a href="https://github.com/scalaj/scalaj-http">scalaj-http</a></td></tr>
 <tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-sttp-client">endpoints-sttp-client</a></td><td>JVM client backed by <a href="https://github.com/softwaremill/sttp">sttp</a></td></tr>
 <tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-openapi">endpoints-openapi</a></td><td>Interpreter that creates OpenAPI json from endpoints description</td></tr>
-<tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-json-schema-generic">endpoints-json-schema-generic</a></td><td>Interpreter that allows generic derivation of json-schema</td></tr>
+<tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-json-schema-generic">endpoints-json-schema-generic</a></td><td>Interpreter that provides generic derivation of json-schema</td></tr>
 <tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-json-schema-circe">endpoints-json-schema-circe</a></td><td>Interpreter that produces circe codec based on schema definition</td></tr>
 <tr><td><a href="https://index.scala-lang.org/julienrf/endpoints/endpoints-json-schema-playjson">endpoints-json-schema-playjson</a></td><td>Interpreter that produces Play JSON Reads and Writes based on schema definition</td></tr>
 </tbody>

@@ -7,7 +7,7 @@
     <title>Installation</title>
     <link rel="stylesheet" href="theme/css/foundation.min.css">
     <link rel="stylesheet" href="theme/css/app.css">
-     <link rel="stylesheet" href="theme/css/mermaid.custom.css">  <link rel="stylesheet" href="theme/highlight.js/styles/github-gist.css"> 
+     <link rel="stylesheet" href="theme/highlight.js/styles/github-gist.css">  <link rel="stylesheet" href="theme/css/mermaid.custom.css"> 
     
   </head>
   <body>
@@ -48,58 +48,54 @@
                 
                 <h1 id="installation" class="a_section" data-magellan-target="installation">Installation<a class="a_hlink" href="#installation"></a></h1>
 <h2 id="project-layout" class="a_section" data-magellan-target="project-layout">Project layout<a class="a_hlink" href="#project-layout"></a></h2>
-<p>Typically, your project will be broken down into several sub-projects:</p>
+<p>The typical installation consists in having a multi-project build, with
+a <code class="hljs">client</code> project and a <code class="hljs">server</code> project both depending on a <code class="hljs">shared</code>
+project:</p>
 <div class="mermaid" id="_id0"><pre class="mermaid_src" style="display: none">graph BT
-  endpoints
-  server -.-&gt; endpoints
-  client -.-&gt; endpoints
+  shared
+  server -.-&gt; shared
+  client -.-&gt; shared
 </pre></div>
-<p>The <code class="hljs">endpoints</code> sub-project contains the <em>description</em> of the communication
-protocol. The <code class="hljs">server</code> sub-project <em>implements</em> this communication protocol.
-The <code class="hljs">client</code> sub-project <em>uses</em> the protocol to communicate with the <code class="hljs">server</code>.</p>
+<p>The <code class="hljs">shared</code> project contains the <em>description</em> of the communication
+protocol. The <code class="hljs">server</code> project <em>implements</em> this communication protocol.
+The <code class="hljs">client</code> project <em>uses</em> the protocol to communicate with the <code class="hljs">server</code>.</p>
 <p>This translates to the following <code class="hljs">build.sbt</code> configuration:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> endpoints = project
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> shared = project
 
-<span class="hljs-keyword">val</span> client = project.dependsOn(endpoints)
+<span class="hljs-keyword">val</span> client = project.dependsOn(shared)
 
-<span class="hljs-keyword">val</span> server = project.dependsOn(endpoints)
+<span class="hljs-keyword">val</span> server = project.dependsOn(shared)
 </code></pre>
 </div></div>
+<p>Then, add a dependency to the <em>endpoints</em> algebra interfaces to the
+<code class="hljs">shared</code> project, add dependencies to client interpreters to the
+<code class="hljs">client</code> project, and add dependencies to server interpreters to the
+<code class="hljs">server</code> project, as shown in the next section.</p>
 <h2 id="dependencies" class="a_section" data-magellan-target="dependencies">Dependencies<a class="a_hlink" href="#dependencies"></a></h2>
 <p>All the artifacts are published on maven central under the organization
-name <code class="hljs">org.julienrf</code>.</p>
+name <code class="hljs">org.julienrf</code>. See the
+<a href="interfaces-and-interpreters.html">interfaces and interpreters</a> page
+for more details on what each specific artifact provides.</p>
 <h3 id="endpoint-descriptions" class="a_section" data-magellan-target="endpoint-descriptions">Endpoint descriptions<a class="a_hlink" href="#endpoint-descriptions"></a></h3>
-<p>Add the following dependencies to your <code class="hljs">endpoints</code> sub-project:</p>
+<p>Add the following dependencies to your <code class="hljs">shared</code> project:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
   <span class="hljs-comment">// core API</span>
   <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra"</span> % <span class="hljs-string">"0.7.0"</span>,
   <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra-circe"</span> % <span class="hljs-string">"0.7.0"</span>
-)
-</code></pre>
-</div></div>
-<h4 id="documented-endpoint-descriptions" class="a_section" data-magellan-target="documented-endpoint-descriptions">Documented endpoint descriptions<a class="a_hlink" href="#documented-endpoint-descriptions"></a></h4>
-<p>If you want to generate an <a href="https://www.openapis.org/">OpenAPI</a> definition file
-for your endpoint descriptions, add the following dependency to the <code class="hljs">endpoints</code>
-sub-project:</p>
-<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
-  <span class="hljs-comment">// core API</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-openapi"</span> % <span class="hljs-string">"0.7.0"</span>,
-  <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
   <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra-circe"</span> % <span class="hljs-string">"0.7.0"</span>,
-  <span class="hljs-comment">// (optional) generic derivation of JSON schemas</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-json-schema-generic"</span> % <span class="hljs-string">"0.7.0"</span>
+  <span class="hljs-comment">// (optional) JSON serialization using play-json</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra-playjson"</span> % <span class="hljs-string">"0.7.0"</span>
 )
 </code></pre>
 </div></div>
 <h3 id="client-interpreters" class="a_section" data-magellan-target="client-interpreters">Client interpreters<a class="a_hlink" href="#client-interpreters"></a></h3>
 <h4 id="scala.js-client-using-native-xmlhttprequests" class="a_section" data-magellan-target="scala.js-client-using-native-xmlhttprequests">Scala.js client using native <code class="hljs">XMLHttpRequest</code>s<a class="a_hlink" href="#scala.js-client-using-native-xmlhttprequests"></a></h4>
-<p>Add the following dependencies to your <code class="hljs">client</code> sub-project:</p>
+<p>Add the following dependencies to your <code class="hljs">client</code> project:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala">  <span class="hljs-comment">// client based on JavaScript’s XMLHttpRequest</span>
+<pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
+  <span class="hljs-comment">// client based on JavaScript’s XMLHttpRequest</span>
   <span class="hljs-string">"org.julienrf"</span> %%% <span class="hljs-string">"endpoints-xhr-client"</span> % <span class="hljs-string">"0.7.0"</span>,
   <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
   <span class="hljs-string">"org.julienrf"</span> %%% <span class="hljs-string">"endpoints-xhr-client-circe"</span> % <span class="hljs-string">"0.7.0"</span>,
@@ -109,56 +105,65 @@ sub-project:</p>
 </code></pre>
 </div></div>
 <h4 id="client-based-on-play-framework-jvm-only" class="a_section" data-magellan-target="client-based-on-play-framework-jvm-only">Client based on Play framework (JVM only)<a class="a_hlink" href="#client-based-on-play-framework-jvm-only"></a></h4>
-<p>Add the following dependencies to your <code class="hljs">client</code> sub-project:</p>
+<p>Add the following dependency to your <code class="hljs">client</code> project:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
-  <span class="hljs-comment">// client based on Play framework</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-client"</span> % <span class="hljs-string">"0.7.0"</span>,
-  <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-client-circe"</span> % <span class="hljs-string">"0.7.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-client"</span> % <span class="hljs-string">"0.7.0"</span>
 )
 </code></pre>
 </div></div>
-<h4 id="client-backed-by-scalaj-http" class="a_section" data-magellan-target="client-backed-by-scalaj-http">Client backed by scalaj-http<a class="a_hlink" href="#client-backed-by-scalaj-http"></a></h4>
+<h4 id="client-backed-by-scalaj-http-jvm-only" class="a_section" data-magellan-target="client-backed-by-scalaj-http-jvm-only">Client backed by scalaj-http (JVM only)<a class="a_hlink" href="#client-backed-by-scalaj-http-jvm-only"></a></h4>
+<p>Add the following dependency to your <code class="hljs">client</code> project:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
-  <span class="hljs-comment">// client based on scalaj-http</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-scalaj-client"</span> % <span class="hljs-string">"0.7.0"</span>,
-  <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-scalaj-client-circe"</span> % <span class="hljs-string">"0.7.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-scalaj-client"</span> % <span class="hljs-string">"0.7.0"</span>
 )
 </code></pre>
 </div></div>
 <h4 id="client-backed-by-akka-http-jvm-only" class="a_section" data-magellan-target="client-backed-by-akka-http-jvm-only">Client backed by akka-http (JVM only)<a class="a_hlink" href="#client-backed-by-akka-http-jvm-only"></a></h4>
+<p>Add the following dependency to your <code class="hljs">client</code> project:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
-  <span class="hljs-comment">// client based on akka-http</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-client"</span> % <span class="hljs-string">"0.7.0"</span>,
-  <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-client-circe"</span> % <span class="hljs-string">"0.7.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-client"</span> % <span class="hljs-string">"0.7.0"</span>
+)
+</code></pre>
+</div></div>
+<h4 id="client-backed-by-sttp-jvm-only" class="a_section" data-magellan-target="client-backed-by-sttp-jvm-only">Client backed by sttp (JVM only)<a class="a_hlink" href="#client-backed-by-sttp-jvm-only"></a></h4>
+<p>Add the following dependency to your <code class="hljs">client</code> project:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-sttp-client"</span> % <span class="hljs-string">"0.7.0"</span>
 )
 </code></pre>
 </div></div>
 <h3 id="server-interpreters" class="a_section" data-magellan-target="server-interpreters">Server interpreters<a class="a_hlink" href="#server-interpreters"></a></h3>
 <h4 id="server-based-on-play-framework" class="a_section" data-magellan-target="server-based-on-play-framework">Server based on Play framework<a class="a_hlink" href="#server-based-on-play-framework"></a></h4>
-<p>Add the following dependencies to your <code class="hljs">server</code> sub-project:</p>
+<p>Add the following dependencies to your <code class="hljs">server</code> project:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
-  <span class="hljs-comment">// server based on play framework</span>
+  <span class="hljs-comment">// server interpreter based on Play framework</span>
   <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-server"</span> % <span class="hljs-string">"0.7.0"</span>,
   <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-server-circe"</span> % <span class="hljs-string">"0.7.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-server-circe"</span> % <span class="hljs-string">"0.7.0"</span>,
+  <span class="hljs-comment">// (optional) JSON serialization using play-json</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-server-playjson"</span> % <span class="hljs-string">"0.7.0"</span>
 )
 </code></pre>
 </div></div>
 <h4 id="server-based-on-akka-http" class="a_section" data-magellan-target="server-based-on-akka-http">Server based on Akka-HTTP<a class="a_hlink" href="#server-based-on-akka-http"></a></h4>
-<p>Add the following dependencies to your <code class="hljs">server</code> sub-project:</p>
+<p>Add the following dependency to your <code class="hljs">server</code> project:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
-  <span class="hljs-comment">// server based on akka-http</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-server"</span> % <span class="hljs-string">"0.7.0"</span>,
-  <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-server-circe"</span> % <span class="hljs-string">"0.7.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-server"</span> % <span class="hljs-string">"0.7.0"</span>
+)
+</code></pre>
+</div></div>
+<h3 id="documentation-interpreters" class="a_section" data-magellan-target="documentation-interpreters">Documentation interpreters<a class="a_hlink" href="#documentation-interpreters"></a></h3>
+<p>To generate an <a href="https://www.openapis.org/">OpenAPI</a> document for your endpoint
+descriptions, add the following dependency to the <code class="hljs">server</code> project:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-openapi"</span> % <span class="hljs-string">"0.7.0"</span>
 )
 </code></pre>
 </div></div>
@@ -277,15 +282,6 @@ sub-project:</p>
        <a href="#endpoint-descriptions">Endpoint descriptions</a> 
     
     
-      <ul class="vertical menu">  
-  <li>
-    
-       <a href="#documented-endpoint-descriptions">Documented endpoint descriptions</a> 
-    
-    
-  </li>
-  </ul>
-    
   </li>
   
   <li>
@@ -310,7 +306,7 @@ sub-project:</p>
   
   <li>
     
-       <a href="#client-backed-by-scalaj-http">Client backed by scalaj-http</a> 
+       <a href="#client-backed-by-scalaj-http-jvm-only">Client backed by scalaj-http (JVM only)</a> 
     
     
   </li>
@@ -318,6 +314,13 @@ sub-project:</p>
   <li>
     
        <a href="#client-backed-by-akka-http-jvm-only">Client backed by akka-http (JVM only)</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#client-backed-by-sttp-jvm-only">Client backed by sttp (JVM only)</a> 
     
     
   </li>
@@ -345,6 +348,13 @@ sub-project:</p>
     
   </li>
   </ul>
+    
+  </li>
+  
+  <li>
+    
+       <a href="#documentation-interpreters">Documentation interpreters</a> 
+    
     
   </li>
   </ul>
