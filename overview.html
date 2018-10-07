@@ -7,7 +7,7 @@
     <title>Overview</title>
     <link rel="stylesheet" href="theme/css/foundation.min.css">
     <link rel="stylesheet" href="theme/css/app.css">
-     <link rel="stylesheet" href="theme/css/mermaid.custom.css">  <link rel="stylesheet" href="theme/highlight.js/styles/github-gist.css"> 
+     <link rel="stylesheet" href="theme/highlight.js/styles/github-gist.css"> 
     
   </head>
   <body>
@@ -41,24 +41,17 @@
               
               <main class="columns large-order-2 sections" id="_sections">
                 
-                   <noscript> <blockquote class="warning">
-<p>This page requires JavaScript. Please enable JavaScript in your browser.</p>
-</blockquote>
- </noscript> 
-                
                 <h1 id="overview" class="a_section" data-magellan-target="overview">Overview<a class="a_hlink" href="#overview"></a></h1>
-<p>Typically, a project is broken down into several sub-projects:</p>
-<div class="mermaid" id="_id0"><pre class="mermaid_src" style="display: none">graph BT
-  endpoints
-  server -.-&gt; endpoints
-  client -.-&gt; endpoints
-</pre></div>
-<p>The <code class="hljs">endpoints</code> sub-project contains the <em>description</em> of the communication
-protocol. The <code class="hljs">server</code> sub-project <em>implements</em> this communication protocol.
-The <code class="hljs">client</code> sub-project <em>uses</em> the protocol to communicate with the <code class="hljs">server</code>.</p>
+<p>The central idea of the <em>endpoints</em> library is that you first describe your communication endpoints
+and then the library provides you:</p>
+<ul>
+<li>a server implementation decoding requests and building responses,</li>
+<li>a client implementation building requests and decoding responses,</li>
+<li>a machine readable documentation (OpenAPI document).</li>
+</ul>
 <h2 id="description-of-the-http-endpoints" class="a_section" data-magellan-target="description-of-the-http-endpoints">Description of the HTTP endpoints<a class="a_hlink" href="#description-of-the-http-endpoints"></a></h2>
-<p>Let’s define a first artifact, cross-compiled for Scala.js, and containing a description of the
-endpoints of a web service.</p>
+<p>As an example, here is a <code class="hljs">CounterEndpoints</code> trait describing two endpoints, one for getting a counter value and one for
+incrementing :</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.algebra.<span class="hljs-type">Endpoints</span>
 <span class="hljs-keyword">import</span> endpoints.algebra.circe.<span class="hljs-type">JsonEntitiesFromCodec</span>
@@ -95,16 +88,12 @@ endpoints of a web service.</p>
 <span class="hljs-meta">@JsonCodec</span>
 <span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Increment</span>(<span class="hljs-params">step: <span class="hljs-type">Int</span></span>)</span></code></pre>
 <a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/overview/endpoints/src/main/scala/overview/CounterEndpoints.scala#L4-L37" class="a_sourcelink">CounterEndpoints.scala</a></div></div>
-<p>Note that the example above uses Circe's <code class="hljs">@JsonCodec</code> macro annotation, so you’ll also need to include the Macro Paradise compiler plugin in your <code class="hljs">build.sbt</code> file.</p>
-<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala">addCompilerPlugin(
-  <span class="hljs-string">"org.scalamacros"</span> % <span class="hljs-string">"paradise"</span> % <span class="hljs-string">"2.1.1"</span> cross <span class="hljs-type">CrossVersion</span>.full
-)
-</code></pre>
-</div></div>
-<h2 id="javascript-scala.js-client" class="a_section" data-magellan-target="javascript-scala.js-client">JavaScript (Scala.js) client<a class="a_hlink" href="#javascript-scala.js-client"></a></h2>
-<p>The following code, located in the <code class="hljs">client</code> sub-project, defines a Scala.js
-client for the web service.</p>
+<p>(Note that the example above uses Circe's <code class="hljs">@JsonCodec</code> macro annotation, so you’ll need to include the Macro Paradise
+compiler plugin to your <a href="https://github.com/julienrf/endpoints/blob/ca58dabbc544dd28464db1aa0eb4cf72f59489d0/documentation/build.sbt#L92"><code class="hljs">build.sbt</code> file</a>)</p>
+<h2 id="client-implementation" class="a_section" data-magellan-target="client-implementation">Client implementation<a class="a_hlink" href="#client-implementation"></a></h2>
+<p>A client implementation of the endpoints can be obtained by mixing so-called “interpreters” to the <code class="hljs">CounterEndpoints</code>
+trait defined above. In this example, we get a JavaScript (Scala.js) client that uses <code class="hljs">XMLHttpRequest</code> under
+the hood:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.xhr
 
@@ -118,7 +107,7 @@ client for the web service.</p>
     <span class="hljs-keyword">with</span> xhr.thenable.<span class="hljs-type">Endpoints</span>
     <span class="hljs-keyword">with</span> xhr.<span class="hljs-type">JsonEntitiesFromCodec</span></code></pre>
 <a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/overview/client/src/main/scala/overview/CounterClient.scala#L4-L14" class="a_sourcelink">CounterClient.scala</a></div></div>
-<p>And then, this client can be used as follows:</p>
+<p>And then, the <code class="hljs">CounterClient</code> object can be used as follows:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> scala.scalajs.js
 
@@ -136,17 +125,23 @@ client for the web service.</p>
   */</span>
 <span class="hljs-keyword">val</span> eventuallyDone: js.<span class="hljs-type">Thenable</span>[<span class="hljs-type">Unit</span>] = <span class="hljs-type">CounterClient</span>.increment(<span class="hljs-type">Increment</span>(<span class="hljs-number">42</span>))</code></pre>
 <a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/overview/client/src/main/scala/overview/Usage.scala#L16-L20" class="a_sourcelink">Usage.scala</a></div></div>
-<h2 id="service-implementation-backed-by-play-framework" class="a_section" data-magellan-target="service-implementation-backed-by-play-framework">Service implementation (backed by Play framework)<a class="a_hlink" href="#service-implementation-backed-by-play-framework"></a></h2>
-<p>The following code, located in the <code class="hljs">server</code> sub-project, defines the implementation of
-the web service.</p>
+<p>As you can see, invoking an endpoint is as easy as calling a method on the <code class="hljs">CounterClient</code> object.
+The <em>endpoints</em> library then builds an HTTP request (according to the endpoint description), sends
+it to the server, and eventually decodes the HTTP response (according to the endpoint description).</p>
+<h2 id="server-implementation" class="a_section" data-magellan-target="server-implementation">Server implementation<a class="a_hlink" href="#server-implementation"></a></h2>
+<p>Similarly, a server implementation of the endpoints can be obtained by mixing the appropriate
+interpreters to the <code class="hljs">CounterEndpoints</code> trait. In this example, we get a JVM server that uses
+Play framework under the hood:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.play.server
 <span class="hljs-keyword">import</span> endpoints.play.server.<span class="hljs-type">PlayComponents</span>
 
 <span class="hljs-keyword">import</span> scala.concurrent.stm.<span class="hljs-type">Ref</span>
+<span class="hljs-keyword">import</span> play.api.routing.<span class="hljs-type">Router</span>
 
 <span class="hljs-comment">/**
-  * Defines a Play router (and reverse router) for the endpoints described in the `CounterAlg` trait.
+  * Defines a Play router (and reverse router) for the endpoints described
+  * in the `CounterEndpoints` trait.
   */</span>
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CounterServer</span>(<span class="hljs-params">protected val playComponents: <span class="hljs-type">PlayComponents</span></span>)</span>
   <span class="hljs-keyword">extends</span> <span class="hljs-type">CounterEndpoints</span>
@@ -156,7 +151,7 @@ the web service.</p>
   <span class="hljs-comment">/** Simple implementation of an in-memory counter */</span>
   <span class="hljs-keyword">val</span> counter = <span class="hljs-type">Ref</span>(<span class="hljs-number">0</span>)
 
-  <span class="hljs-keyword">val</span> routes = routesFromEndpoints(
+  <span class="hljs-keyword">val</span> routes: <span class="hljs-type">Router</span>.<span class="hljs-type">Routes</span> = routesFromEndpoints(
 
     <span class="hljs-comment">/** Implements the `currentValue` endpoint */</span>
     currentValue.implementedBy(_ =&gt; <span class="hljs-type">Counter</span>(counter.single.get)),
@@ -167,9 +162,9 @@ the web service.</p>
   )
 
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/overview/server/src/main/scala/overview/CounterServer.scala#L4-L30" class="a_sourcelink">CounterServer.scala</a></div></div>
-<p>The <code class="hljs">CounterServer.routes</code> value is just a <code class="hljs">play.api.routing.Router.Routes</code>.
-To get an executable Web server we need to setup a “main” like the following:</p>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/overview/server/src/main/scala/overview/CounterServer.scala#L4-L32" class="a_sourcelink">CounterServer.scala</a></div></div>
+<p>The <code class="hljs">CounterServer.routes</code> value produced by the <em>endpoints</em> library is a <code class="hljs">Routes</code> value directly
+usable by Play framework. To get an executable Web server we can setup a “main” like the following:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.play.server.{<span class="hljs-type">DefaultPlayComponents</span>, <span class="hljs-type">HttpServer</span>}
 <span class="hljs-keyword">import</span> play.core.server.<span class="hljs-type">ServerConfig</span>
@@ -180,19 +175,76 @@ To get an executable Web server we need to setup a “main” like the following
   <span class="hljs-type">HttpServer</span>(config, playComponents, <span class="hljs-keyword">new</span> <span class="hljs-type">CounterServer</span>(playComponents).routes)
 }</code></pre>
 <a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/overview/server/src/main/scala/overview/Main.scala#L4-L11" class="a_sourcelink">Main.scala</a></div></div>
-<h2 id="what-else" class="a_section" data-magellan-target="what-else">What else?<a class="a_hlink" href="#what-else"></a></h2>
-<p>You can also get a Scala/JVM client (which uses <code class="hljs">play-ws</code> under the hood) as follows:</p>
+<p>The routes implementations provided by <em>endpoints</em> decode the incoming HTTP requests, call the corresponding logic
+(here, incrementing the counter or getting its current value), and build the HTTP responses.</p>
+<h2 id="documentation-generation" class="a_section" data-magellan-target="documentation-generation">Documentation generation<a class="a_hlink" href="#documentation-generation"></a></h2>
+<p>We conclude this overview by showing how to generate documentation for the endpoints, again by mixing the appropriate
+interpreters:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.play.client
-<span class="hljs-keyword">import</span> play.api.libs.ws.<span class="hljs-type">WSClient</span>
-<span class="hljs-keyword">import</span> scala.concurrent.<span class="hljs-type">ExecutionContext</span>
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.openapi
+<span class="hljs-keyword">import</span> endpoints.openapi.model.{<span class="hljs-type">Info</span>, <span class="hljs-type">OpenApi</span>}
 
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CounterClient</span>(<span class="hljs-params">wsClient: <span class="hljs-type">WSClient</span></span>)(<span class="hljs-params">implicit ec: <span class="hljs-type">ExecutionContext</span></span>)</span>
-  <span class="hljs-keyword">extends</span> client.<span class="hljs-type">Endpoints</span>(<span class="hljs-string">"http://my-counter.com"</span>, wsClient)
-    <span class="hljs-keyword">with</span> <span class="hljs-type">CounterEndpoints</span>
-    <span class="hljs-keyword">with</span> client.<span class="hljs-type">JsonEntitiesFromCodec</span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/overview/play-client/src/main/scala/overview/CounterClient.scala#L4-L11" class="a_sourcelink">CounterClient.scala</a></div></div>
-<p>Thus, you can distribute a (fully working) JVM client, which is independent of your implementation.</p>
+<span class="hljs-comment">/**
+  * Generates OpenAPI documentation for the endpoints described in the `CounterEndpoints` trait.
+  */</span>
+<span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">CounterDocumentation</span></span>
+  <span class="hljs-keyword">extends</span> <span class="hljs-type">CounterEndpoints</span>
+    <span class="hljs-keyword">with</span> openapi.<span class="hljs-type">Endpoints</span>
+    <span class="hljs-keyword">with</span> openapi.<span class="hljs-type">JsonEntities</span> {
+
+  <span class="hljs-keyword">val</span> api: <span class="hljs-type">OpenApi</span> =
+    openApi(
+      <span class="hljs-type">Info</span>(title = <span class="hljs-string">"API to manipulate a counter"</span>, version = <span class="hljs-string">"1.0.0"</span>)
+    )(currentValue, increment)
+
+}</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/overview/documentation/src/main/scala/overview/CounterDocumentation.scala#L4-L20" class="a_sourcelink">CounterDocumentation.scala</a></div></div>
+<p>This code defines a <code class="hljs">CounterDocumentation</code> object with an <code class="hljs">api</code> member containing an OpenAPI object documenting
+the <code class="hljs">currentValue</code> and <code class="hljs">increment</code> endpoints.</p>
+<p>We can then render the documentation, for instance in JSON:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> io.circe.syntax._
+println(<span class="hljs-type">CounterDocumentation</span>.api.asJson)</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/overview/documentation/src/main/scala/overview/CounterDocumentation.scala#L25-L26" class="a_sourcelink">CounterDocumentation.scala</a></div></div>
+<p>This prints the following OpenAPI document:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-javascript">{
+  <span class="hljs-string">"openapi"</span> : <span class="hljs-string">"3.0.0"</span>,
+  <span class="hljs-string">"info"</span> : {
+    <span class="hljs-string">"title"</span> : <span class="hljs-string">"API to manipulate a counter"</span>,
+    <span class="hljs-string">"version"</span> : <span class="hljs-string">"1.0.0"</span>
+  },
+  <span class="hljs-string">"paths"</span> : {
+    <span class="hljs-string">"/increment"</span> : {
+      <span class="hljs-string">"post"</span> : {
+        <span class="hljs-string">"responses"</span> : {
+          <span class="hljs-string">"200"</span> : {
+            <span class="hljs-string">"description"</span> : <span class="hljs-string">""</span>
+          }
+        },
+        <span class="hljs-string">"requestBody"</span> : {
+          <span class="hljs-string">"content"</span> : {
+            <span class="hljs-string">"application/json"</span> : {}
+          }
+        }
+      }
+    },
+    <span class="hljs-string">"/current-value"</span> : {
+      <span class="hljs-string">"get"</span> : {
+        <span class="hljs-string">"responses"</span> : {
+          <span class="hljs-string">"200"</span> : {
+            <span class="hljs-string">"description"</span> : <span class="hljs-string">""</span>,
+            <span class="hljs-string">"content"</span> : {
+              <span class="hljs-string">"application/json"</span> : {}
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</code></pre>
+</div></div>
 
               </main>
               
@@ -209,16 +261,16 @@ To get an executable Web server we need to setup a “main” like the following
     
   </li>
   
-  <li  class="a_thispage" >
+  <li >
     
-      <a href="overview.html">Overview</a>
+      <a href="use-cases.html">Use Cases</a>
     
     
   </li>
   
-  <li >
+  <li  class="a_thispage" >
     
-      <a href="use-cases.html">Use Cases</a>
+      <a href="overview.html">Overview</a>
     
     
   </li>
@@ -299,21 +351,21 @@ To get an executable Web server we need to setup a “main” like the following
   
   <li>
     
-       <a href="#javascript-scala.js-client">JavaScript (Scala.js) client</a> 
+       <a href="#client-implementation">Client implementation</a> 
     
     
   </li>
   
   <li>
     
-       <a href="#service-implementation-backed-by-play-framework">Service implementation (backed by Play framework)</a> 
+       <a href="#server-implementation">Server implementation</a> 
     
     
   </li>
   
   <li>
     
-       <a href="#what-else">What else?</a> 
+       <a href="#documentation-generation">Documentation generation</a> 
     
     
   </li>
@@ -347,7 +399,7 @@ To get an executable Web server we need to setup a “main” like the following
     <script src="theme/js/jquery.min.js"></script>
     <script src="theme/js/what-input.min.js"></script>
     <script src="theme/js/foundation.min.js"></script>
-     <script src="theme/js/mermaidAPI-0.5.8.min.js"></script> 
+    
     <script src="theme/js/app.js"></script>
     
   </body>
