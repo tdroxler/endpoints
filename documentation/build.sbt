@@ -59,8 +59,8 @@ val manual =
   project.in(file("manual"))
     .enablePlugins(OrnatePlugin, GhpagesPlugin)
     .settings(
+      `scala 2.11`,
       coverageEnabled := false,
-      scalaVersion := "2.11.8",
       git.remoteRepo := "git@github.com:julienrf/endpoints.git",
       ornateSourceDir := Some(sourceDirectory.value / "ornate"),
       ornateTargetDir := Some(ornateTarget.value),
@@ -344,3 +344,41 @@ val `example-documented` =
       }.taskValue
     )
     .dependsOn(`play-server-circe`, `json-schema-generic-jvm`, `openapi-jvm`)
+
+val `example-streaming-shared` =
+  CrossProject("example-streaming-shared-jvm", "example-streaming-shared-js", file("examples/streaming/shared"), CrossType.Pure)
+    .settings(noPublishSettings ++ `scala 2.11 to 2.12`)
+    .jsSettings(
+      //disable coverage for scala.js: https://github.com/scoverage/scalac-scoverage-plugin/issues/196
+      coverageEnabled := false
+    )
+    .jvmSettings(coverageEnabled := true)
+    .dependsOnLocalCrossProjects("algebra-playjson")
+
+val `example-streaming-shared-jvm` = `example-streaming-shared`.jvm
+val `example-streaming-shared-js` = `example-streaming-shared`.js
+
+val `example-streaming-client` =
+  project.in(file("examples/streaming/client"))
+    .enablePlugins(ScalaJSPlugin)
+    .settings(noPublishSettings ++ `scala 2.11 to 2.12`)
+    .settings(
+      libraryDependencies += "io.monix" %%% "monix" % "3.0.0-RC1",
+      scalaJSUseMainModuleInitializer := true
+    )
+    .dependsOn(`xhr-client-faithful`, `example-streaming-shared-js`)
+
+val `example-streaming-server` =
+  project.in(file("examples/streaming/server"))
+    .enablePlugins(SbtWeb)
+    .settings(noPublishSettings ++ `scala 2.11 to 2.12`)
+    .settings(
+      sourceGenerators in Assets += Def.task[Seq[File]] {
+        val jsFile = fastOptJS.in(`example-streaming-client`, Compile).value.data
+        val targetFile = (resourceManaged in Assets).value / "app.js"
+        IO.copyFile(jsFile, targetFile)
+        targetFile :: Nil
+      },
+      (managedClasspath in Runtime) += (packageBin in Assets).value
+    )
+    .dependsOn(`play-server`, `example-streaming-shared-jvm`)
