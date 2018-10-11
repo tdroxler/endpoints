@@ -19,7 +19,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.7.0</p>
+                  <p>endpoints 0.7.1-SNAPSHOT</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -70,7 +70,8 @@ incrementing it:</p>
     * Uses the HTTP verb “GET” and URL path “/current-value”.
     * The response entity is a JSON document representing the counter value.
     */</span>
-  <span class="hljs-keyword">val</span> currentValue = endpoint(get(path / <span class="hljs-string">"current-value"</span>), jsonResponse[<span class="hljs-type">Counter</span>]())
+  <span class="hljs-keyword">val</span> currentValue: <span class="hljs-type">Endpoint</span>[<span class="hljs-type">Unit</span>, <span class="hljs-type">Counter</span>] =
+    endpoint(get(path / <span class="hljs-string">"current-value"</span>), jsonResponse[<span class="hljs-type">Counter</span>]())
 
   <span class="hljs-comment">/**
     * Increments the counter value.
@@ -78,7 +79,8 @@ incrementing it:</p>
     * The request entity is a JSON document representing the increment to apply to the counter.
     * The response entity is empty.
     */</span>
-  <span class="hljs-keyword">val</span> increment = endpoint(post(path / <span class="hljs-string">"increment"</span>, jsonRequest[<span class="hljs-type">Increment</span>]()), emptyResponse())
+  <span class="hljs-keyword">val</span> increment: <span class="hljs-type">Endpoint</span>[<span class="hljs-type">Increment</span>, <span class="hljs-type">Unit</span>] =
+    endpoint(post(path / <span class="hljs-string">"increment"</span>, jsonRequest[<span class="hljs-type">Increment</span>]()), emptyResponse())
 
 }
 
@@ -87,7 +89,7 @@ incrementing it:</p>
 
 <span class="hljs-meta">@JsonCodec</span>
 <span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Increment</span>(<span class="hljs-params">step: <span class="hljs-type">Int</span></span>)</span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/overview/endpoints/src/main/scala/overview/CounterEndpoints.scala#L4-L37" class="a_sourcelink">CounterEndpoints.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.1-SNAPSHOT/documentation/examples/overview/endpoints/src/main/scala/overview/CounterEndpoints.scala#L4-L39" class="a_sourcelink">CounterEndpoints.scala</a></div></div>
 <p>(Note that the example above uses Circe's <code class="hljs">@JsonCodec</code> macro annotation, so you’ll need to include the Macro Paradise
 compiler plugin to your <a href="https://github.com/julienrf/endpoints/blob/ca58dabbc544dd28464db1aa0eb4cf72f59489d0/documentation/build.sbt#L92"><code class="hljs">build.sbt</code> file</a>)</p>
 <h2 id="client-implementation" class="a_section" data-magellan-target="client-implementation">Client implementation<a class="a_hlink" href="#client-implementation"></a></h2>
@@ -106,7 +108,7 @@ the hood:</p>
   <span class="hljs-keyword">extends</span> <span class="hljs-type">CounterEndpoints</span>
     <span class="hljs-keyword">with</span> xhr.thenable.<span class="hljs-type">Endpoints</span>
     <span class="hljs-keyword">with</span> xhr.<span class="hljs-type">JsonEntitiesFromCodec</span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/overview/client/src/main/scala/overview/CounterClient.scala#L4-L14" class="a_sourcelink">CounterClient.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.1-SNAPSHOT/documentation/examples/overview/client/src/main/scala/overview/CounterClient.scala#L4-L14" class="a_sourcelink">CounterClient.scala</a></div></div>
 <p>And then, the <code class="hljs">CounterClient</code> object can be used as follows:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> scala.scalajs.js
@@ -116,7 +118,7 @@ the hood:</p>
   * deserializes the JSON response as a `Counter`.
   */</span>
 <span class="hljs-keyword">val</span> eventuallyCounter: js.<span class="hljs-type">Thenable</span>[<span class="hljs-type">Counter</span>] = <span class="hljs-type">CounterClient</span>.currentValue(())</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/overview/client/src/main/scala/overview/Usage.scala#L6-L12" class="a_sourcelink">Usage.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.1-SNAPSHOT/documentation/examples/overview/client/src/main/scala/overview/Usage.scala#L6-L12" class="a_sourcelink">Usage.scala</a></div></div>
 <p>And also:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-comment">/**
@@ -124,7 +126,7 @@ the hood:</p>
   * on the `increment` endpoint.
   */</span>
 <span class="hljs-keyword">val</span> eventuallyDone: js.<span class="hljs-type">Thenable</span>[<span class="hljs-type">Unit</span>] = <span class="hljs-type">CounterClient</span>.increment(<span class="hljs-type">Increment</span>(<span class="hljs-number">42</span>))</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/overview/client/src/main/scala/overview/Usage.scala#L16-L20" class="a_sourcelink">Usage.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.1-SNAPSHOT/documentation/examples/overview/client/src/main/scala/overview/Usage.scala#L16-L20" class="a_sourcelink">Usage.scala</a></div></div>
 <p>As you can see, invoking an endpoint is as easy as calling a method on the <code class="hljs">CounterClient</code> object.
 The <em>endpoints</em> library then builds an HTTP request (according to the endpoint description), sends
 it to the server, and eventually decodes the HTTP response (according to the endpoint description).</p>
@@ -162,7 +164,7 @@ Play framework under the hood:</p>
   )
 
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/overview/server/src/main/scala/overview/CounterServer.scala#L4-L32" class="a_sourcelink">CounterServer.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.1-SNAPSHOT/documentation/examples/overview/server/src/main/scala/overview/CounterServer.scala#L4-L32" class="a_sourcelink">CounterServer.scala</a></div></div>
 <p>The <code class="hljs">CounterServer.routes</code> value produced by the <em>endpoints</em> library is a <code class="hljs">Routes</code> value directly
 usable by Play framework. To get an executable Web server we can setup a “main” like the following:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
@@ -174,7 +176,7 @@ usable by Play framework. To get an executable Web server we can setup a “main
   <span class="hljs-keyword">val</span> playComponents = <span class="hljs-keyword">new</span> <span class="hljs-type">DefaultPlayComponents</span>(config)
   <span class="hljs-type">HttpServer</span>(config, playComponents, <span class="hljs-keyword">new</span> <span class="hljs-type">CounterServer</span>(playComponents).routes)
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/overview/server/src/main/scala/overview/Main.scala#L4-L11" class="a_sourcelink">Main.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.1-SNAPSHOT/documentation/examples/overview/server/src/main/scala/overview/Main.scala#L4-L11" class="a_sourcelink">Main.scala</a></div></div>
 <p>The routes implementations provided by <em>endpoints</em> decode the incoming HTTP requests, call the corresponding logic
 (here, incrementing the counter or getting its current value), and build the HTTP responses.</p>
 <h2 id="documentation-generation" class="a_section" data-magellan-target="documentation-generation">Documentation generation<a class="a_hlink" href="#documentation-generation"></a></h2>
@@ -198,14 +200,14 @@ interpreters:</p>
     )(currentValue, increment)
 
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/overview/documentation/src/main/scala/overview/CounterDocumentation.scala#L4-L20" class="a_sourcelink">CounterDocumentation.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.1-SNAPSHOT/documentation/examples/overview/documentation/src/main/scala/overview/CounterDocumentation.scala#L4-L20" class="a_sourcelink">CounterDocumentation.scala</a></div></div>
 <p>This code defines a <code class="hljs">CounterDocumentation</code> object with an <code class="hljs">api</code> member containing an OpenAPI object documenting
 the <code class="hljs">currentValue</code> and <code class="hljs">increment</code> endpoints.</p>
 <p>We can then render the documentation, for instance in JSON:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> io.circe.syntax._
 println(<span class="hljs-type">CounterDocumentation</span>.api.asJson)</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/overview/documentation/src/main/scala/overview/CounterDocumentation.scala#L25-L26" class="a_sourcelink">CounterDocumentation.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.1-SNAPSHOT/documentation/examples/overview/documentation/src/main/scala/overview/CounterDocumentation.scala#L25-L26" class="a_sourcelink">CounterDocumentation.scala</a></div></div>
 <p>This prints the following OpenAPI document:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-javascript">{
@@ -284,14 +286,7 @@ println(<span class="hljs-type">CounterDocumentation</span>.api.asJson)</code></
   
   <li >
     
-      <a href="tutorial.html">Tutorial — Microservices and Web Client</a>
-    
-    
-  </li>
-  
-  <li >
-    
-      <a href="tutorial-openapi.html">Tutorial — OpenAPI</a>
+      <a href="algebras-and-interpreters.html">Algebras and interpreters</a>
     
     
   </li>
@@ -299,13 +294,6 @@ println(<span class="hljs-type">CounterDocumentation</span>.api.asJson)</code></
   <li >
     
       <a href="design.html">Design in a nutshell</a>
-    
-    
-  </li>
-  
-  <li >
-    
-      <a href="interfaces-and-interpreters.html">Algebra interfaces and their interpreters</a>
     
     
   </li>

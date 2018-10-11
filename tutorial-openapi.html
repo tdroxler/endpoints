@@ -19,7 +19,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.7.0</p>
+                  <p>endpoints 0.7.1-SNAPSHOT</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -105,7 +105,7 @@ types:</p>
   <span class="hljs-comment">// Add `delta` to the counter value</span>
   <span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Add</span>(<span class="hljs-params">delta: <span class="hljs-type">Int</span></span>) <span class="hljs-keyword">extends</span> <span class="hljs-title">Operation</span></span>
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/documented/src/main/scala/counter/Counter.scala#L15-L25" class="a_sourcelink">Counter.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.1-SNAPSHOT/documentation/examples/documented/src/main/scala/counter/Counter.scala#L15-L25" class="a_sourcelink">Counter.scala</a></div></div>
 <h2 id="description-of-the-http-endpoints" class="a_section" data-magellan-target="description-of-the-http-endpoints">Description of the HTTP endpoints<a class="a_hlink" href="#description-of-the-http-endpoints"></a></h2>
 <p>We want to define two endpoints: one for querying the counter value and one for
 modifying it.</p>
@@ -150,9 +150,9 @@ modifying it.</p>
 
 }
 </code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/documented/src/main/scala/counter/Counter.scala#L30-L69" class="a_sourcelink">Counter.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.1-SNAPSHOT/documentation/examples/documented/src/main/scala/counter/Counter.scala#L30-L69" class="a_sourcelink">Counter.scala</a></div></div>
 <p>Note that we first import
-<a href="api/0.7.0/index.html#endpoints.algebra.package">endpoints.algebra</a>. We use the same algebra for defining documentation
+<a href="api/0.7.1-SNAPSHOT/index.html#endpoints.algebra.package">endpoints.algebra</a>. We use the same algebra for defining documentation
 as we would use for defining protocols for client/server interpretation.</p>
 <p>For instance, the <code class="hljs">counterJson</code> value describes an HTTP response whose JSON entity contains
 “The counter current value”.</p>
@@ -174,7 +174,7 @@ to repeat it.</p>
 <h2 id="deriving-an-openapi-file-definition-from-a-documented-service-description" class="a_section" data-magellan-target="deriving-an-openapi-file-definition-from-a-documented-service-description">Deriving an OpenAPI file definition from a documented service description<a class="a_hlink" href="#deriving-an-openapi-file-definition-from-a-documented-service-description"></a></h2>
 <p>To derive an OpenAPI file definition from our endpoint descriptions we use
 the interpreters defined in the
-<a href="api/0.7.0/index.html#endpoints.openapi.package">endpoints.openapi</a> package:</p>
+<a href="api/0.7.1-SNAPSHOT/index.html#endpoints.openapi.package">endpoints.openapi</a> package:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.openapi
 <span class="hljs-keyword">import</span> endpoints.openapi.model.{<span class="hljs-type">Info</span>, <span class="hljs-type">OpenApi</span>}
@@ -190,10 +190,10 @@ the interpreters defined in the
     )(currentValue, update)
 }
 </code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/documented/src/main/scala/counter/Counter.scala#L74-L87" class="a_sourcelink">Counter.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.1-SNAPSHOT/documentation/examples/documented/src/main/scala/counter/Counter.scala#L74-L87" class="a_sourcelink">Counter.scala</a></div></div>
 <p>Here, the
-<a href="api/0.7.0/index.html#endpoints.openapi.Endpoints@openApi(info:endpoints.openapi.Info)(endpoints:Endpoints.this.DocumentedEndpoint*):endpoints.openapi.OpenApi">openApi</a>
-method generates an abstract <a href="api/0.7.0/index.html#endpoints.openapi.OpenApi">OpenApi</a> model, which
+<a href="api/0.7.1-SNAPSHOT/index.html#endpoints.openapi.Endpoints@openApi(info:endpoints.openapi.Info)(endpoints:Endpoints.this.DocumentedEndpoint*):endpoints.openapi.OpenApi">openApi</a>
+method generates an abstract <a href="api/0.7.1-SNAPSHOT/index.html#endpoints.openapi.OpenApi">OpenApi</a> model, which
 can eventually be serialized to JSON.</p>
 <h2 id="deriving-an-http-server-from-a-documented-service-description" class="a_section" data-magellan-target="deriving-an-http-server-from-a-documented-service-description">Deriving an HTTP server from a documented service description<a class="a_hlink" href="#deriving-an-http-server-from-a-documented-service-description"></a></h2>
 <p>Since our documented endpoints are defined by the standard algebra interfaces,
@@ -225,7 +225,7 @@ we can apply the interpreters introduced in the other <a href="tutorial.html">tu
   }
 
 )</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/documented/src/main/scala/counter/Counter.scala#L99-L122" class="a_sourcelink">Counter.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.1-SNAPSHOT/documentation/examples/documented/src/main/scala/counter/Counter.scala#L99-L122" class="a_sourcelink">Counter.scala</a></div></div>
 <p>There is nothing specific to “documented” endpoints here: we create Play routes
 by attaching a business logic to each HTTP endpoint.</p>
 <p>And here the JVM entry point, which starts the HTTP server:</p>
@@ -260,7 +260,7 @@ by attaching a business logic to each HTTP endpoint.</p>
   <span class="hljs-keyword">lazy</span> <span class="hljs-keyword">val</span> digests = <span class="hljs-type">AssetsDigests</span>.digests
 }
 </code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/examples/documented/src/main/scala/counter/Counter.scala#L128-L157" class="a_sourcelink">Counter.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.1-SNAPSHOT/documentation/examples/documented/src/main/scala/counter/Counter.scala#L128-L157" class="a_sourcelink">Counter.scala</a></div></div>
 <p>The <code class="hljs">DocumentationServer</code> object contains both description and implementation of HTTP
 endpoints needed to serve the documentation. The most important one is <code class="hljs">documentation</code>,
 which serves the OpenAPI document defined by the <code class="hljs">CounterDocumentation</code> object.</p>
@@ -295,28 +295,14 @@ by supplying additional information when creating the service description.</p>
   
   <li >
     
-      <a href="overview.html">Overview</a>
+      <a href="quick-start.html">Quick start</a>
     
     
   </li>
   
   <li >
     
-      <a href="installation.html">Installation</a>
-    
-    
-  </li>
-  
-  <li >
-    
-      <a href="tutorial.html">Tutorial — Microservices and Web Client</a>
-    
-    
-  </li>
-  
-  <li  class="a_thispage" >
-    
-      <a href="tutorial-openapi.html">Tutorial — OpenAPI</a>
+      <a href="algebras-and-interpreters.html">Algebras and interpreters</a>
     
     
   </li>
@@ -324,13 +310,6 @@ by supplying additional information when creating the service description.</p>
   <li >
     
       <a href="design.html">Design in a nutshell</a>
-    
-    
-  </li>
-  
-  <li >
-    
-      <a href="interfaces-and-interpreters.html">Algebra interfaces and their interpreters</a>
     
     
   </li>

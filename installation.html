@@ -19,7 +19,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.7.0</p>
+                  <p>endpoints 0.7.1-SNAPSHOT</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -74,19 +74,18 @@ The <code class="hljs">client</code> project <em>uses</em> the protocol to commu
 <code class="hljs">server</code> project, as shown in the next section.</p>
 <h2 id="dependencies" class="a_section" data-magellan-target="dependencies">Dependencies<a class="a_hlink" href="#dependencies"></a></h2>
 <p>All the artifacts are published on maven central under the organization
-name <code class="hljs">org.julienrf</code>. See the
-<a href="interfaces-and-interpreters.html">interfaces and interpreters</a> page
+name <code class="hljs">org.julienrf</code>. See the <a href="algebras-and-interpreters.html">algebras</a> page
 for more details on what each specific artifact provides.</p>
 <h3 id="endpoint-descriptions" class="a_section" data-magellan-target="endpoint-descriptions">Endpoint descriptions<a class="a_hlink" href="#endpoint-descriptions"></a></h3>
 <p>Add the following dependencies to your <code class="hljs">shared</code> project:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
   <span class="hljs-comment">// core API</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra"</span> % <span class="hljs-string">"0.7.0"</span>,
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra"</span> % <span class="hljs-string">"0.7.1-SNAPSHOT"</span>,
   <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra-circe"</span> % <span class="hljs-string">"0.7.0"</span>,
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra-circe"</span> % <span class="hljs-string">"0.7.1-SNAPSHOT"</span>,
   <span class="hljs-comment">// (optional) JSON serialization using play-json</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra-playjson"</span> % <span class="hljs-string">"0.7.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra-playjson"</span> % <span class="hljs-string">"0.7.1-SNAPSHOT"</span>
 )
 </code></pre>
 </div></div>
@@ -96,11 +95,11 @@ for more details on what each specific artifact provides.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
   <span class="hljs-comment">// client based on JavaScript’s XMLHttpRequest</span>
-  <span class="hljs-string">"org.julienrf"</span> %%% <span class="hljs-string">"endpoints-xhr-client"</span> % <span class="hljs-string">"0.7.0"</span>,
+  <span class="hljs-string">"org.julienrf"</span> %%% <span class="hljs-string">"endpoints-xhr-client"</span> % <span class="hljs-string">"0.7.1-SNAPSHOT"</span>,
   <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
-  <span class="hljs-string">"org.julienrf"</span> %%% <span class="hljs-string">"endpoints-xhr-client-circe"</span> % <span class="hljs-string">"0.7.0"</span>,
+  <span class="hljs-string">"org.julienrf"</span> %%% <span class="hljs-string">"endpoints-xhr-client-circe"</span> % <span class="hljs-string">"0.7.1-SNAPSHOT"</span>,
   <span class="hljs-comment">// (optional) uses faithful’s `Future`</span>
-  <span class="hljs-string">"org.julienrf"</span> %%% <span class="hljs-string">"endpoints-xhr-client-faithful"</span> % <span class="hljs-string">"0.7.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %%% <span class="hljs-string">"endpoints-xhr-client-faithful"</span> % <span class="hljs-string">"0.7.1-SNAPSHOT"</span>
 )
 </code></pre>
 </div></div>
@@ -108,7 +107,7 @@ for more details on what each specific artifact provides.</p>
 <p>Add the following dependency to your <code class="hljs">client</code> project:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-client"</span> % <span class="hljs-string">"0.7.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-client"</span> % <span class="hljs-string">"0.7.1-SNAPSHOT"</span>
 )
 </code></pre>
 </div></div>
@@ -116,7 +115,7 @@ for more details on what each specific artifact provides.</p>
 <p>Add the following dependency to your <code class="hljs">client</code> project:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-scalaj-client"</span> % <span class="hljs-string">"0.7.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-scalaj-client"</span> % <span class="hljs-string">"0.7.1-SNAPSHOT"</span>
 )
 </code></pre>
 </div></div>
@@ -124,7 +123,7 @@ for more details on what each specific artifact provides.</p>
 <p>Add the following dependency to your <code class="hljs">client</code> project:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-client"</span> % <span class="hljs-string">"0.7.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-client"</span> % <span class="hljs-string">"0.7.1-SNAPSHOT"</span>
 )
 </code></pre>
 </div></div>
@@ -132,7 +131,7 @@ for more details on what each specific artifact provides.</p>
 <p>Add the following dependency to your <code class="hljs">client</code> project:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-sttp-client"</span> % <span class="hljs-string">"0.7.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-sttp-client"</span> % <span class="hljs-string">"0.7.1-SNAPSHOT"</span>
 )
 </code></pre>
 </div></div>
@@ -142,11 +141,11 @@ for more details on what each specific artifact provides.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
   <span class="hljs-comment">// server interpreter based on Play framework</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-server"</span> % <span class="hljs-string">"0.7.0"</span>,
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-server"</span> % <span class="hljs-string">"0.7.1-SNAPSHOT"</span>,
   <span class="hljs-comment">// (optional) JSON serialization using circe.io</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-server-circe"</span> % <span class="hljs-string">"0.7.0"</span>,
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-server-circe"</span> % <span class="hljs-string">"0.7.1-SNAPSHOT"</span>,
   <span class="hljs-comment">// (optional) JSON serialization using play-json</span>
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-server-playjson"</span> % <span class="hljs-string">"0.7.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-server-playjson"</span> % <span class="hljs-string">"0.7.1-SNAPSHOT"</span>
 )
 </code></pre>
 </div></div>
@@ -154,7 +153,7 @@ for more details on what each specific artifact provides.</p>
 <p>Add the following dependency to your <code class="hljs">server</code> project:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-server"</span> % <span class="hljs-string">"0.7.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-akka-http-server"</span> % <span class="hljs-string">"0.7.1-SNAPSHOT"</span>
 )
 </code></pre>
 </div></div>
@@ -163,7 +162,7 @@ for more details on what each specific artifact provides.</p>
 descriptions, add the following dependency to the <code class="hljs">server</code> project:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">libraryDependencies ++= <span class="hljs-type">Seq</span>(
-  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-openapi"</span> % <span class="hljs-string">"0.7.0"</span>
+  <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-openapi"</span> % <span class="hljs-string">"0.7.1-SNAPSHOT"</span>
 )
 </code></pre>
 </div></div>
@@ -192,28 +191,14 @@ descriptions, add the following dependency to the <code class="hljs">server</cod
   
   <li >
     
-      <a href="overview.html">Overview</a>
-    
-    
-  </li>
-  
-  <li  class="a_thispage" >
-    
-      <a href="installation.html">Installation</a>
+      <a href="quick-start.html">Quick start</a>
     
     
   </li>
   
   <li >
     
-      <a href="tutorial.html">Tutorial — Microservices and Web Client</a>
-    
-    
-  </li>
-  
-  <li >
-    
-      <a href="tutorial-openapi.html">Tutorial — OpenAPI</a>
+      <a href="algebras-and-interpreters.html">Algebras and interpreters</a>
     
     
   </li>
@@ -221,13 +206,6 @@ descriptions, add the following dependency to the <code class="hljs">server</cod
   <li >
     
       <a href="design.html">Design in a nutshell</a>
-    
-    
-  </li>
-  
-  <li >
-    
-      <a href="interfaces-and-interpreters.html">Algebra interfaces and their interpreters</a>
     
     
   </li>

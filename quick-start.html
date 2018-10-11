@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html class="no-js" lang="eng" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick start</title>
+    <link rel="stylesheet" href="theme/css/foundation.min.css">
+    <link rel="stylesheet" href="theme/css/app.css">
+     <link rel="stylesheet" href="theme/highlight.js/styles/github-gist.css">  <link rel="stylesheet" href="theme/css/mermaid.custom.css"> 
+    
+  </head>
+  <body>
+    <div class="expanded row">
+      <div class="small-12 medium-12 large-12 columns align-self-top">
+        <div class="row">
+          
+          <header class="large-12 columns align-self-top a_header">
+            <div class="row">
+              <div class="large-12 columns a_limited top-bar">
+                <div class="top-bar-left">
+                  <p>endpoints 0.7.0</p>
+
+                </div>
+                <div class="top-bar-right align-right row">
+                  
+                  
+                    <form action="site-search.html" method="get" class="align-right a_search">
+                      <input name="q" type="search"  placeholder="Search
+" >
+                      <button><img alt="&#1F50D;" src="theme/images/search.svg" /></button>
+                    </form>
+                  
+                </div>
+              </div>
+            </div>
+          </header>
+          
+          <div class="small-12 medium-12 large-12 columns align-self-top a_limited a_main">
+            <div class="row">
+              
+              <main class="columns large-order-2 sections" id="_sections">
+                
+                   <noscript> <blockquote class="warning">
+<p>This page requires JavaScript. Please enable JavaScript in your browser.</p>
+</blockquote>
+ </noscript> 
+                
+                <h1 id="quick-start" class="a_section" data-magellan-target="quick-start">Quick start<a class="a_hlink" href="#quick-start"></a></h1>
+<p>The central idea of the <em>endpoints</em> library is that you first describe your
+communication endpoints and then the library provides you:</p>
+<ul>
+<li>a server implementation decoding requests and building responses,</li>
+<li>a client implementation building requests and decoding responses,</li>
+<li>a machine readable documentation (OpenAPI document).</li>
+</ul>
+<h2 id="project-layout" class="a_section" data-magellan-target="project-layout">Project layout<a class="a_hlink" href="#project-layout"></a></h2>
+<p>The typical setup consists in a multi-project build, with
+a <code class="hljs">client</code> project and a <code class="hljs">server</code> project both depending on a <code class="hljs">shared</code>
+project.</p>
+<p>The <code class="hljs">shared</code> project contains the <em>description</em> of the communication
+protocol. The <code class="hljs">server</code> project <em>implements</em> this communication protocol.
+The <code class="hljs">client</code> project <em>uses</em> the protocol to communicate with the <code class="hljs">server</code>.</p>
+<div class="mermaid" id="_id0"><pre class="mermaid_src" style="display: none">graph BT
+  shared
+  server -.-&gt; shared
+  client -.-&gt; shared
+</pre></div>
+<h2 id="dependencies" class="a_section" data-magellan-target="dependencies">Dependencies<a class="a_hlink" href="#dependencies"></a></h2>
+<p>The <code class="hljs">shared</code> project has to depend on so-called <em>algebras</em>, which provide the vocabulary
+to describe the communication endpoints, and the <code class="hljs">client</code> and <code class="hljs">server</code> projects
+have to depend on <em>interpreters</em>, which give a concrete meaning to the endpoint descriptions.
+See the <a href="algebras-and-interpreters.html">algebras and interpreters</a> page for an exhaustive
+list.</p>
+<p>In this example you will use the following dependencies:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> shared =
+  crossProject.crossType(<span class="hljs-type">CrossType</span>.<span class="hljs-type">Pure</span>).settings(
+    libraryDependencies ++= <span class="hljs-type">Seq</span>(
+      <span class="hljs-string">"org.julienrf"</span> %%% <span class="hljs-string">"endpoints-algebra"</span> % <span class="hljs-string">"0.7.0"</span>,
+      <span class="hljs-comment">// optional, see explanation below</span>
+      <span class="hljs-string">"org.julienrf"</span> %%% <span class="hljs-string">"endpoints-json-schema-generic"</span> % <span class="hljs-string">"0.7.0"</span>
+    )
+  )
+
+<span class="hljs-keyword">val</span> sharedJS = shared.js
+<span class="hljs-keyword">val</span> sharedJVM = shared.jvm
+
+<span class="hljs-keyword">val</span> client =
+  project.enablePlugins(<span class="hljs-type">ScalaJSPlugin</span>).settings(
+    libraryDependencies += <span class="hljs-string">"org.julienrf"</span> %%% <span class="hljs-string">"endpoints-xhr-client-circe"</span> % <span class="hljs-string">"0.7.0"</span>
+  ).dependsOn(sharedJS)
+
+<span class="hljs-keyword">val</span> server =
+  project.settings(
+    libraryDependencies ++= <span class="hljs-type">Seq</span>(
+      <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-play-server-circe"</span> % <span class="hljs-string">"0.7.0"</span>,
+      <span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-openapi"</span> % <span class="hljs-string">"0.7.0"</span>,
+      <span class="hljs-string">"org.scala-stm"</span> %% <span class="hljs-string">"scala-stm"</span> % <span class="hljs-string">"0.8"</span>
+    )
+  ).dependsOn(sharedJVM)
+</code></pre>
+</div></div>
+<p>The <code class="hljs">shared</code> project uses the
+<a href="algebras/json-schemas.html#generic-derivation-of-json-schemas"><code class="hljs">endpoints-json-schema-generic</code> module</a>
+in addition to the required algebra interface <a href="algebras/endpoints.html"><code class="hljs">endpoints-algebra</code></a>,
+to define the communication endpoints and to automatically derive the
+JSON schemas of the entities from their Scala type definitions.</p>
+<p>The <code class="hljs">client</code> project uses a <a href="interpreters/scalajs-web.html">Scala.js web</a> client interpreter
+that also turns the JSON schemas defined in the <code class="hljs">shared</code> project into
+circe’s encoders and decoders.</p>
+<p>Finally, the <code class="hljs">server</code> project uses a server interpreter backed by <a href="interpreters/play.html">Play framework</a>,
+which also turns the JSON schemas defined in the <code class="hljs">shared</code> project into
+circe’s encoders and decoders (like the <code class="hljs">client</code> project does), as well as
+an interpreter producing OpenAPI documents.
+It also uses the scala-stm library for implementing the business logic.</p>
+<p>Note that it is not required to use the <code class="hljs">endpoints-openapi</code> interpreters in the
+<code class="hljs">server</code> project, but it is a common practice since the OpenAPI documentation
+is often published by the server.</p>
+<h2 id="description-of-the-http-endpoints" class="a_section" data-magellan-target="description-of-the-http-endpoints">Description of the HTTP endpoints<a class="a_hlink" href="#description-of-the-http-endpoints"></a></h2>
+<p>In the <code class="hljs">shared</code> project, define a <code class="hljs">CounterEndpoints</code> trait describing two endpoints, one
+for getting a counter value and one for incrementing it:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.{algebra, generic}
+
+<span class="hljs-comment">/**
+  * Defines the HTTP endpoints description of a web service implementing a counter.
+  * This web service has two endpoints: one for getting the current value of the counter,
+  * and one for incrementing it.
+  */</span>
+<span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">CounterEndpoints</span></span>
+  <span class="hljs-keyword">extends</span> algebra.<span class="hljs-type">Endpoints</span>
+    <span class="hljs-keyword">with</span> algebra.<span class="hljs-type">JsonSchemaEntities</span>
+    <span class="hljs-keyword">with</span> generic.<span class="hljs-type">JsonSchemas</span> {
+
+  <span class="hljs-comment">/**
+    * Get the counter current value.
+    * Uses the HTTP verb “GET” and URL path “/current-value”.
+    * The response entity is a JSON document representing the counter value.
+    */</span>
+  <span class="hljs-keyword">val</span> currentValue: <span class="hljs-type">Endpoint</span>[<span class="hljs-type">Unit</span>, <span class="hljs-type">Counter</span>] =
+    endpoint(get(path / <span class="hljs-string">"current-value"</span>), jsonResponse[<span class="hljs-type">Counter</span>]())
+
+  <span class="hljs-comment">/**
+    * Increments the counter value.
+    * Uses the HTTP verb “POST” and URL path “/increment”.
+    * The request entity is a JSON document representing the increment to apply to the counter.
+    * The response entity is empty.
+    */</span>
+  <span class="hljs-keyword">val</span> increment: <span class="hljs-type">Endpoint</span>[<span class="hljs-type">Increment</span>, <span class="hljs-type">Unit</span>] =
+    endpoint(post(path / <span class="hljs-string">"increment"</span>, jsonRequest[<span class="hljs-type">Increment</span>]()), emptyResponse())
+
+  <span class="hljs-comment">// Generically derive the JSON schema of our `Counter`</span>
+  <span class="hljs-comment">// and `Increment` case classes defined thereafter</span>
+  <span class="hljs-keyword">implicit</span> <span class="hljs-keyword">lazy</span> <span class="hljs-keyword">val</span> counterSchema: <span class="hljs-type">JsonSchema</span>[<span class="hljs-type">Counter</span>] = genericJsonSchema
+  <span class="hljs-keyword">implicit</span> <span class="hljs-keyword">lazy</span> <span class="hljs-keyword">val</span> incrementSchema: <span class="hljs-type">JsonSchema</span>[<span class="hljs-type">Increment</span>] = genericJsonSchema
+
+}
+
+<span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span>(<span class="hljs-params">value: <span class="hljs-type">Int</span></span>)</span>
+<span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Increment</span>(<span class="hljs-params">step: <span class="hljs-type">Int</span></span>)</span></code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/documentation/examples/quickstart/endpoints/src/main/scala/quickstart/CounterEndpoints.scala#L4-L41" class="a_sourcelink">CounterEndpoints.scala</a></div></div>
+<p>The <code class="hljs">currentValue</code> and <code class="hljs">increment</code> members define the endpoints for getting the counter
+current value or incrementing it, as their names suggest. The <code class="hljs">counterSchema</code> and
+<code class="hljs">incrementSchema</code> members define a JSON schema that will be used to serialize and
+deserialize the request and response entities.</p>
+<h2 id="client-implementation" class="a_section" data-magellan-target="client-implementation">Client implementation<a class="a_hlink" href="#client-implementation"></a></h2>
+<p>A client implementation of the endpoints can be obtained by mixing so-called “interpreters” to the <code class="hljs">CounterEndpoints</code>
+trait defined above. In this example, you want to get a JavaScript (Scala.js) client that uses <code class="hljs">XMLHttpRequest</code> under
+the hood. Defines the following <code class="hljs">CounterClient</code> object in the <code class="hljs">client</code> project:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.xhr
+
+<span class="hljs-comment">/**
+  * Defines an HTTP client for the endpoints described in the `CounterEndpoints` trait.
+  * The derived HTTP client uses XMLHttpRequest to perform requests and returns
+  * results in a `js.Thenable`.
+  */</span>
+<span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">CounterClient</span></span>
+  <span class="hljs-keyword">extends</span> <span class="hljs-type">CounterEndpoints</span>
+    <span class="hljs-keyword">with</span> xhr.thenable.<span class="hljs-type">Endpoints</span>
+    <span class="hljs-keyword">with</span> xhr.circe.<span class="hljs-type">JsonSchemaEntities</span></code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/documentation/examples/quickstart/client/src/main/scala/quickstart/CounterClient.scala#L4-L14" class="a_sourcelink">CounterClient.scala</a></div></div>
+<p>And then, the <code class="hljs">CounterClient</code> object can be used as follows:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> scala.scalajs.js
+
+<span class="hljs-comment">/**
+  * Performs an XMLHttpRequest on the `currentValue` endpoint, and then
+  * deserializes the JSON response as a `Counter`.
+  */</span>
+<span class="hljs-keyword">val</span> eventuallyCounter: js.<span class="hljs-type">Thenable</span>[<span class="hljs-type">Counter</span>] = <span class="hljs-type">CounterClient</span>.currentValue(())</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/documentation/examples/quickstart/client/src/main/scala/quickstart/Usage.scala#L6-L12" class="a_sourcelink">Usage.scala</a></div></div>
+<p>And also:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">/**
+  * Serializes the `Increment` value into JSON and performs an XMLHttpRequest
+  * on the `increment` endpoint.
+  */</span>
+<span class="hljs-keyword">val</span> eventuallyDone: js.<span class="hljs-type">Thenable</span>[<span class="hljs-type">Unit</span>] = <span class="hljs-type">CounterClient</span>.increment(<span class="hljs-type">Increment</span>(<span class="hljs-number">42</span>))</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/documentation/examples/quickstart/client/src/main/scala/quickstart/Usage.scala#L16-L20" class="a_sourcelink">Usage.scala</a></div></div>
+<p>As you can see, invoking an endpoint is as easy as calling a method on the <code class="hljs">CounterClient</code> object.
+The <em>endpoints</em> library then builds an HTTP request (according to the endpoint description), sends
+it to the server, and eventually decodes the HTTP response (according to the endpoint description).</p>
+<h2 id="server-implementation" class="a_section" data-magellan-target="server-implementation">Server implementation<a class="a_hlink" href="#server-implementation"></a></h2>
+<p>Similarly, a server implementation of the endpoints can be obtained by mixing the appropriate
+interpreters to the <code class="hljs">CounterEndpoints</code> trait. In this example, you want to get a JVM server
+that uses Play framework under the hood. Create the following <code class="hljs">CounterServer</code> class in the
+<code class="hljs">server</code> project:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.play.server
+<span class="hljs-keyword">import</span> endpoints.play.server.<span class="hljs-type">PlayComponents</span>
+
+<span class="hljs-keyword">import</span> scala.concurrent.stm.<span class="hljs-type">Ref</span>
+<span class="hljs-keyword">import</span> play.api.routing.<span class="hljs-type">Router</span>
+
+<span class="hljs-comment">/**
+  * Defines a Play router (and reverse router) for the endpoints described
+  * in the `CounterEndpoints` trait.
+  */</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CounterServer</span>(<span class="hljs-params">protected val playComponents: <span class="hljs-type">PlayComponents</span></span>)</span>
+  <span class="hljs-keyword">extends</span> <span class="hljs-type">CounterEndpoints</span>
+    <span class="hljs-keyword">with</span> server.<span class="hljs-type">Endpoints</span>
+    <span class="hljs-keyword">with</span> server.circe.<span class="hljs-type">JsonSchemaEntities</span> {
+
+  <span class="hljs-comment">/** Simple implementation of an in-memory counter */</span>
+  <span class="hljs-keyword">val</span> counter = <span class="hljs-type">Ref</span>(<span class="hljs-number">0</span>)
+
+  <span class="hljs-keyword">val</span> routes: <span class="hljs-type">Router</span>.<span class="hljs-type">Routes</span> = routesFromEndpoints(
+
+    <span class="hljs-comment">/** Implements the `currentValue` endpoint */</span>
+    currentValue.implementedBy(_ =&gt; <span class="hljs-type">Counter</span>(counter.single.get)),
+
+    <span class="hljs-comment">/** Implements the `increment` endpoint */</span>
+    increment.implementedBy(inc =&gt; counter.single += inc.step)
+
+  )
+
+}</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/documentation/examples/quickstart/server/src/main/scala/quickstart/CounterServer.scala#L4-L32" class="a_sourcelink">CounterServer.scala</a></div></div>
+<p>The <code class="hljs">routes</code> value produced by the <em>endpoints</em> library is a <code class="hljs">Routes</code> value directly
+usable by Play framework. The last section shows how to setup a Play server that
+uses these routes.</p>
+<p>The routes implementations provided by <em>endpoints</em> decode the incoming HTTP requests, call the corresponding logic
+(here, incrementing the counter or getting its current value), and build the HTTP responses.</p>
+<h2 id="documentation-generation" class="a_section" data-magellan-target="documentation-generation">Documentation generation<a class="a_hlink" href="#documentation-generation"></a></h2>
+<p>You can also generate documentation for the endpoints,
+again by mixing the appropriate interpreters. Create the following <code class="hljs">CounterDocumentation</code>
+object in the <code class="hljs">server</code> project:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.openapi
+<span class="hljs-keyword">import</span> endpoints.openapi.model.{<span class="hljs-type">Info</span>, <span class="hljs-type">OpenApi</span>}
+
+<span class="hljs-comment">/**
+  * Generates OpenAPI documentation for the endpoints described in the `CounterEndpoints` trait.
+  */</span>
+<span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">CounterDocumentation</span></span>
+  <span class="hljs-keyword">extends</span> <span class="hljs-type">CounterEndpoints</span>
+    <span class="hljs-keyword">with</span> openapi.<span class="hljs-type">Endpoints</span>
+    <span class="hljs-keyword">with</span> openapi.<span class="hljs-type">JsonSchemaEntities</span> {
+
+  <span class="hljs-keyword">val</span> api: <span class="hljs-type">OpenApi</span> =
+    openApi(
+      <span class="hljs-type">Info</span>(title = <span class="hljs-string">"API to manipulate a counter"</span>, version = <span class="hljs-string">"1.0.0"</span>)
+    )(currentValue, increment)
+
+}</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/documentation/examples/quickstart/server/src/main/scala/quickstart/CounterDocumentation.scala#L4-L20" class="a_sourcelink">CounterDocumentation.scala</a></div></div>
+<p>This code defines a <code class="hljs">CounterDocumentation</code> object with an <code class="hljs">api</code> member containing an OpenAPI object documenting
+the <code class="hljs">currentValue</code> and <code class="hljs">increment</code> endpoints.</p>
+<h2 id="running-the-application" class="a_section" data-magellan-target="running-the-application">Running the application<a class="a_hlink" href="#running-the-application"></a></h2>
+<p>Finally, to run your application you need to build a proper Play server serving your routes.
+Define the following <code class="hljs">Main</code> object:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.openapi.model.<span class="hljs-type">OpenApi</span>
+<span class="hljs-keyword">import</span> endpoints.play.server
+<span class="hljs-keyword">import</span> endpoints.play.server.{<span class="hljs-type">DefaultPlayComponents</span>, <span class="hljs-type">HttpServer</span>, <span class="hljs-type">PlayComponents</span>}
+<span class="hljs-keyword">import</span> play.core.server.<span class="hljs-type">ServerConfig</span>
+
+<span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">Main</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">App</span> </span>{
+  <span class="hljs-keyword">val</span> config = <span class="hljs-type">ServerConfig</span>()
+  <span class="hljs-keyword">val</span> playComponents = <span class="hljs-keyword">new</span> <span class="hljs-type">DefaultPlayComponents</span>(config)
+  <span class="hljs-keyword">val</span> counterServer = <span class="hljs-keyword">new</span> <span class="hljs-type">CounterServer</span>(playComponents)
+  <span class="hljs-keyword">val</span> documentationServer = <span class="hljs-keyword">new</span> <span class="hljs-type">DocumentationServer</span>(playComponents)
+  <span class="hljs-type">HttpServer</span>(config, playComponents, counterServer.routes orElse documentationServer.routes)
+}
+
+<span class="hljs-comment">// Additional route for serving the OpenAPI documentation</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DocumentationServer</span>(<span class="hljs-params">val playComponents: <span class="hljs-type">PlayComponents</span></span>)</span>
+  <span class="hljs-keyword">extends</span> server.<span class="hljs-type">Endpoints</span>
+    <span class="hljs-keyword">with</span> server.circe.<span class="hljs-type">JsonEntities</span> {
+
+  <span class="hljs-keyword">val</span> routes = routesFromEndpoints(
+    endpoint(get(path / <span class="hljs-string">"documentation.json"</span>), jsonResponse[<span class="hljs-type">OpenApi</span>]())
+      .implementedBy(_ =&gt; <span class="hljs-type">CounterDocumentation</span>.api)
+  )
+
+}</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/documentation/examples/quickstart/server/src/main/scala/quickstart/Main.scala#L4-L29" class="a_sourcelink">Main.scala</a></div></div>
+<p>You can then browse the
+<a href="http://localhost:9000/current-value">http://localhost:9000/current-value</a>
+URL to query the counter value, or the
+<a href="http://localhost:9000/current-value">http://localhost:9000/documentation.json</a>
+URL to get the generated OpenAPI documentation, which should look like
+the following:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-javascript">{
+  <span class="hljs-string">"components"</span>: {
+    <span class="hljs-string">"schemas"</span>: {
+      <span class="hljs-string">"quickstart.Counter"</span>: {
+        <span class="hljs-string">"required"</span>: [
+          <span class="hljs-string">"value"</span>
+        ],
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"object"</span>,
+        <span class="hljs-string">"properties"</span>: {
+          <span class="hljs-string">"value"</span>: {
+            <span class="hljs-string">"type"</span>: <span class="hljs-string">"integer"</span>,
+            <span class="hljs-string">"format"</span>: <span class="hljs-string">"int32"</span>
+          }
+        }
+      },
+      <span class="hljs-string">"quickstart.Increment"</span>: {
+        <span class="hljs-string">"required"</span>: [
+          <span class="hljs-string">"step"</span>
+        ],
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"object"</span>,
+        <span class="hljs-string">"properties"</span>: {
+          <span class="hljs-string">"step"</span>: {
+            <span class="hljs-string">"type"</span>: <span class="hljs-string">"integer"</span>,
+            <span class="hljs-string">"format"</span>: <span class="hljs-string">"int32"</span>
+          }
+        }
+      }
+    }
+  },
+  <span class="hljs-string">"openapi"</span>: <span class="hljs-string">"3.0.0"</span>,
+  <span class="hljs-string">"info"</span>: {
+    <span class="hljs-string">"title"</span>: <span class="hljs-string">"API to manipulate a counter"</span>,
+    <span class="hljs-string">"version"</span>: <span class="hljs-string">"1.0.0"</span>
+  },
+  <span class="hljs-string">"paths"</span>: {
+    <span class="hljs-string">"/increment"</span>: {
+      <span class="hljs-string">"post"</span>: {
+        <span class="hljs-string">"responses"</span>: {
+          <span class="hljs-string">"200"</span>: {
+            <span class="hljs-string">"description"</span>: <span class="hljs-string">""</span>
+          }
+        },
+        <span class="hljs-string">"requestBody"</span>: {
+          <span class="hljs-string">"content"</span>: {
+            <span class="hljs-string">"application/json"</span>: {
+              <span class="hljs-string">"schema"</span>: {
+                <span class="hljs-string">"$ref"</span>: <span class="hljs-string">"#/components/schemas/quickstart.Increment"</span>
+              }
+            }
+          }
+        }
+      }
+    },
+    <span class="hljs-string">"/current-value"</span>: {
+      <span class="hljs-string">"get"</span>: {
+        <span class="hljs-string">"responses"</span>: {
+          <span class="hljs-string">"200"</span>: {
+            <span class="hljs-string">"description"</span>: <span class="hljs-string">""</span>,
+            <span class="hljs-string">"content"</span>: {
+              <span class="hljs-string">"application/json"</span>: {
+                <span class="hljs-string">"schema"</span>: {
+                  <span class="hljs-string">"$ref"</span>: <span class="hljs-string">"#/components/schemas/quickstart.Counter"</span>
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</code></pre>
+</div></div>
+
+              </main>
+              
+              
+                <div data-sticky-container class="small-12 medium-12 large-2 large-order-1 columns a_sitenav_container">
+                  <nav class="a_sitenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                    
+                  <ul>
+                     
+  <li >
+    
+      <a href="index.html">Introduction</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="use-cases.html">Use Cases</a>
+    
+    
+  </li>
+  
+  <li  class="a_thispage" >
+    
+      <a href="quick-start.html">Quick start</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="algebras-and-interpreters.html">Algebras and interpreters</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="design.html">Design in a nutshell</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="comparison.html">Comparison with similar tools</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="talks.html">Talks and Publications</a>
+    
+    
+  </li>
+ 
+                  </ul>
+                  </nav>
+                </div>
+              
+              
+              
+                <div class="small-12 medium-12 large-2 large-order-3 columns a_show-for-xlarge" data-sticky-container>
+                  <nav class="a_pagenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                     <header><p>On This Page</p>
+</header> 
+                    <ul class="vertical menu" data-magellan>
+                       
+  <li>
+    
+       <a href="#quick-start">Quick start</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#project-layout">Project layout</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#dependencies">Dependencies</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#description-of-the-http-endpoints">Description of the HTTP endpoints</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#client-implementation">Client implementation</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#server-implementation">Server implementation</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#documentation-generation">Documentation generation</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#running-the-application">Running the application</a> 
+    
+    
+  </li>
+  </ul>
+    
+  </li>
+ 
+                    </ul>
+                  </nav>
+                </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer class="small-12 medium-12 large-12 columns align-self-bottom a_footer">
+        <div class="row">
+          <div class="small-12 medium-12 large-12 columns top-bar">
+            <div class="top-bar-left">
+              
+            </div>
+            <div class="top-bar-right">
+              <p>Generated with <a href="https://github.com/szeiger/ornate">Ornate</a>.</p>
+
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="theme/js/jquery.min.js"></script>
+    <script src="theme/js/what-input.min.js"></script>
+    <script src="theme/js/foundation.min.js"></script>
+     <script src="theme/js/mermaidAPI-0.5.8.min.js"></script> 
+    <script src="theme/js/app.js"></script>
+    
+  </body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html class="no-js" lang="eng" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assets</title>
+    <link rel="stylesheet" href="../theme/css/foundation.min.css">
+    <link rel="stylesheet" href="../theme/css/app.css">
+     <link rel="stylesheet" href="../theme/highlight.js/styles/github-gist.css"> 
+    
+  </head>
+  <body>
+    <div class="expanded row">
+      <div class="small-12 medium-12 large-12 columns align-self-top">
+        <div class="row">
+          
+          <header class="large-12 columns align-self-top a_header">
+            <div class="row">
+              <div class="large-12 columns a_limited top-bar">
+                <div class="top-bar-left">
+                  <p>endpoints 0.7.0</p>
+
+                </div>
+                <div class="top-bar-right align-right row">
+                  
+                  
+                    <form action="../site-search.html" method="get" class="align-right a_search">
+                      <input name="q" type="search"  placeholder="Search
+" >
+                      <button><img alt="&#1F50D;" src="../theme/images/search.svg" /></button>
+                    </form>
+                  
+                </div>
+              </div>
+            </div>
+          </header>
+          
+          <div class="small-12 medium-12 large-12 columns align-self-top a_limited a_main">
+            <div class="row">
+              
+              <main class="columns large-order-2 sections" id="_sections">
+                
+                <h1 id="assets" class="a_section" data-magellan-target="assets"><code class="hljs">Assets</code><a class="a_hlink" href="#assets"></a></h1>
+<p>This algebra provides vocabulary to define endpoints serving static assets.</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra"</span> % <span class="hljs-string">"0.7.0"</span>
+</code></pre>
+</div></div>
+<p><a href="../api/0.7.0/index.html#endpoints.algebra.Assets">API documentation</a></p>
+<p>The module enriches the <code class="hljs">Endpoints</code> algebra with new constructors for endpoints and
+path segments. It also introduces the concepts of <code class="hljs">AssetRequest</code>, <code class="hljs">AssetResponse</code>
+and <code class="hljs">AssetPath</code>. The typical usage looks like the following:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> assets: <span class="hljs-type">Endpoint</span>[<span class="hljs-type">AssetRequest</span>, <span class="hljs-type">AssetResponse</span>] =
+  assetsEndpoint(path / <span class="hljs-string">"assets"</span> / assetSegments())</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/algebras/algebra/src/test/scala/endpoints/algebra/AssetsDocs.scala#L6-L7" class="a_sourcelink">AssetsDocs.scala</a></div></div>
+<p>The <code class="hljs">assetsSegments</code> method defines a path containing (possibly) multiple segments.</p>
+<p>The concrete instantiation of the <code class="hljs">AssetRequest</code> and <code class="hljs">AssetResponse</code> types is left to
+interpreters. Typically, <code class="hljs">AssetResponse</code> is mapped to binary data. Interpreters also
+have to provide a constructor for <code class="hljs">AssetRequest</code>, so that the endpoint can be called.
+Typically, such constructors take the path of the asset as a <code class="hljs">String</code> parameter.</p>
+<p>Server interpreters are encouraged to leverage caching HTTP headers such as <code class="hljs">ETag</code>
+or <code class="hljs">Cache-Control</code>, and gzip content encoding. Incidentally, the algebra provides
+an abstract <code class="hljs">digest: Map[String, String]</code> member to be overridden by users with
+digests uniquely identifying the assets:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> digests = <span class="hljs-type">Map</span>(<span class="hljs-string">"main.css"</span> -&gt; <span class="hljs-string">"2018-10-09T14:32:12Z"</span>)</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/algebras/algebra/src/test/scala/endpoints/algebra/AssetsDocs.scala" class="a_sourcelink">AssetsDocs.scala</a></div></div>
+<p>The content of the digests can be included to the asset segments so that servers
+know that the requested version of the asset matches the one it uses, enabling servers
+to indefinitely cache the asset.</p>
+
+              </main>
+              
+              
+                <div data-sticky-container class="small-12 medium-12 large-2 large-order-1 columns a_sitenav_container">
+                  <nav class="a_sitenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                    
+                  <ul>
+                     
+  <li >
+    
+      <a href="../index.html">Introduction</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../use-cases.html">Use Cases</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../quick-start.html">Quick start</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../algebras-and-interpreters.html">Algebras and interpreters</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../design.html">Design in a nutshell</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../comparison.html">Comparison with similar tools</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../talks.html">Talks and Publications</a>
+    
+    
+  </li>
+ 
+                  </ul>
+                  </nav>
+                </div>
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer class="small-12 medium-12 large-12 columns align-self-bottom a_footer">
+        <div class="row">
+          <div class="small-12 medium-12 large-12 columns top-bar">
+            <div class="top-bar-left">
+              
+            </div>
+            <div class="top-bar-right">
+              <p>Generated with <a href="https://github.com/szeiger/ornate">Ornate</a>.</p>
+
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="../theme/js/jquery.min.js"></script>
+    <script src="../theme/js/what-input.min.js"></script>
+    <script src="../theme/js/foundation.min.js"></script>
+    
+    <script src="../theme/js/app.js"></script>
+    
+  </body>
+</html>

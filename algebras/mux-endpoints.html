@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html class="no-js" lang="eng" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MuxEndpoints</title>
+    <link rel="stylesheet" href="../theme/css/foundation.min.css">
+    <link rel="stylesheet" href="../theme/css/app.css">
+     <link rel="stylesheet" href="../theme/highlight.js/styles/github-gist.css"> 
+    
+  </head>
+  <body>
+    <div class="expanded row">
+      <div class="small-12 medium-12 large-12 columns align-self-top">
+        <div class="row">
+          
+          <header class="large-12 columns align-self-top a_header">
+            <div class="row">
+              <div class="large-12 columns a_limited top-bar">
+                <div class="top-bar-left">
+                  <p>endpoints 0.7.0</p>
+
+                </div>
+                <div class="top-bar-right align-right row">
+                  
+                  
+                    <form action="../site-search.html" method="get" class="align-right a_search">
+                      <input name="q" type="search"  placeholder="Search
+" >
+                      <button><img alt="&#1F50D;" src="../theme/images/search.svg" /></button>
+                    </form>
+                  
+                </div>
+              </div>
+            </div>
+          </header>
+          
+          <div class="small-12 medium-12 large-12 columns align-self-top a_limited a_main">
+            <div class="row">
+              
+              <main class="columns large-order-2 sections" id="_sections">
+                
+                <h1 id="muxendpoints" class="a_section" data-magellan-target="muxendpoints"><code class="hljs">MuxEndpoints</code><a class="a_hlink" href="#muxendpoints"></a></h1>
+<p>This algebra provides vocabulary to define endpoints multiplexing several
+requests and responses.</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra"</span> % <span class="hljs-string">"0.7.0"</span>
+</code></pre>
+</div></div>
+<p><a href="../api/0.7.0/index.html#endpoints.algebra.MuxEndpoints">API documentation</a></p>
+<p>In general, each possible resource or action supported by a service
+is exposed through a specific endpoint, taking a specific request type
+and a specific response type.</p>
+<p>However, in some cases it is useful to use a same endpoint to manage
+several resources or actions. We call them <em>multiplexed</em> endpoints.</p>
+<p>The algebra enriches the <code class="hljs">Endpoints</code> algebra with the concept of
+<code class="hljs">MuxEndpoint[Req, Resp, Transport]</code>, defining a multiplexed endpoint
+with a request containing a type <code class="hljs">Req</code>, a response of type <code class="hljs">Resp</code>, and
+serializing data to and from the <code class="hljs">Transport</code> type.</p>
+<p>For instance, the type <code class="hljs">MuxEndpoint[Command, Event, Json]</code> defines
+and endpoint whose requests contain <code class="hljs">Command</code> values, whose responses
+contain <code class="hljs">Event</code> values, and which serialize commands and events to <code class="hljs">Json</code>.</p>
+<p>Since the type of a response can vary according to the type of specific request,
+multiplexed endpoints require that request types extend the <code class="hljs">MuxRequest</code> type:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> users: <span class="hljs-type">MuxEndpoint</span>[<span class="hljs-type">Command</span>, <span class="hljs-type">Event</span>, <span class="hljs-type">Json</span>] =
+  muxEndpoint[<span class="hljs-type">Command</span>, <span class="hljs-type">Event</span>, <span class="hljs-type">Json</span>](
+    post(path / <span class="hljs-string">"users"</span>, jsonRequest[<span class="hljs-type">Json</span>]()),
+    jsonResponse[<span class="hljs-type">Json</span>]()
+  )
+
+<span class="hljs-comment">// Types of commands</span>
+<span class="hljs-keyword">sealed</span> <span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">Command</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">MuxRequest</span></span>
+<span class="hljs-keyword">final</span> <span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CreateUser</span>(<span class="hljs-params">name: <span class="hljs-type">String</span></span>) <span class="hljs-keyword">extends</span> <span class="hljs-title">Command</span> </span>{
+  <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Response</span> </span>= <span class="hljs-type">UserCreated</span>
+}
+<span class="hljs-keyword">final</span> <span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DeleteUser</span>(<span class="hljs-params">id: <span class="hljs-type">Long</span></span>) <span class="hljs-keyword">extends</span> <span class="hljs-title">Command</span> </span>{
+  <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Response</span> </span>= <span class="hljs-type">UserDeleted</span>
+}
+
+<span class="hljs-comment">// Types of responses</span>
+<span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">Event</span></span>
+<span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserCreated</span>(<span class="hljs-params">id: <span class="hljs-type">Long</span></span>) <span class="hljs-keyword">extends</span> <span class="hljs-title">Event</span></span>
+<span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserDeleted</span>(<span class="hljs-params">id: <span class="hljs-type">Long</span></span>) <span class="hljs-keyword">extends</span> <span class="hljs-title">Event</span></span></code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/algebras/algebra/src/test/scala/endpoints/algebra/MuxEndpointsDocs.scala#L11-L29" class="a_sourcelink">MuxEndpointsDocs.scala</a></div></div>
+<p>Note that the <code class="hljs">Command</code> request type extends <code class="hljs">MuxRequest</code> and that each
+concrete <code class="hljs">Command</code> refines its <code class="hljs">Response</code> type member to refer to a
+concrete <code class="hljs">Event</code> type.</p>
+<p>Typically, client interpreters fix the <code class="hljs">MuxEndpoint[Req, Resp, Transport]</code>
+type to be a function from <code class="hljs">Req</code> to <code class="hljs">Future[Req#Response]</code>, so that
+calling <code class="hljs">users(CreateUser(&quot;Alice&quot;))</code> (statically) returns a <code class="hljs">Future[CreatedUser]</code>,
+and calling <code class="hljs">users(DeleteUser(42))</code> returns a <code class="hljs">Future[DeletedUser]</code>.</p>
+
+              </main>
+              
+              
+                <div data-sticky-container class="small-12 medium-12 large-2 large-order-1 columns a_sitenav_container">
+                  <nav class="a_sitenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                    
+                  <ul>
+                     
+  <li >
+    
+      <a href="../index.html">Introduction</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../use-cases.html">Use Cases</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../quick-start.html">Quick start</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../algebras-and-interpreters.html">Algebras and interpreters</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../design.html">Design in a nutshell</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../comparison.html">Comparison with similar tools</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../talks.html">Talks and Publications</a>
+    
+    
+  </li>
+ 
+                  </ul>
+                  </nav>
+                </div>
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer class="small-12 medium-12 large-12 columns align-self-bottom a_footer">
+        <div class="row">
+          <div class="small-12 medium-12 large-12 columns top-bar">
+            <div class="top-bar-left">
+              
+            </div>
+            <div class="top-bar-right">
+              <p>Generated with <a href="https://github.com/szeiger/ornate">Ornate</a>.</p>
+
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="../theme/js/jquery.min.js"></script>
+    <script src="../theme/js/what-input.min.js"></script>
+    <script src="../theme/js/foundation.min.js"></script>
+    
+    <script src="../theme/js/app.js"></script>
+    
+  </body>
+</html>
