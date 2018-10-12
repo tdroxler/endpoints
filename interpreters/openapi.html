@@ -55,21 +55,21 @@ to generate an OpenAPI document.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> someResource: <span class="hljs-type">Endpoint</span>[<span class="hljs-type">Int</span>, <span class="hljs-type">String</span>] =
   endpoint(get(path / <span class="hljs-string">"some-resource"</span> / segment[<span class="hljs-type">Int</span>]()), textResponse())</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/algebras/algebra/src/test/scala/endpoints/algebra/EndpointsDocs.scala#L65-L66" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/5a8f5e7227809181c8c6b9c92a38049f3bb79366/algebras/algebra/src/test/scala/endpoints/algebra/EndpointsDocs.scala#L65-L66" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
 <p>It can be documented as follows:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> api: <span class="hljs-type">OpenApi</span> =
   openApi(<span class="hljs-type">Info</span>(title = <span class="hljs-string">"API to get some resource"</span>, version = <span class="hljs-string">"1.0"</span>))(
     someResource
   )</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/openapi/openapi/src/test/scala/endpoints/openapi/EndpointsDocs.scala#L11-L14" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/5a8f5e7227809181c8c6b9c92a38049f3bb79366/openapi/openapi/src/test/scala/endpoints/openapi/EndpointsDocs.scala#L11-L14" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
 <p>The value returned by the <code class="hljs">openApi</code> method has type <code class="hljs">endpoints.openapi.models.OpenApi</code>,
 which is an abstract model for OpenAPI documents. You can generate a JSON
 representation of it, which you can then publish by your server, by
 serializing it into JSON. For instance, using circe:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> apiJson: <span class="hljs-type">Json</span> = api.asJson</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/openapi/openapi/src/test/scala/endpoints/openapi/EndpointsDocs.scala" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/5a8f5e7227809181c8c6b9c92a38049f3bb79366/openapi/openapi/src/test/scala/endpoints/openapi/EndpointsDocs.scala" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
 <h2 id="json-entities" class="a_section" data-magellan-target="json-entities">JSON entities<a class="a_hlink" href="#json-entities"></a></h2>
 <p>To properly document the underlying JSON schema of your JSON entities,
 you have to define these schemas by using the

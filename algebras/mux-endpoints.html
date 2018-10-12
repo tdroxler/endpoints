@@ -83,7 +83,7 @@ multiplexed endpoints require that request types extend the <code class="hljs">M
 <span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">Event</span></span>
 <span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserCreated</span>(<span class="hljs-params">id: <span class="hljs-type">Long</span></span>) <span class="hljs-keyword">extends</span> <span class="hljs-title">Event</span></span>
 <span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserDeleted</span>(<span class="hljs-params">id: <span class="hljs-type">Long</span></span>) <span class="hljs-keyword">extends</span> <span class="hljs-title">Event</span></span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/v0.7.0/algebras/algebra/src/test/scala/endpoints/algebra/MuxEndpointsDocs.scala#L11-L29" class="a_sourcelink">MuxEndpointsDocs.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/5a8f5e7227809181c8c6b9c92a38049f3bb79366/algebras/algebra/src/test/scala/endpoints/algebra/MuxEndpointsDocs.scala#L11-L29" class="a_sourcelink">MuxEndpointsDocs.scala</a></div></div>
 <p>Note that the <code class="hljs">Command</code> request type extends <code class="hljs">MuxRequest</code> and that each
 concrete <code class="hljs">Command</code> refines its <code class="hljs">Response</code> type member to refer to a
 concrete <code class="hljs">Event</code> type.</p>
