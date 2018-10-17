@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>endpoints</title>
+    <title>Guides</title>
     <link rel="stylesheet" href="theme/css/foundation.min.css">
     <link rel="stylesheet" href="theme/css/app.css">
     
@@ -41,45 +41,17 @@
               
               <main class="columns large-order-2 sections" id="_sections">
                 
-                <h1 id="endpoints" class="a_section" data-magellan-target="endpoints">endpoints<a class="a_hlink" href="#endpoints"></a></h1>
-<p><em>endpoints</em> is a Scala library for defining communication protocols over HTTP between
-applications.</p>
-<p>Noteworthy features:</p>
-<ul>
-<li>endpoints descriptions are <strong>first-class Scala values</strong>, which can be reused,
-combined and abstracted over ;</li>
-<li>a <em>same</em> endpoint description can be interpreted in <em>multiple</em> ways:
-<ul>
-<li>a <strong>client</strong> implementation (JVM and/or Scala.js),</li>
-<li>a <strong>server</strong> implementation,</li>
-<li>an <strong>OpenAPI</strong> definition file,</li>
-<li>thus, your client and documentation are always <strong>consistent</strong> with the actual
-implementation of your server,</li>
-</ul>
-</li>
-<li><strong>type safety</strong>: you get a compile-time error if you invoke an endpoint but supply incorrect data
-(requests are guaranteed to be well constructed),</li>
-<li><strong>extensibility</strong>: you can introduce both
-<ul>
-<li>new <em>descriptions</em> that are specific to your application (e.g. the usage
-of a particular HTTP header),</li>
-<li>new <em>interpreters</em> for endpoint descriptions (e.g. generation of a RAML documentation),</li>
-</ul>
-</li>
-<li><strong>vanilla Scala</strong>: being written in pure Scala (no macros), the implementation is easy to
-reason about and IDE friendly.</li>
-</ul>
-<h2 id="getting-started" class="a_section" data-magellan-target="getting-started">Getting started<a class="a_hlink" href="#getting-started"></a></h2>
-<ul>
-<li>Have a look at the <a href="quick-start.html">quick start</a> guide to understand
-in a few minutes what the library does and how to setup a project ;</li>
-<li>Check out the <a href="use-cases.html">use cases</a> to know where <em>endpoints</em> shines ;</li>
-<li>Browse the <a href="api/0.7.0/index.html#endpoints.algebra.package">API documentation</a> or the
-<a href="https://github.com/julienrf/endpoints/tree/master/documentation/examples">samples</a> ;</li>
-<li>Get in touch in the <a href="https://gitter.im/julienrf/endpoints">gitter room</a>.</li>
-</ul>
-<h2 id="contributing" class="a_section" data-magellan-target="contributing">Contributing<a class="a_hlink" href="#contributing"></a></h2>
-<p>See the <a href="https://github.com/julienrf/endpoints">Github repository</a>.</p>
+                <h1 id="guides" class="a_section" data-magellan-target="guides">Guides<a class="a_hlink" href="#guides"></a></h1>
+<p>This part of the documentation provides in-depth guides for specific features.</p>
+<h2 id="extending-endpoints-with-application-specific-concepts" class="a_section" data-magellan-target="extending-endpoints-with-application-specific-concepts">Extending <em>endpoints</em> with application-specific concepts<a class="a_hlink" href="#extending-endpoints-with-application-specific-concepts"></a></h2>
+<p>When you have application-specific aspects of your communication endpoints
+that are not covered by <em>endpoints</em> you can extend the algebras and their
+interpreters to include them.</p>
+<p>Typically, each application has its own way of dealing with authentication.
+The <a href="guides/custom-authentication.html">custom authentication</a> guide shows how
+to enrich the algebras with authentication-related vocabulary and how to
+extend the client and server interpreters to consistently implement the
+application-specific authentication mechanism.</p>
 
               </main>
               
@@ -89,7 +61,7 @@ in a few minutes what the library does and how to setup a project ;</li>
                     
                   <ul>
                      
-  <li  class="a_thispage" >
+  <li >
     
       <a href="index.html">Introduction</a>
     
@@ -124,7 +96,7 @@ in a few minutes what the library does and how to setup a project ;</li>
     
   </li>
   
-  <li >
+  <li  class="a_thispage" >
     
       <a href="guides.html">Guides</a>
     
@@ -159,20 +131,13 @@ in a few minutes what the library does and how to setup a project ;</li>
                        
   <li>
     
-       <a href="#endpoints">endpoints</a> 
+       <a href="#guides">Guides</a> 
     
     
       <ul class="vertical menu">  
   <li>
     
-       <a href="#getting-started">Getting started</a> 
-    
-    
-  </li>
-  
-  <li>
-    
-       <a href="#contributing">Contributing</a> 
+       <a href="#extending-endpoints-with-application-specific-concepts">Extending endpoints with application-specific concepts</a> 
     
     
   </li>

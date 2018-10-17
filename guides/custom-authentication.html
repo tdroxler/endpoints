@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html class="no-js" lang="eng" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application-specific authentication</title>
+    <link rel="stylesheet" href="../theme/css/foundation.min.css">
+    <link rel="stylesheet" href="../theme/css/app.css">
+     <link rel="stylesheet" href="../theme/highlight.js/styles/github-gist.css">  <link rel="stylesheet" href="../theme/css/mermaid.custom.css"> 
+    
+  </head>
+  <body>
+    <div class="expanded row">
+      <div class="small-12 medium-12 large-12 columns align-self-top">
+        <div class="row">
+          
+          <header class="large-12 columns align-self-top a_header">
+            <div class="row">
+              <div class="large-12 columns a_limited top-bar">
+                <div class="top-bar-left">
+                  <p>endpoints 0.7.0</p>
+
+                </div>
+                <div class="top-bar-right align-right row">
+                  
+                  
+                    <form action="../site-search.html" method="get" class="align-right a_search">
+                      <input name="q" type="search"  placeholder="Search
+" >
+                      <button><img alt="&#1F50D;" src="../theme/images/search.svg" /></button>
+                    </form>
+                  
+                </div>
+              </div>
+            </div>
+          </header>
+          
+          <div class="small-12 medium-12 large-12 columns align-self-top a_limited a_main">
+            <div class="row">
+              
+              <main class="columns large-order-2 sections" id="_sections">
+                
+                   <noscript> <blockquote class="warning">
+<p>This page requires JavaScript. Please enable JavaScript in your browser.</p>
+</blockquote>
+ </noscript> 
+                
+                <h1 id="application-specific-authentication" class="a_section" data-magellan-target="application-specific-authentication">Application-specific authentication<a class="a_hlink" href="#application-specific-authentication"></a></h1>
+<p>This page explains how to extend the <code class="hljs">Endpoints</code> algebra with vocabulary specific
+to the authentication mechanism used by an application, and how to extend interpreters
+to implement this authentication mechanism for the server side and the client side.</p>
+<p>We will be using Play framework but the same approach can be used for other
+HTTP libraries.</p>
+<p>We focus on authentication but the same approach can be used for any other
+application-specific aspect of the communication that needs to be consistently
+implemented by clients and servers.</p>
+<h2 id="authentication-flow" class="a_section" data-magellan-target="authentication-flow">Authentication flow<a class="a_hlink" href="#authentication-flow"></a></h2>
+<p>In this example, the authentication information will be encoded in a JSON Web Token (JWT)
+attached to HTTP requests. The client will first login to the server, to get
+its JWT, and then will use the JWT issued by the server to access to protected
+resources. This can be summarized by the following diagram:</p>
+<div class="mermaid" id="_id0"><pre class="mermaid_src" style="display: none">sequenceDiagram
+client-&gt;&gt;server: GET /login
+Note over client,server: Client sends its credentials (e.g. a password or an API key)
+alt valid credentials
+  server--&gt;&gt;client: Ok: JSON Web Token
+  Note over client,server: Server replies with a JSON Web Token attached to its response
+else invalid credentials
+  server--&gt;&gt;client: Bad Request
+end
+client-&gt;&gt;server: GET /protected-resource
+Note over client,server: Client tries to access to a protected resource by using its JWT
+alt valid JWT
+  server--&gt;&gt;client: Ok
+else invalid or missing JWT
+  server--&gt;&gt;client: Unauthorized
+end
+</pre></div>
+<p>We want to enrich the <em>endpoints</em> algebras with new vocabulary describing the login
+endpoint as well as the protected endpoints.</p>
+<h2 id="login-endpoint" class="a_section" data-magellan-target="login-endpoint">Login endpoint<a class="a_hlink" href="#login-endpoint"></a></h2>
+<p>Let’s start with the login endpoint. This endpoint takes requests containing
+credentials and returns responses containing the issued JWT, or an empty
+“Bad Request” response in case the credentials where invalid.</p>
+<h3 id="algebra" class="a_section" data-magellan-target="algebra">Algebra<a class="a_hlink" href="#algebra"></a></h3>
+<p>The existing algebras already provides all we need to describe such an endpoint,
+except for two things:</p>
+<ul>
+<li>encoding the logged in user information as a JWT in the response,</li>
+<li>signalling a bad request in case the authentication failed.</li>
+</ul>
+<p>A JWT contains information about the logged-in user (for instance, his name), and that information
+is serialized and is cryptographically signed by the server (that’s why clients can not forge an
+arbitrary JWT). In our case, the user information we are interested in is only its name:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserInfo</span>(<span class="hljs-params">name: <span class="hljs-type">String</span></span>)</span></code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/2579919fe64954071078189c056ce31c534d795a/documentation/examples/authentication/src/main/scala/authentication/Authentication.scala" class="a_sourcelink">Authentication.scala</a></div></div>
+<p>The type used to model the authentication token will be different on client-side and
+server-side. On server-side, we are only interested in the user info and we want to let the algebra
+interpreter serialize and sign it. However, on client-side we need to also keep the serialized
+form since clients can not compute it. Since we want to represent the same concept with different
+concrete types on the server and client sides, we model it in the algebra with an abstract
+type member <code class="hljs">AuthenticationToken</code>.</p>
+<p>In the end, we need to add the following members to our algebra:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.algebra
+
+<span class="hljs-comment">/**
+  * Algebra interface for defining authenticated endpoints using JWT.
+  */</span>
+<span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">Authentication</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">algebra</span>.<span class="hljs-title">Endpoints</span> </span>{
+
+  <span class="hljs-comment">/** Authentication information */</span>
+  <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">AuthenticationToken</span></span>
+
+  <span class="hljs-comment">/** A response entity containing the authenticated user info
+    *
+    * Clients decode the JWT attached to the response.
+    * Servers encode the authentication information as a JWT and attach it to their response.
+    */</span>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">authenticationToken</span></span>: <span class="hljs-type">Response</span>[<span class="hljs-type">AuthenticationToken</span>]
+
+  <span class="hljs-comment">/** A response that might signal to the client that his request was invalid using
+    * a `BadRequest` status.
+    * Clients map `BadRequest` statuses to `None`, and the underlying `response` into `Some`.
+    * Conversely, servers build a `BadRequest` response on `None`, or the underlying `response` otherwise.
+    */</span>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">wheneverValid</span></span>[<span class="hljs-type">A</span>](response: <span class="hljs-type">Response</span>[<span class="hljs-type">A</span>]): <span class="hljs-type">Response</span>[<span class="hljs-type">Option</span>[<span class="hljs-type">A</span>]]
+
+}</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/2579919fe64954071078189c056ce31c534d795a/documentation/examples/authentication/src/main/scala/authentication/Authentication.scala#L4-L94" class="a_sourcelink">Authentication.scala</a></div></div>
+<p>We define our algebra in a trait named <code class="hljs">Authentication</code>, which extends the main
+algebra, <code class="hljs">algebra.Endpoints</code>.</p>
+<p>Given this new algebra, we can now describe the login endpoint as follows:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.algebra
+
+<span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">AuthenticationEndpoints</span></span>
+  <span class="hljs-keyword">extends</span> algebra.<span class="hljs-type">Endpoints</span>
+    <span class="hljs-keyword">with</span> <span class="hljs-type">Authentication</span> {
+
+  <span class="hljs-comment">/**
+    * Login endpoint: takes the API key in a query string parameter and returns either `Some(authenticationToken)`
+    * if the credentials are valid, or `None` otherwise
+    */</span>
+  <span class="hljs-keyword">val</span> login = endpoint(
+    get(path / <span class="hljs-string">"login"</span> /? qs[<span class="hljs-type">String</span>](<span class="hljs-string">"apiKey"</span>)),
+    wheneverValid(authenticationToken)
+  )
+
+}</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/2579919fe64954071078189c056ce31c534d795a/documentation/examples/authentication/src/main/scala/authentication/Usage.scala#L4-L47" class="a_sourcelink">Usage.scala</a></div></div>
+<p>The <code class="hljs">login</code> endpoint is defined in an <code class="hljs">AuthenticationTrait</code>, which uses (by inheritance)
+the main algebra, <code class="hljs">algebra.Endpoints</code>, and the <code class="hljs">Authentication</code> algebra.</p>
+<p>The endpoint takes request using the <code class="hljs">GET</code> method, the <code class="hljs">/login</code> URL and a query string
+parameter <code class="hljs">apiKey</code> containing the credentials. The returned response is either a
+“Bad Request”, or a “Ok” with the issued authentication token.</p>
+<h3 id="server-interpreter" class="a_section" data-magellan-target="server-interpreter">Server interpreter<a class="a_hlink" href="#server-interpreter"></a></h3>
+<p>The server interpreter fixes the <code class="hljs">AuthenticationToken</code> type member to <code class="hljs">UserInfo</code>
+and implements the <code class="hljs">authenticationToken</code> and <code class="hljs">wheneverValid</code> methods:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.play.server
+<span class="hljs-keyword">import</span> pdi.jwt.<span class="hljs-type">JwtSession</span>
+<span class="hljs-keyword">import</span> pdi.jwt.<span class="hljs-type">JwtSession</span>.<span class="hljs-type">RichResult</span>
+
+<span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">ServerAuthentication</span></span>
+  <span class="hljs-keyword">extends</span> <span class="hljs-type">Authentication</span>
+    <span class="hljs-keyword">with</span> server.<span class="hljs-type">Endpoints</span> {
+
+  <span class="hljs-comment">// On server side, we build the token ourselves so we only care about the user information</span>
+  <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">AuthenticationToken</span> </span>= <span class="hljs-type">UserInfo</span>
+
+  <span class="hljs-comment">// Encodes the user info in the JWT session</span>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">authenticationToken</span></span>: <span class="hljs-type">Response</span>[<span class="hljs-type">UserInfo</span>] =
+    userInfo =&gt; <span class="hljs-type">Results</span>.<span class="hljs-type">Ok</span>.withJwtSession(<span class="hljs-type">JwtSession</span>().+(<span class="hljs-string">"user"</span>, userInfo))
+
+  <span class="hljs-comment">// Returns `BadRequest` in case of `None`</span>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">wheneverValid</span></span>[<span class="hljs-type">A</span>](response: <span class="hljs-type">Response</span>[<span class="hljs-type">A</span>]): <span class="hljs-type">Response</span>[<span class="hljs-type">Option</span>[<span class="hljs-type">A</span>]] = {
+    <span class="hljs-keyword">case</span> <span class="hljs-type">None</span>    =&gt; <span class="hljs-type">Results</span>.<span class="hljs-type">BadRequest</span>
+    <span class="hljs-keyword">case</span> <span class="hljs-type">Some</span>(a) =&gt; response(a)
+  }
+
+}</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/2579919fe64954071078189c056ce31c534d795a/documentation/examples/authentication/src/main/scala/authentication/Authentication.scala#L9-L213" class="a_sourcelink">Authentication.scala</a></div></div>
+<p>The <code class="hljs">ServerAuthentication</code> trait extends the <code class="hljs">Authentication</code> algebra as well
+as a server <code class="hljs">Endpoints</code> interpreter based on Play framework.</p>
+<p>The <code class="hljs">authenticationToken</code> operation is straightforwardly implemented by
+building an <code class="hljs">Ok</code> response and adding it a JWT session containing a <code class="hljs">user</code>
+property with the contents of our <code class="hljs">UserInfo</code>. The management of the JWT
+session is delegated to the <a href="https://github.com/pauldijou/jwt-scala">pauldijou/jwt-scala</a>
+library, which attaches the issued JWT to the <code class="hljs">Authorization</code> header
+of the response.</p>
+<p>The <code class="hljs">wheneverValid</code> operation checks whether the response value is defined
+or not. In case it is empty, it returns a <code class="hljs">BadRequest</code> response, otherwise
+it calls the underlying response.</p>
+<p>With this interpreter, the implementation of the login endpoint looks like
+the following:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.play.server
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Server</span>(<span class="hljs-params">val playComponents: server.<span class="hljs-type">PlayComponents</span></span>)</span>
+  <span class="hljs-keyword">extends</span> <span class="hljs-type">AuthenticationEndpoints</span>
+    <span class="hljs-keyword">with</span> server.<span class="hljs-type">Endpoints</span>
+    <span class="hljs-keyword">with</span> <span class="hljs-type">ServerAuthentication</span> {
+
+  login.implementedBy { apiKey =&gt;
+    <span class="hljs-keyword">if</span> (apiKey == <span class="hljs-string">"foobar"</span>) <span class="hljs-type">Some</span>(<span class="hljs-type">UserInfo</span>(<span class="hljs-string">"Alice"</span>))
+    <span class="hljs-keyword">else</span> <span class="hljs-type">None</span>
+  }
+
+}</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/2579919fe64954071078189c056ce31c534d795a/documentation/examples/authentication/src/main/scala/authentication/Usage.scala#L8-L86" class="a_sourcelink">Usage.scala</a></div></div>
+<p>Our <code class="hljs">Server</code> class extends the traits that defines the <code class="hljs">login</code> endpoint,
+namely the <code class="hljs">AuthenticationEndpoints</code>, and mixes the Play-based server
+interpreter as well as our <code class="hljs">ServerAuthentication</code> interpreter.</p>
+<p>In this simplified example, we only have one valid API key, <code class="hljs">&quot;foobar&quot;</code>, belonging
+to Alice. The <code class="hljs">login</code> endpoint is implemented by a function that checks
+whether the supplied <code class="hljs">apiKey</code> is equal to <code class="hljs">&quot;foobar&quot;</code>, in which case we return
+a <code class="hljs">UserInfo</code> object wrapped in a <code class="hljs">Some</code>. Otherwise we return <code class="hljs">None</code> to signal
+that the API key is invalid.</p>
+<h3 id="mid-way-summary" class="a_section" data-magellan-target="mid-way-summary">Mid-way summary<a class="a_hlink" href="#mid-way-summary"></a></h3>
+<p>What have we learnt so far?</p>
+<p>We are only halfway trough this document but the first sections already
+showed the key aspects of enriching the <em>endpoints</em> library for
+application-specific needs:</p>
+<ol>
+<li>We have <strong>enriched</strong> the existing algebras with another algebra,
+by defining a trait extending the existing algebras;</li>
+<li>We have introduced new <strong>concepts</strong> as abstract type members (in
+our case, <code class="hljs">AuthenticationToken</code>);</li>
+<li>We have introduced new <strong>operations</strong> defining how to
+build or combine concepts together;</li>
+<li>We have <strong>used</strong> our algebra to define descriptions of endpoints,
+by defining a trait extending the algebra;</li>
+<li>We have implemented an <strong>interpreter</strong> for our algebra, by
+defining a trait extending the algebra, mixing an existing
+base interpreter and implementing the remaining abstract members;</li>
+<li>We have <strong>applied</strong> our interpreter to our descriptions of endpoints,
+by defining a class (or an object) extending the endpoint
+descriptions and mixing the interpreter trait.</li>
+</ol>
+<p>These relationships are illustrated by the following diagram:</p>
+<div class="mermaid" id="_id1"><pre class="mermaid_src" style="display: none">graph BT
+
+Authentication -- &quot;« enrich »&quot; --&gt; algebra.Endpoints
+AuthenticationEndpoints -- &quot; « use » &quot; --&gt; Authentication
+AuthenticationEndpoints -- &quot; « use » &quot; --&gt; algebra.Endpoints
+
+server.Endpoints -- &quot;« implement »&quot; --&gt; algebra.Endpoints
+ServerAuthentication -- &quot;« implement »&quot; --&gt; Authentication
+ServerAuthentication -- &quot;« apply »&quot; --&gt; server.Endpoints
+
+Server -- &quot;« use »&quot; --&gt; AuthenticationEndpoints
+Server -- &quot;« apply »&quot; --&gt; ServerAuthentication
+Server -- &quot;« apply »&quot; --&gt; server.Endpoints
+
+style algebra.Endpoints fill:#eee
+style server.Endpoints fill:#eee
+</pre></div>
+<p>The traits provided by <em>endpoints</em> are shown in gray.</p>
+<h3 id="client-interpreter" class="a_section" data-magellan-target="client-interpreter">Client interpreter<a class="a_hlink" href="#client-interpreter"></a></h3>
+<p>The implementation of the client interpreter repeats the same
+recipe: we define a trait <code class="hljs">ClientAuthentication</code>, which extends
+<code class="hljs">Authentication</code> and mixes a <code class="hljs">client.Endpoints</code> base interpreter:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> endpoints.play.client
+
+<span class="hljs-comment">/**
+  * Interpreter for the [[Authentication]] algebra interface that produces
+  * a Play client (using `play.api.libs.ws.WSClient`).
+  */</span>
+<span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">ClientAuthentication</span></span>
+  <span class="hljs-keyword">extends</span> client.<span class="hljs-type">Endpoints</span>
+    <span class="hljs-keyword">with</span> <span class="hljs-type">Authentication</span> {
+
+  <span class="hljs-comment">// The constructor is private so that users can not</span>
+  <span class="hljs-comment">// forge instances themselves</span>
+  <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AuthenticationToken</span> <span class="hljs-title">private</span>[<span class="hljs-type">ClientAuthentication</span>](<span class="hljs-params">
+    private[<span class="hljs-type">ClientAuthentication</span>] val token: <span class="hljs-type">String</span>,
+    val decoded: <span class="hljs-type">UserInfo</span>
+  </span>)</span>
+
+  <span class="hljs-comment">// Decodes the user info from a response</span>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">authenticationToken</span></span>: <span class="hljs-type">Response</span>[<span class="hljs-type">AuthenticationToken</span>] = { httpResponse =&gt;
+    httpResponse.headers.get(<span class="hljs-type">HeaderNames</span>.<span class="hljs-type">AUTHORIZATION</span>) <span class="hljs-keyword">match</span> {
+      <span class="hljs-keyword">case</span> <span class="hljs-type">Some</span>(<span class="hljs-type">Seq</span>(headerValue)) =&gt;
+        <span class="hljs-keyword">val</span> token = headerValue.stripPrefix(<span class="hljs-string">"Bearer "</span>)
+        <span class="hljs-comment">// Note: the default implementation of `JwtSession.deserialize`</span>
+        <span class="hljs-comment">// returns an “empty” JwtSession object when it is invalid.</span>
+        <span class="hljs-comment">// You might want to tweak the logic to return an error in such a case.</span>
+        <span class="hljs-type">UserInfo</span>.decodeToken(token) <span class="hljs-keyword">match</span> {
+          <span class="hljs-keyword">case</span> <span class="hljs-type">Some</span>(user) =&gt; <span class="hljs-type">Right</span>(<span class="hljs-keyword">new</span> <span class="hljs-type">AuthenticationToken</span>(token,user))
+          <span class="hljs-keyword">case</span> <span class="hljs-type">None</span>       =&gt; <span class="hljs-type">Left</span>(<span class="hljs-keyword">new</span> <span class="hljs-type">Exception</span>(<span class="hljs-string">"Invalid JWT session"</span>))
+        }
+      <span class="hljs-keyword">case</span> _ =&gt; <span class="hljs-type">Left</span>(<span class="hljs-keyword">new</span> <span class="hljs-type">Exception</span>(<span class="hljs-string">"Missing JWT session"</span>))
+    }
+  }
+
+  <span class="hljs-comment">// Checks that the response is not `BadRequest` before continuing</span>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">wheneverValid</span></span>[<span class="hljs-type">A</span>](response: <span class="hljs-type">Response</span>[<span class="hljs-type">A</span>]): <span class="hljs-type">Response</span>[<span class="hljs-type">Option</span>[<span class="hljs-type">A</span>]] = { httpResponse =&gt;
+    <span class="hljs-keyword">if</span> (httpResponse.status == <span class="hljs-type">Status</span>.<span class="hljs-type">BAD_REQUEST</span>) {
+      <span class="hljs-type">Right</span>(<span class="hljs-type">None</span>)
+    } <span class="hljs-keyword">else</span> {
+      response(httpResponse).right.map(<span class="hljs-type">Some</span>(_))
+    }
+  }
+
+}</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/2579919fe64954071078189c056ce31c534d795a/documentation/examples/authentication/src/main/scala/authentication/Authentication.scala#L15-L170" class="a_sourcelink">Authentication.scala</a></div></div>
+<p>The <code class="hljs">AuthenticationToken</code> type is implemented as a class whose
+constructor is private. If it was public, clients could build
+a fake authentication token which would then fail at runtime
+because the server would reject it when seeing that it is not
+correctly signed. By making the constructor private, we simply
+make it possible to reach such a runtime error.</p>
+<p>The <code class="hljs">AuthenticationToken</code> class contains the serialized token
+as well as the decoded <code class="hljs">UserInfo</code>.</p>
+<p>The <code class="hljs">authenticationToken</code> operation is implemented as the dual
+of the server interpreter: it checks that there is an <code class="hljs">Authorization</code>
+response header, and that it contains a valid <code class="hljs">UserInfo</code> object.
+In case of failure, this method returns an exception that
+will be eventually thrown by the base client interpreter. One could
+argue that we should model the fact that decoding the response can
+fail by returning an <code class="hljs">Option</code> instead of throwing an exception.
+However, the philosophy of <em>endpoints</em> is that client and
+server interpreters implement a same HTTP protocol, therefore we
+expect (and assume) the interpreters to be consistent together.
+Thus, we assume that  don’t need to surface that kind of failures
+(hence the use of exceptions).</p>
+<p>This contrasts with the <code class="hljs">wheneverValid</code> operation, which
+models the fact that the API key supplied by the user can be invalid.
+In such a case, we really want the failure to surface to the end-user,
+hence the usage of <code class="hljs">Option</code>. The implementation checks whether
+the status is 400, in which case it returns <code class="hljs">None</code>, otherwise it
+returns the underlying response wrapped in a <code class="hljs">Some</code>.</p>
+<h3 id="putting-things-together" class="a_section" data-magellan-target="putting-things-together">Putting things together<a class="a_hlink" href="#putting-things-together"></a></h3>
+<p>If we create an instance of our <code class="hljs">Client</code> an run our <code class="hljs">Server</code>, we can test
+that the following scenarios work as expected:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-symbol">'wrongLoginUsingClient</span> - {
+  <span class="hljs-keyword">for</span> {
+    loginResult &lt;- client.login(<span class="hljs-string">"unknown"</span>)
+  } <span class="hljs-keyword">yield</span> assert(loginResult.isEmpty)
+}
+<span class="hljs-symbol">'validLoginUsingClient</span> - {
+  <span class="hljs-keyword">for</span> {
+    loginResult &lt;- client.login(<span class="hljs-string">"foobar"</span>)
+  } <span class="hljs-keyword">yield</span> assert(loginResult.nonEmpty)
+}</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/2579919fe64954071078189c056ce31c534d795a/documentation/examples/authentication/src/test/scala/authentication/AuthenticationTest.scala#L75-L84" class="a_sourcelink">AuthenticationTest.scala</a></div></div>
+<p>These tests check that if we login with an unknown API key we get no authentication
+token, but if we login with the <code class="hljs">&quot;foobar&quot;</code> API key then we get some authentication token.</p>
+<h2 id="protected-endpoints" class="a_section" data-magellan-target="protected-endpoints">Protected endpoints<a class="a_hlink" href="#protected-endpoints"></a></h2>
+<p>Now that we are able to issue an authentication token, let’s see how we can define
+endpoints that require such an authentication token to be present (and valid) in
+incoming requests.</p>
+<p>Such protected endpoints take requests containing the serialized token in their
+<code class="hljs">Authorization</code> HTTP header, and return a 401 (<code class="hljs">Unauthorized</code>) response in case
+the token is not found or is invalid.</p>
+<h3 id="algebra-1" class="a_section" data-magellan-target="algebra-1">Algebra<a class="a_hlink" href="#algebra-1"></a></h3>
+<p>To define protected endpoints, we need to enrich the <code class="hljs">Authentication</code> algebra
+with additional vocabulary. First, we need a way to define that request headers
+contain the authentication token. Second, we need a way to define that responses
+might be <code class="hljs">Unauthorized</code>. Last, we need a convenient <code class="hljs">Endpoint</code> constructor that
+puts all the pieces together.</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">/** Defines that the `Authorization` request header contains the authenticated user information,
+  * encoded as a serialized JWT object with a `user` field.
+  */</span>
+<span class="hljs-keyword">private</span>[authentication] <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">authenticationTokenRequestHeaders</span></span>: <span class="hljs-type">RequestHeaders</span>[<span class="hljs-type">AuthenticationToken</span>]
+
+<span class="hljs-comment">/** A response that might signal to the client that his request was not authenticated.
+  * Clients throw an exception if the response status is `Unauthorized`.
+  * Servers build an `Unauthorized` response in case the incoming request was not correctly authenticated.
+  */</span>
+<span class="hljs-keyword">private</span>[authentication] <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">wheneverAuthenticated</span></span>[<span class="hljs-type">A</span>](response: <span class="hljs-type">Response</span>[<span class="hljs-type">A</span>]): <span class="hljs-type">Response</span>[<span class="hljs-type">A</span>]
+
+<span class="hljs-comment">/**
+  * User-facing constructor for endpoints requiring authentication.
+  *
+  * @return An endpoint requiring a authentication information to be provided
+  *         in the `Authorization` request header. It returns `response`
+  *         if the request is correctly authenticated, otherwise it returns
+  *         an empty `Unauthorized` response.
+  *
+  * @param method        HTTP method
+  * @param url           Request URL
+  * @param response      HTTP response
+  * @param requestEntity HTTP request entity
+  * @tparam U Information carried by the URL
+  * @tparam E Information carried by the request entity
+  * @tparam R Information carried by the response
+  */</span>
+<span class="hljs-keyword">final</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">authenticatedEndpoint</span></span>[<span class="hljs-type">U</span>, <span class="hljs-type">E</span>, <span class="hljs-type">R</span>, <span class="hljs-type">UE</span>, <span class="hljs-type">UET</span>](
+  method: <span class="hljs-type">Method</span>,
+  url: <span class="hljs-type">Url</span>[<span class="hljs-type">U</span>],
+  requestEntity: <span class="hljs-type">RequestEntity</span>[<span class="hljs-type">E</span>],
+  response: <span class="hljs-type">Response</span>[<span class="hljs-type">R</span>]
+)(<span class="hljs-keyword">implicit</span>
+  tuplerUE: <span class="hljs-type">Tupler</span>.<span class="hljs-type">Aux</span>[<span class="hljs-type">U</span>, <span class="hljs-type">E</span>, <span class="hljs-type">UE</span>],
+  tuplerUET: <span class="hljs-type">Tupler</span>.<span class="hljs-type">Aux</span>[<span class="hljs-type">UE</span>, <span class="hljs-type">AuthenticationToken</span>, <span class="hljs-type">UET</span>]
+): <span class="hljs-type">Endpoint</span>[<span class="hljs-type">UET</span>, <span class="hljs-type">R</span>] =
+  endpoint(
+    request(method, url, requestEntity, authenticationTokenRequestHeaders),
+    wheneverAuthenticated(response)
+  )</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/2579919fe64954071078189c056ce31c534d795a/documentation/examples/authentication/src/main/scala/authentication/Authentication.scala#L51-L90" class="a_sourcelink">Authentication.scala</a></div></div>
+<p>The <code class="hljs">authenticationTokenRequestHeaders</code> method defines request headers containing the
+authentication token. The <code class="hljs">wheneverAuthenticated</code> method transforms a given <code class="hljs">Response[A]</code>
+into another <code class="hljs">Response[A]</code> that can be an <code class="hljs">Unauthorized</code> HTTP response in case the
+client was not authenticated. Note that, in contrast with the previously defined
+<code class="hljs">wheneverValid</code> method, we return a <code class="hljs">Response[A]</code> rather than a <code class="hljs">Response[Option[A]]</code>.
+This is because we assume that requests will be built by using the same algebra,
+which will make them correctly authenticated by construction.</p>
+<p>The last operation we have introduced is <code class="hljs">authenticatedEndpoint</code>, which takes
+a request and a response and adds the <code class="hljs">authenticationTokenRequestHeaders</code> to the
+request headers, and wraps the response into the <code class="hljs">wheneverAuthenticated</code> combinator.</p>
+<p>This <code class="hljs">authenticatedEndpoint</code> operation is final, and it is the only user-facing operation
+for defining protected endpoints (the two other operations are private). It guarantees
+that the request will always have the authentication token in its headers, and that the
+response can always be <code class="hljs">Unauthorized</code>.</p>
+<blockquote class="note">
+<p>The <code class="hljs">authenticatedEndpoint</code> operation takes several type parameters.
+In particular, they model the type of the request URL (<code class="hljs">U</code>) and entity
+(<code class="hljs">E</code>). These types must be tracked by the type system so that, eventually,
+an <code class="hljs">Endpoint[Req, Resp]</code> is built, where the <code class="hljs">Req</code> type is a tuple of
+all the information (URL, entitiy and headers) carried by the request.
+In this example we enrich the request headers with the authentication
+token. However, instead of simply returning nested tuples (e.g.
+<code class="hljs">((U, E), AuthenticationToken)</code>), we rely on implicit <code class="hljs">Tupler</code> instances to
+compute the type of the tuple. <code class="hljs">Tupler</code> instances are defined in a way
+that always flattens nested tuples (e.g. they will return
+<code class="hljs">(U, E, AuthenticationToken)</code>) and removes <code class="hljs">Unit</code> types (e.g. if the URL
+is static—of type <code class="hljs">Url[Unit]</code>—the tuplers return <code class="hljs">(E, AuthenticationToken)</code>).</p>
+</blockquote>
+<p>The <code class="hljs">authenticatedEndpoint</code> operation can be used as follows:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">/**
+  * Some resource requiring the request to provide a valid JWT token. Returns a message
+  * “Hello ''user_name''” if the request is correctly authenticated, otherwise returns
+  * an `Unauthorized` HTTP response.
+  */</span>
+<span class="hljs-keyword">val</span> someResource: <span class="hljs-type">Endpoint</span>[<span class="hljs-type">AuthenticationToken</span>, <span class="hljs-type">String</span>] = authenticatedEndpoint(
+  <span class="hljs-type">Get</span>,
+  path / <span class="hljs-string">"some-resource"</span>,
+  emptyRequest,
+  textResponse()
+)</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/2579919fe64954071078189c056ce31c534d795a/documentation/examples/authentication/src/main/scala/authentication/Usage.scala#L33-L43" class="a_sourcelink">Usage.scala</a></div></div>
+<p>Since the request URL is static and the request has no entity, the information carried
+by the request is just the <code class="hljs">AuthenticationToken</code>.</p>
+<h3 id="server-interpreter-1" class="a_section" data-magellan-target="server-interpreter-1">Server interpreter<a class="a_hlink" href="#server-interpreter-1"></a></h3>
+<p>Our Play-based server is implemented as follows:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Extracts and validates user info from a request header</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">authenticationTokenRequestHeaders</span></span>: <span class="hljs-type">RequestHeaders</span>[<span class="hljs-type">AuthenticationToken</span>] = { headers =&gt;
+  headers.get(<span class="hljs-type">HeaderNames</span>.<span class="hljs-type">AUTHORIZATION</span>)
+    .flatMap(headerValue =&gt; <span class="hljs-type">UserInfo</span>.decodeToken(headerValue.stripPrefix(<span class="hljs-string">"Bearer "</span>))) <span class="hljs-keyword">match</span> {
+      <span class="hljs-keyword">case</span> <span class="hljs-type">Some</span>(token) =&gt; <span class="hljs-type">Right</span>(token)
+      <span class="hljs-keyword">case</span> <span class="hljs-type">None</span>        =&gt; <span class="hljs-type">Left</span>(<span class="hljs-type">Results</span>.<span class="hljs-type">Unauthorized</span>)
+    }
+}
+
+<span class="hljs-comment">// Does nothing because `userInfoRequestHeaders` already</span>
+<span class="hljs-comment">// takes care of returning `Unauthorized` if the request</span>
+<span class="hljs-comment">// is not properly authenticated</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">wheneverAuthenticated</span></span>[<span class="hljs-type">A</span>](response: <span class="hljs-type">Response</span>[<span class="hljs-type">A</span>]): <span class="hljs-type">Response</span>[<span class="hljs-type">A</span>] = response</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/2579919fe64954071078189c056ce31c534d795a/documentation/examples/authentication/src/main/scala/authentication/Authentication.scala#L197-L209" class="a_sourcelink">Authentication.scala</a></div></div>
+<p>And the protected endpoint can be implemented as follows:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">  <span class="hljs-comment">// Note that the `AuthenticationToken` is available to the implementations</span>
+  <span class="hljs-comment">// It can be used to check authorizations</span>
+  someResource.implementedBy(token =&gt; <span class="hljs-string">s"Hello <span class="hljs-subst">${token.name}</span>!"</span>)</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/2579919fe64954071078189c056ce31c534d795a/documentation/examples/authentication/src/main/scala/authentication/Usage.scala#L79-L81" class="a_sourcelink">Usage.scala</a></div></div>
+<h3 id="client-interpreter-1" class="a_section" data-magellan-target="client-interpreter-1">Client interpreter<a class="a_hlink" href="#client-interpreter-1"></a></h3>
+<p>And our Play-based client is implemented as follows:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Encodes the user info as a JWT object in the `Authorization` request header</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">authenticationTokenRequestHeaders</span></span>: <span class="hljs-type">RequestHeaders</span>[<span class="hljs-type">AuthenticationToken</span>] = { (user, wsRequest) =&gt;
+  wsRequest.withHttpHeaders(<span class="hljs-type">HeaderNames</span>.<span class="hljs-type">AUTHORIZATION</span> -&gt; <span class="hljs-string">s"Bearer <span class="hljs-subst">${user.token}</span>"</span>)
+}
+
+<span class="hljs-comment">// Checks that the response is not `Unauthorized` before continuing</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">wheneverAuthenticated</span></span>[<span class="hljs-type">A</span>](response: <span class="hljs-type">Response</span>[<span class="hljs-type">A</span>]): <span class="hljs-type">Response</span>[<span class="hljs-type">A</span>] = { httpResponse =&gt;
+  <span class="hljs-keyword">if</span> (httpResponse.status == <span class="hljs-type">Status</span>.<span class="hljs-type">UNAUTHORIZED</span>) {
+    <span class="hljs-type">Left</span>(<span class="hljs-keyword">new</span> <span class="hljs-type">Exception</span>(<span class="hljs-string">"Unauthorized"</span>))
+  } <span class="hljs-keyword">else</span> {
+    response(httpResponse)
+  }
+}</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/2579919fe64954071078189c056ce31c534d795a/documentation/examples/authentication/src/main/scala/authentication/Authentication.scala#L154-L166" class="a_sourcelink">Authentication.scala</a></div></div>
+<h3 id="putting-things-together-1" class="a_section" data-magellan-target="putting-things-together-1">Putting things together<a class="a_hlink" href="#putting-things-together-1"></a></h3>
+<p>Our <code class="hljs">Client</code> and <code class="hljs">Server</code> instances are now able to have more sophisticated exchanges:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-symbol">'loginAndAccessProtectedResource</span> - {
+  <span class="hljs-keyword">for</span> {
+    maybeToken &lt;- client.login(<span class="hljs-string">"foobar"</span>)
+    token = maybeToken.get
+    _ = assert(token.decoded == <span class="hljs-type">UserInfo</span>(<span class="hljs-string">"Alice"</span>))
+    resource &lt;- client.someResource(token)
+  } <span class="hljs-keyword">yield</span> assert(resource == <span class="hljs-string">"Hello Alice!"</span>)
+}</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/2579919fe64954071078189c056ce31c534d795a/documentation/examples/authentication/src/test/scala/authentication/AuthenticationTest.scala#L87-L94" class="a_sourcelink">AuthenticationTest.scala</a></div></div>
+<p>This test first gets an authentication token by calling the <code class="hljs">login</code> endpoint, and then
+accesses the protected endpoint by supplying its token.</p>
+<h2 id="conclusion" class="a_section" data-magellan-target="conclusion">Conclusion<a class="a_hlink" href="#conclusion"></a></h2>
+<p>This page shows how to include an application-specific aspect of the communication
+protocol at the algebra level, and how to implement interpreters for this extended
+algebra.</p>
+<p>We only demonstrated how to implement client and server interpreters but the same
+approach can be used with documentation interpreters.</p>
+
+              </main>
+              
+              
+                <div data-sticky-container class="small-12 medium-12 large-2 large-order-1 columns a_sitenav_container">
+                  <nav class="a_sitenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                    
+                  <ul>
+                     
+  <li >
+    
+      <a href="../index.html">Introduction</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../use-cases.html">Use Cases</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../quick-start.html">Quick start</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../algebras-and-interpreters.html">Algebras and interpreters</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../design.html">Design in a nutshell</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../guides.html">Guides</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../comparison.html">Comparison with similar tools</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="../talks.html">Talks and Publications</a>
+    
+    
+  </li>
+ 
+                  </ul>
+                  </nav>
+                </div>
+              
+              
+              
+                <div class="small-12 medium-12 large-2 large-order-3 columns a_show-for-xlarge" data-sticky-container>
+                  <nav class="a_pagenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                     <header><p>On This Page</p>
+</header> 
+                    <ul class="vertical menu" data-magellan>
+                       
+  <li>
+    
+       <a href="#application-specific-authentication">Application-specific authentication</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#authentication-flow">Authentication flow</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#login-endpoint">Login endpoint</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#algebra">Algebra</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#server-interpreter">Server interpreter</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#mid-way-summary">Mid-way summary</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#client-interpreter">Client interpreter</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#putting-things-together">Putting things together</a> 
+    
+    
+  </li>
+  </ul>
+    
+  </li>
+  
+  <li>
+    
+       <a href="#protected-endpoints">Protected endpoints</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#algebra-1">Algebra</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#server-interpreter-1">Server interpreter</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#client-interpreter-1">Client interpreter</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#putting-things-together-1">Putting things together</a> 
+    
+    
+  </li>
+  </ul>
+    
+  </li>
+  
+  <li>
+    
+       <a href="#conclusion">Conclusion</a> 
+    
+    
+  </li>
+  </ul>
+    
+  </li>
+ 
+                    </ul>
+                  </nav>
+                </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer class="small-12 medium-12 large-12 columns align-self-bottom a_footer">
+        <div class="row">
+          <div class="small-12 medium-12 large-12 columns top-bar">
+            <div class="top-bar-left">
+              
+            </div>
+            <div class="top-bar-right">
+              <p>Generated with <a href="https://github.com/szeiger/ornate">Ornate</a>.</p>
+
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="../theme/js/jquery.min.js"></script>
+    <script src="../theme/js/what-input.min.js"></script>
+    <script src="../theme/js/foundation.min.js"></script>
+     <script src="../theme/js/mermaidAPI-0.5.8.min.js"></script> 
+    <script src="../theme/js/app.js"></script>
+    
+  </body>
+</html>
