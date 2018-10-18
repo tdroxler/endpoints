@@ -60,7 +60,7 @@ created user:</p>
   post(path / <span class="hljs-string">"user"</span>, jsonRequest[<span class="hljs-type">CreateUser</span>]()),
   jsonResponse[<span class="hljs-type">User</span>]()
 )</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/2579919fe64954071078189c056ce31c534d795a/algebras/algebra/src/test/scala/endpoints/algebra/JsonEntitiesDocs.scala#L12-L15" class="a_sourcelink">JsonEntitiesDocs.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/algebras/algebra/src/test/scala/endpoints/algebra/JsonEntitiesDocs.scala#L12-L15" class="a_sourcelink">JsonEntitiesDocs.scala</a></div></div>
 <p>The <code class="hljs">jsonRequest[A]</code> constructor defines a JSON request entity containing
 a value of type <code class="hljs">A</code>, provided that there exists an implicit <code class="hljs">JsonRequest[A]</code>
 instance. Similarly, the <code class="hljs">jsonResponse[A]</code> constructor defines a JSON
@@ -76,7 +76,9 @@ a JSON decoder for <code class="hljs">A</code>. Similarly, server interpreters f
 <code class="hljs">JsonResponse[A]</code> type to be a JSON encoder for <code class="hljs">A</code>. The documentation
 interpreters fix these types to be JSON schemas for <code class="hljs">A</code>.</p>
 <p>The remaining sections document some concrete types given by algebras
-extending <code class="hljs">JsonEntities</code>.</p>
+extending <code class="hljs">JsonEntities</code>. You might also be interested in looking at
+the <a href="../guides/json-codecs.html">JSON codecs guide</a>, which explains which
+families of algebras and interpreters you should use together.</p>
 <h2 id="jsonschemaentities" class="a_section" data-magellan-target="jsonschemaentities"><code class="hljs">JsonSchemaEntities</code><a class="a_hlink" href="#jsonschemaentities"></a></h2>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra"</span> % <span class="hljs-string">"0.7.0"</span>

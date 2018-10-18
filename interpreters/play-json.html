@@ -55,7 +55,7 @@ that provides both a <code class="hljs">Reads[A]</code> and a <code class="hljs"
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">sealed</span> <span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">Shape</span></span>
 <span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Circle</span>(<span class="hljs-params">radius: <span class="hljs-type">Double</span></span>) <span class="hljs-keyword">extends</span> <span class="hljs-title">Shape</span></span>
 <span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Rectangle</span>(<span class="hljs-params">width: <span class="hljs-type">Double</span>, height: <span class="hljs-type">Double</span></span>) <span class="hljs-keyword">extends</span> <span class="hljs-title">Shape</span></span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/2579919fe64954071078189c056ce31c534d795a/json-schema/json-schema/src/test/scala/endpoints/algebra/JsonSchemasDocs.scala#L18-L20" class="a_sourcelink">JsonSchemasDocs.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/json-schema/json-schema/src/test/scala/endpoints/algebra/JsonSchemasDocs.scala#L18-L20" class="a_sourcelink">JsonSchemasDocs.scala</a></div></div>
 <p>Assuming that there is an implicit <code class="hljs">JsonSchema[Shape]</code> definition,
 we can encode a <code class="hljs">Shape</code> into JSON and decode it using the usual
 Play JSON operations:</p>
@@ -64,7 +64,7 @@ Play JSON operations:</p>
 <span class="hljs-keyword">val</span> shape: <span class="hljs-type">Shape</span> = <span class="hljs-type">Circle</span>(<span class="hljs-number">42</span>)
 <span class="hljs-keyword">val</span> shapeJson: <span class="hljs-type">JsValue</span> = <span class="hljs-type">Json</span>.toJson(shape)
 <span class="hljs-keyword">val</span> maybeShape: <span class="hljs-type">JsResult</span>[<span class="hljs-type">Shape</span>] = <span class="hljs-type">Json</span>.fromJson[<span class="hljs-type">Shape</span>](shapeJson)</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/2579919fe64954071078189c056ce31c534d795a/json-schema/json-schema-playjson/src/test/scala/endpoints/playjson/JsonSchemasDocs.scala#L9-L12" class="a_sourcelink">JsonSchemasDocs.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/json-schema/json-schema-playjson/src/test/scala/endpoints/playjson/JsonSchemasDocs.scala#L9-L12" class="a_sourcelink">JsonSchemasDocs.scala</a></div></div>
 
               </main>
               
