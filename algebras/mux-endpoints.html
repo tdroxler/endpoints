@@ -7,8 +7,10 @@
     <title>MuxEndpoints</title>
     <link rel="stylesheet" href="../theme/css/foundation.min.css">
     <link rel="stylesheet" href="../theme/css/app.css">
-     <link rel="stylesheet" href="../theme/highlight.js/styles/github-gist.css"> 
     
+     <link rel="stylesheet" href="../theme/highlight.js/styles/github-gist.css">  <link rel="stylesheet" href="../theme/css/foundation-icons.custom.css"> 
+    
+     <link rel="toc" href="../site-contents.html"  title="Table of Contents"  /> 
   </head>
   <body>
     <div class="expanded row">
@@ -19,7 +21,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.7.0</p>
+                  <p>endpoints 0.8.0</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -40,15 +42,24 @@
             <div class="row">
               
               <main class="columns large-order-2 sections" id="_sections">
+                 
+  <ul class="menu align-right simple a_navbar a_navbar_top">
+    
+      
+        <li><a href="../site-contents.html"  title="Table of Contents" ><span class="a_foundation_icon"></span>  Contents</a></li>
+      
+    
+  </ul>
+ 
                 
                 <h1 id="muxendpoints" class="a_section" data-magellan-target="muxendpoints"><code class="hljs">MuxEndpoints</code><a class="a_hlink" href="#muxendpoints"></a></h1>
 <p>This algebra provides vocabulary to define endpoints multiplexing several
 requests and responses.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra"</span> % <span class="hljs-string">"0.7.0"</span>
+<pre class="hljs"><code class="language-scala"><span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra"</span> % <span class="hljs-string">"0.8.0"</span>
 </code></pre>
 </div></div>
-<p><a href="../api/0.7.0/index.html#endpoints.algebra.MuxEndpoints">API documentation</a></p>
+<p><a href="../api/0.8.0/index.html#endpoints.algebra.MuxEndpoints">API documentation</a></p>
 <p>In general, each possible resource or action supported by a service
 is exposed through a specific endpoint, taking a specific request type
 and a specific response type.</p>
@@ -83,7 +94,7 @@ multiplexed endpoints require that request types extend the <code class="hljs">M
 <span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">Event</span></span>
 <span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserCreated</span>(<span class="hljs-params">id: <span class="hljs-type">Long</span></span>) <span class="hljs-keyword">extends</span> <span class="hljs-title">Event</span></span>
 <span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserDeleted</span>(<span class="hljs-params">id: <span class="hljs-type">Long</span></span>) <span class="hljs-keyword">extends</span> <span class="hljs-title">Event</span></span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/algebras/algebra/src/test/scala/endpoints/algebra/MuxEndpointsDocs.scala#L11-L29" class="a_sourcelink">MuxEndpointsDocs.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/algebras/algebra/src/test/scala/endpoints/algebra/MuxEndpointsDocs.scala#L11-L29" class="a_sourcelink">MuxEndpointsDocs.scala</a></div></div>
 <p>Note that the <code class="hljs">Command</code> request type extends <code class="hljs">MuxRequest</code> and that each
 concrete <code class="hljs">Command</code> refines its <code class="hljs">Response</code> type member to refer to a
 concrete <code class="hljs">Event</code> type.</p>
@@ -92,71 +103,98 @@ type to be a function from <code class="hljs">Req</code> to <code class="hljs">F
 calling <code class="hljs">users(CreateUser(&quot;Alice&quot;))</code> (statically) returns a <code class="hljs">Future[CreatedUser]</code>,
 and calling <code class="hljs">users(DeleteUser(42))</code> returns a <code class="hljs">Future[DeletedUser]</code>.</p>
 
+                 
+  <ul class="menu align-right simple a_navbar a_navbar_bottom">
+    
+      
+        <li><a href="../site-contents.html"  title="Table of Contents" ><span class="a_foundation_icon"></span>  Contents</a></li>
+      
+    
+  </ul>
+ 
               </main>
               
               
                 <div data-sticky-container class="small-12 medium-12 large-2 large-order-1 columns a_sitenav_container">
                   <nav class="a_sitenav" data-sticky data-sticky-on="large" data-anchor="_sections">
                     
-                  <ul>
-                     
+                    <ul>
+                       
   <li >
     
-      <a href="../index.html">Introduction</a>
+      
+        <a href="../index.html">Introduction</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../use-cases.html">Use Cases</a>
+      
+        <a href="../use-cases.html">Use Cases</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../quick-start.html">Quick start</a>
+      
+        <a href="../quick-start.html">Quick start</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../algebras-and-interpreters.html">Algebras and interpreters</a>
+      
+        <a href="../algebras-and-interpreters.html">Algebras and interpreters</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../design.html">Design in a nutshell</a>
+      
+        <a href="../design.html">Design in a nutshell</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../guides.html">Guides</a>
+      
+        <a href="../guides.html">Guides</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../comparison.html">Comparison with similar tools</a>
+      
+        <a href="../comparison.html">Comparison with similar tools</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../talks.html">Talks and Publications</a>
+      
+        <a href="../talks.html">Talks and Publications</a>
+      
     
     
   </li>
  
-                  </ul>
+                    </ul>
+                    
+                    
                   </nav>
                 </div>
               
@@ -181,6 +219,7 @@ and calling <code class="hljs">users(DeleteUser(42))</code> returns a <code clas
         </div>
       </footer>
     </div>
+    
     <script src="../theme/js/jquery.min.js"></script>
     <script src="../theme/js/what-input.min.js"></script>
     <script src="../theme/js/foundation.min.js"></script>

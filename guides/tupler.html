@@ -7,8 +7,10 @@
     <title>Tupler</title>
     <link rel="stylesheet" href="../theme/css/foundation.min.css">
     <link rel="stylesheet" href="../theme/css/app.css">
-     <link rel="stylesheet" href="../theme/highlight.js/styles/github-gist.css"> 
     
+     <link rel="stylesheet" href="../theme/highlight.js/styles/github-gist.css">  <link rel="stylesheet" href="../theme/css/foundation-icons.custom.css"> 
+    
+     <link rel="toc" href="../site-contents.html"  title="Table of Contents"  /> 
   </head>
   <body>
     <div class="expanded row">
@@ -19,7 +21,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.7.0</p>
+                  <p>endpoints 0.8.0</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -40,9 +42,18 @@
             <div class="row">
               
               <main class="columns large-order-2 sections" id="_sections">
+                 
+  <ul class="menu align-right simple a_navbar a_navbar_top">
+    
+      
+        <li><a href="../site-contents.html"  title="Table of Contents" ><span class="a_foundation_icon"></span>  Contents</a></li>
+      
+    
+  </ul>
+ 
                 
                 <h1 id="tupler" class="a_section" data-magellan-target="tupler"><code class="hljs">Tupler</code><a class="a_hlink" href="#tupler"></a></h1>
-<p>This guide explains why we use implicit <a href="../api/0.7.0/index.html#endpoints.Tupler"><code class="hljs">Tupler</code></a> parameters
+<p>This guide explains why we use implicit <a href="../api/0.8.0/index.html#endpoints.Tupler"><code class="hljs">Tupler</code></a> parameters
 in the signature of some algebra operations and how it works.</p>
 <h2 id="motivation" class="a_section" data-magellan-target="motivation">Motivation<a class="a_hlink" href="#motivation"></a></h2>
 <p>As explained in the <a href="../design.html">design</a> page, to model a request that carries
@@ -92,7 +103,7 @@ the “useful” form of tupling <code class="hljs">A</code> and <code class="hl
 <pre class="hljs"><code class="language-scala"><span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">Tupler</span>[<span class="hljs-type">A</span>, <span class="hljs-type">B</span>] </span>{
   <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Out</span></span>
 }</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/algebras/algebra/src/main/scala/endpoints/Tupler.scala#L28-L29" class="a_sourcelink">Tupler.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/algebras/algebra/src/main/scala/endpoints/Tupler.scala#L28-L34" class="a_sourcelink">Tupler.scala</a></div></div>
 <p>Algebra operations that want to tuple types <code class="hljs">A</code> and <code class="hljs">B</code> take as
 parameter an implicit <code class="hljs">tupler: Tupler[A, B]</code> and return a
 <code class="hljs">tupler.Out</code> instead of an <code class="hljs">(A, B)</code>.</p>
@@ -118,71 +129,98 @@ is called, appropriate instances of <code class="hljs">Tupler</code> will comput
 of the resulting tuple, by discarding <code class="hljs">Unit</code> types and flattening
 nested tuples.</p>
 
+                 
+  <ul class="menu align-right simple a_navbar a_navbar_bottom">
+    
+      
+        <li><a href="../site-contents.html"  title="Table of Contents" ><span class="a_foundation_icon"></span>  Contents</a></li>
+      
+    
+  </ul>
+ 
               </main>
               
               
                 <div data-sticky-container class="small-12 medium-12 large-2 large-order-1 columns a_sitenav_container">
                   <nav class="a_sitenav" data-sticky data-sticky-on="large" data-anchor="_sections">
                     
-                  <ul>
-                     
+                    <ul>
+                       
   <li >
     
-      <a href="../index.html">Introduction</a>
+      
+        <a href="../index.html">Introduction</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../use-cases.html">Use Cases</a>
+      
+        <a href="../use-cases.html">Use Cases</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../quick-start.html">Quick start</a>
+      
+        <a href="../quick-start.html">Quick start</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../algebras-and-interpreters.html">Algebras and interpreters</a>
+      
+        <a href="../algebras-and-interpreters.html">Algebras and interpreters</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../design.html">Design in a nutshell</a>
+      
+        <a href="../design.html">Design in a nutshell</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../guides.html">Guides</a>
+      
+        <a href="../guides.html">Guides</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../comparison.html">Comparison with similar tools</a>
+      
+        <a href="../comparison.html">Comparison with similar tools</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../talks.html">Talks and Publications</a>
+      
+        <a href="../talks.html">Talks and Publications</a>
+      
     
     
   </li>
  
-                  </ul>
+                    </ul>
+                    
+                    
                   </nav>
                 </div>
               
@@ -194,28 +232,34 @@ nested tuples.</p>
 </header> 
                     <ul class="vertical menu" data-magellan>
                        
-  <li>
-    
-       <a href="#tupler">Tupler</a> 
-    
-    
-      <ul class="vertical menu">  
-  <li>
-    
-       <a href="#motivation">Motivation</a> 
-    
-    
-  </li>
   
-  <li>
-    
-       <a href="#how-it-works">How it works</a> 
-    
-    
-  </li>
+    <li>
+      
+         <a href="#tupler">Tupler</a> 
+      
+      
+        <ul class="vertical menu">  
+  
+    <li>
+      
+         <a href="#motivation">Motivation</a> 
+      
+      
+    </li>
+  
+  
+  
+    <li>
+      
+         <a href="#how-it-works">How it works</a> 
+      
+      
+    </li>
+  
   </ul>
-    
-  </li>
+      
+    </li>
+  
  
                     </ul>
                   </nav>
@@ -240,6 +284,7 @@ nested tuples.</p>
         </div>
       </footer>
     </div>
+    
     <script src="../theme/js/jquery.min.js"></script>
     <script src="../theme/js/what-input.min.js"></script>
     <script src="../theme/js/foundation.min.js"></script>

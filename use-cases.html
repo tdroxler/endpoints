@@ -7,8 +7,10 @@
     <title>Use Cases</title>
     <link rel="stylesheet" href="theme/css/foundation.min.css">
     <link rel="stylesheet" href="theme/css/app.css">
-     <link rel="stylesheet" href="theme/highlight.js/styles/github-gist.css"> 
     
+     <link rel="stylesheet" href="theme/highlight.js/styles/github-gist.css">  <link rel="stylesheet" href="theme/css/foundation-icons.custom.css"> 
+    
+     <link rel="prev" href="index.html"  title="Introduction"  />  <link rel="next" href="quick-start.html"  title="Quick start"  />  <link rel="start" href="index.html"  title="Introduction"  />  <link rel="toc" href="site-contents.html"  title="Table of Contents"  /> 
   </head>
   <body>
     <div class="expanded row">
@@ -19,7 +21,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.7.0</p>
+                  <p>endpoints 0.8.0</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -40,6 +42,23 @@
             <div class="row">
               
               <main class="columns large-order-2 sections" id="_sections">
+                 
+  <ul class="menu align-right simple a_navbar a_navbar_top">
+    
+      
+        <li><a href="index.html"  title="Introduction" ><span class="a_foundation_icon"></span>  Previous</a></li>
+      
+    
+      
+        <li><a href="quick-start.html"  title="Quick start" ><span class="a_foundation_icon"></span>  Next</a></li>
+      
+    
+      
+        <li><a href="site-contents.html"  title="Table of Contents" ><span class="a_foundation_icon"></span>  Contents</a></li>
+      
+    
+  </ul>
+ 
                 
                 <h1 id="use-cases" class="a_section" data-magellan-target="use-cases">Use Cases<a class="a_hlink" href="#use-cases"></a></h1>
 <p>This page showcases the salient features of <em>endpoints</em>.</p>
@@ -55,12 +74,12 @@ the clients and servers for these APIs:</p>
   */</span>
 <span class="hljs-keyword">val</span> command: <span class="hljs-type">Endpoint</span>[<span class="hljs-type">Command</span>, <span class="hljs-type">Option</span>[<span class="hljs-type">StoredEvent</span>]] =
   endpoint(post(path / <span class="hljs-string">"command"</span>, jsonRequest[<span class="hljs-type">Command</span>]()), jsonResponse[<span class="hljs-type">Option</span>[<span class="hljs-type">StoredEvent</span>]]())</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/documentation/examples/cqrs/commands-endpoints/src/main/scala/cqrs/commands/CommandsEndpoints.scala#L17-L24" class="a_sourcelink">CommandsEndpoints.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/documentation/examples/cqrs/commands-endpoints/src/main/scala/cqrs/commands/CommandsEndpoints.scala#L17-L24" class="a_sourcelink">CommandsEndpoints.scala</a></div></div>
 <p>Invoking a service from another is as simple as a method call:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> eventuallyMaybeEvent: <span class="hljs-type">Future</span>[<span class="hljs-type">Option</span>[<span class="hljs-type">StoredEvent</span>]] =
   commandsClient.command(<span class="hljs-type">CreateMeter</span>(createData.label))</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/documentation/examples/cqrs/public-server/src/main/scala/cqrs/publicserver/PublicServer.scala#L53-L54" class="a_sourcelink">PublicServer.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/documentation/examples/cqrs/public-server/src/main/scala/cqrs/publicserver/PublicServer.scala#L53-L54" class="a_sourcelink">PublicServer.scala</a></div></div>
 <p><em>endpoints</em> takes care of correctly constructing the HTTP request and
 decoding the HTTP response according to the endpoint description.</p>
 <p>Maintenance effort is reduced: you only maintain the description of
@@ -74,11 +93,11 @@ communication by turning method calls into remote invocations.</p>
 <pre class="hljs"><code class="language-scala"><span class="hljs-comment">/** Registers a new meter */</span>
 <span class="hljs-keyword">val</span> createMeter: <span class="hljs-type">Endpoint</span>[<span class="hljs-type">CreateMeter</span>, <span class="hljs-type">Meter</span>] =
   endpoint(post(metersPath, jsonRequest[<span class="hljs-type">CreateMeter</span>]()), jsonResponse[<span class="hljs-type">Meter</span>]())</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/documentation/examples/cqrs/public-endpoints/src/main/scala/cqrs/publicserver/PublicEndpoints.scala#L37-L39" class="a_sourcelink">PublicEndpoints.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/documentation/examples/cqrs/public-endpoints/src/main/scala/cqrs/publicserver/PublicEndpoints.scala#L37-L39" class="a_sourcelink">PublicEndpoints.scala</a></div></div>
 <p>Corresponding invocation from the client-side:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> eventuallyCreatedMeter: <span class="hljs-type">Future</span>[<span class="hljs-type">Meter</span>] = <span class="hljs-type">PublicEndpoints</span>.createMeter(<span class="hljs-type">CreateMeter</span>(name))</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/documentation/examples/cqrs/web-client/src/main/scala/cqrs/webclient/Main.scala" class="a_sourcelink">Main.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/documentation/examples/cqrs/web-client/src/main/scala/cqrs/webclient/Main.scala#L37" class="a_sourcelink">Main.scala</a></div></div>
 <h2 id="documenting-a-web-service" class="a_section" data-magellan-target="documenting-a-web-service">Documenting a Web Service<a class="a_hlink" href="#documenting-a-web-service"></a></h2>
 <p>Thanks to the separation between the description of an HTTP API and
 its implementation, <em>endpoints</em> can also generate an OpenAPI document
@@ -125,75 +144,110 @@ for a given HTTP API description.</p>
 
 }
 </code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/documentation/examples/documented/src/main/scala/counter/Counter.scala#L30-L69" class="a_sourcelink">Counter.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/documentation/examples/documented/src/main/scala/counter/Counter.scala#L30-L69" class="a_sourcelink">Counter.scala</a></div></div>
 <p><em>endpoints</em> can produce the
 <a href="https://documented-counter.herokuapp.com/documentation.json">following OpenApi document</a>.</p>
 
+                 
+  <ul class="menu align-right simple a_navbar a_navbar_bottom">
+    
+      
+        <li><a href="index.html"  title="Introduction" ><span class="a_foundation_icon"></span>  Previous</a></li>
+      
+    
+      
+        <li><a href="quick-start.html"  title="Quick start" ><span class="a_foundation_icon"></span>  Next</a></li>
+      
+    
+      
+        <li><a href="site-contents.html"  title="Table of Contents" ><span class="a_foundation_icon"></span>  Contents</a></li>
+      
+    
+  </ul>
+ 
               </main>
               
               
                 <div data-sticky-container class="small-12 medium-12 large-2 large-order-1 columns a_sitenav_container">
                   <nav class="a_sitenav" data-sticky data-sticky-on="large" data-anchor="_sections">
                     
-                  <ul>
-                     
+                    <ul>
+                       
   <li >
     
-      <a href="index.html">Introduction</a>
+      
+        <a href="index.html">Introduction</a>
+      
     
     
   </li>
   
   <li  class="a_thispage" >
     
-      <a href="use-cases.html">Use Cases</a>
+      
+        <a href="use-cases.html">Use Cases</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="quick-start.html">Quick start</a>
+      
+        <a href="quick-start.html">Quick start</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="algebras-and-interpreters.html">Algebras and interpreters</a>
+      
+        <a href="algebras-and-interpreters.html">Algebras and interpreters</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="design.html">Design in a nutshell</a>
+      
+        <a href="design.html">Design in a nutshell</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="guides.html">Guides</a>
+      
+        <a href="guides.html">Guides</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="comparison.html">Comparison with similar tools</a>
+      
+        <a href="comparison.html">Comparison with similar tools</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="talks.html">Talks and Publications</a>
+      
+        <a href="talks.html">Talks and Publications</a>
+      
     
     
   </li>
  
-                  </ul>
+                    </ul>
+                    
+                    
                   </nav>
                 </div>
               
@@ -205,35 +259,43 @@ for a given HTTP API description.</p>
 </header> 
                     <ul class="vertical menu" data-magellan>
                        
-  <li>
-    
-       <a href="#use-cases">Use Cases</a> 
-    
-    
-      <ul class="vertical menu">  
-  <li>
-    
-       <a href="#microservices">Microservices</a> 
-    
-    
-  </li>
   
-  <li>
-    
-       <a href="#web-applications">Web Applications</a> 
-    
-    
-  </li>
+    <li>
+      
+         <a href="#use-cases">Use Cases</a> 
+      
+      
+        <ul class="vertical menu">  
   
-  <li>
-    
-       <a href="#documenting-a-web-service">Documenting a Web Service</a> 
-    
-    
-  </li>
+    <li>
+      
+         <a href="#microservices">Microservices</a> 
+      
+      
+    </li>
+  
+  
+  
+    <li>
+      
+         <a href="#web-applications">Web Applications</a> 
+      
+      
+    </li>
+  
+  
+  
+    <li>
+      
+         <a href="#documenting-a-web-service">Documenting a Web Service</a> 
+      
+      
+    </li>
+  
   </ul>
-    
-  </li>
+      
+    </li>
+  
  
                     </ul>
                   </nav>
@@ -258,6 +320,7 @@ for a given HTTP API description.</p>
         </div>
       </footer>
     </div>
+    
     <script src="theme/js/jquery.min.js"></script>
     <script src="theme/js/what-input.min.js"></script>
     <script src="theme/js/foundation.min.js"></script>

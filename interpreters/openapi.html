@@ -7,8 +7,10 @@
     <title>OpenAPI</title>
     <link rel="stylesheet" href="../theme/css/foundation.min.css">
     <link rel="stylesheet" href="../theme/css/app.css">
-     <link rel="stylesheet" href="../theme/highlight.js/styles/github-gist.css"> 
     
+     <link rel="stylesheet" href="../theme/highlight.js/styles/github-gist.css">  <link rel="stylesheet" href="../theme/css/foundation-icons.custom.css"> 
+    
+     <link rel="toc" href="../site-contents.html"  title="Table of Contents"  /> 
   </head>
   <body>
     <div class="expanded row">
@@ -19,7 +21,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.7.0</p>
+                  <p>endpoints 0.8.0</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -40,13 +42,22 @@
             <div class="row">
               
               <main class="columns large-order-2 sections" id="_sections">
+                 
+  <ul class="menu align-right simple a_navbar a_navbar_top">
+    
+      
+        <li><a href="../site-contents.html"  title="Table of Contents" ><span class="a_foundation_icon"></span>  Contents</a></li>
+      
+    
+  </ul>
+ 
                 
                 <h1 id="openapi" class="a_section" data-magellan-target="openapi">OpenAPI<a class="a_hlink" href="#openapi"></a></h1>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-openapi"</span> % <span class="hljs-string">"0.7.0"</span>
+<pre class="hljs"><code class="language-scala"><span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-openapi"</span> % <span class="hljs-string">"0.8.0"</span>
 </code></pre>
 </div></div>
-<p><a href="../api/0.7.0/index.html#endpoints.openapi.package">API documentation</a></p>
+<p><a href="../api/0.8.0/index.html#endpoints.openapi.package">API documentation</a></p>
 <h2 id="endpoints" class="a_section" data-magellan-target="endpoints">Endpoints<a class="a_hlink" href="#endpoints"></a></h2>
 <p>The <code class="hljs">Endpoints</code> interpreter provides an <code class="hljs">openApi</code> method
 that takes as parameter a sequence of endpoints for which
@@ -55,92 +66,119 @@ to generate an OpenAPI document.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> someResource: <span class="hljs-type">Endpoint</span>[<span class="hljs-type">Int</span>, <span class="hljs-type">String</span>] =
   endpoint(get(path / <span class="hljs-string">"some-resource"</span> / segment[<span class="hljs-type">Int</span>]()), textResponse())</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/algebras/algebra/src/test/scala/endpoints/algebra/EndpointsDocs.scala#L65-L66" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/algebras/algebra/src/test/scala/endpoints/algebra/EndpointsDocs.scala#L65-L66" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
 <p>It can be documented as follows:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> api: <span class="hljs-type">OpenApi</span> =
   openApi(<span class="hljs-type">Info</span>(title = <span class="hljs-string">"API to get some resource"</span>, version = <span class="hljs-string">"1.0"</span>))(
     someResource
   )</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/openapi/openapi/src/test/scala/endpoints/openapi/EndpointsDocs.scala#L11-L14" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/openapi/openapi/src/test/scala/endpoints/openapi/EndpointsDocs.scala#L11-L14" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
 <p>The value returned by the <code class="hljs">openApi</code> method has type <code class="hljs">endpoints.openapi.models.OpenApi</code>,
 which is an abstract model for OpenAPI documents. You can generate a JSON
 representation of it, which you can then publish by your server, by
 serializing it into JSON. For instance, using circe:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> apiJson: <span class="hljs-type">Json</span> = api.asJson</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/openapi/openapi/src/test/scala/endpoints/openapi/EndpointsDocs.scala" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/openapi/openapi/src/test/scala/endpoints/openapi/EndpointsDocs.scala#L18" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
 <h2 id="json-entities" class="a_section" data-magellan-target="json-entities">JSON entities<a class="a_hlink" href="#json-entities"></a></h2>
 <p>To properly document the underlying JSON schema of your JSON entities,
 you have to define these schemas by using the
 <a href="../algebras/json-entities.html#jsonschemaentities">JsonSchemaEntities</a>
 algebra (and its corresponding interpreter).</p>
 
+                 
+  <ul class="menu align-right simple a_navbar a_navbar_bottom">
+    
+      
+        <li><a href="../site-contents.html"  title="Table of Contents" ><span class="a_foundation_icon"></span>  Contents</a></li>
+      
+    
+  </ul>
+ 
               </main>
               
               
                 <div data-sticky-container class="small-12 medium-12 large-2 large-order-1 columns a_sitenav_container">
                   <nav class="a_sitenav" data-sticky data-sticky-on="large" data-anchor="_sections">
                     
-                  <ul>
-                     
+                    <ul>
+                       
   <li >
     
-      <a href="../index.html">Introduction</a>
+      
+        <a href="../index.html">Introduction</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../use-cases.html">Use Cases</a>
+      
+        <a href="../use-cases.html">Use Cases</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../quick-start.html">Quick start</a>
+      
+        <a href="../quick-start.html">Quick start</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../algebras-and-interpreters.html">Algebras and interpreters</a>
+      
+        <a href="../algebras-and-interpreters.html">Algebras and interpreters</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../design.html">Design in a nutshell</a>
+      
+        <a href="../design.html">Design in a nutshell</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../guides.html">Guides</a>
+      
+        <a href="../guides.html">Guides</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../comparison.html">Comparison with similar tools</a>
+      
+        <a href="../comparison.html">Comparison with similar tools</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../talks.html">Talks and Publications</a>
+      
+        <a href="../talks.html">Talks and Publications</a>
+      
     
     
   </li>
  
-                  </ul>
+                    </ul>
+                    
+                    
                   </nav>
                 </div>
               
@@ -152,28 +190,34 @@ algebra (and its corresponding interpreter).</p>
 </header> 
                     <ul class="vertical menu" data-magellan>
                        
-  <li>
-    
-       <a href="#openapi">OpenAPI</a> 
-    
-    
-      <ul class="vertical menu">  
-  <li>
-    
-       <a href="#endpoints">Endpoints</a> 
-    
-    
-  </li>
   
-  <li>
-    
-       <a href="#json-entities">JSON entities</a> 
-    
-    
-  </li>
+    <li>
+      
+         <a href="#openapi">OpenAPI</a> 
+      
+      
+        <ul class="vertical menu">  
+  
+    <li>
+      
+         <a href="#endpoints">Endpoints</a> 
+      
+      
+    </li>
+  
+  
+  
+    <li>
+      
+         <a href="#json-entities">JSON entities</a> 
+      
+      
+    </li>
+  
   </ul>
-    
-  </li>
+      
+    </li>
+  
  
                     </ul>
                   </nav>
@@ -198,6 +242,7 @@ algebra (and its corresponding interpreter).</p>
         </div>
       </footer>
     </div>
+    
     <script src="../theme/js/jquery.min.js"></script>
     <script src="../theme/js/what-input.min.js"></script>
     <script src="../theme/js/foundation.min.js"></script>

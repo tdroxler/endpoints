@@ -7,8 +7,10 @@
     <title>Endpoints</title>
     <link rel="stylesheet" href="../theme/css/foundation.min.css">
     <link rel="stylesheet" href="../theme/css/app.css">
-     <link rel="stylesheet" href="../theme/highlight.js/styles/github-gist.css"> 
     
+     <link rel="stylesheet" href="../theme/highlight.js/styles/github-gist.css">  <link rel="stylesheet" href="../theme/css/foundation-icons.custom.css"> 
+    
+     <link rel="toc" href="../site-contents.html"  title="Table of Contents"  /> 
   </head>
   <body>
     <div class="expanded row">
@@ -19,7 +21,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.7.0</p>
+                  <p>endpoints 0.8.0</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -40,15 +42,24 @@
             <div class="row">
               
               <main class="columns large-order-2 sections" id="_sections">
+                 
+  <ul class="menu align-right simple a_navbar a_navbar_top">
+    
+      
+        <li><a href="../site-contents.html"  title="Table of Contents" ><span class="a_foundation_icon"></span>  Contents</a></li>
+      
+    
+  </ul>
+ 
                 
                 <h1 id="endpoints" class="a_section" data-magellan-target="endpoints"><code class="hljs">Endpoints</code><a class="a_hlink" href="#endpoints"></a></h1>
 <p>This algebra, at the top of the hierarchy, provides the base vocabulary to
 describe HTTP endpoints, requests and responses.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra"</span> % <span class="hljs-string">"0.7.0"</span>
+<pre class="hljs"><code class="language-scala"><span class="hljs-string">"org.julienrf"</span> %% <span class="hljs-string">"endpoints-algebra"</span> % <span class="hljs-string">"0.8.0"</span>
 </code></pre>
 </div></div>
-<p><a href="../api/0.7.0/index.html#endpoints.algebra.Endpoints">API documentation</a></p>
+<p><a href="../api/0.8.0/index.html#endpoints.algebra.Endpoints">API documentation</a></p>
 <h2 id="endpoint" class="a_section" data-magellan-target="endpoint">Endpoint<a class="a_hlink" href="#endpoint"></a></h2>
 <p>The algebra introduces the concept of <code class="hljs">Endpoint[A, B]</code>: an HTTP endpoint
 whose request carries an information of type <code class="hljs">A</code> and whose response carries
@@ -62,7 +73,7 @@ a user id), and a response optionally containing a <code class="hljs">User</code
 <span class="hljs-comment">// type “text/plain”</span>
 <span class="hljs-keyword">val</span> someResource: <span class="hljs-type">Endpoint</span>[<span class="hljs-type">Unit</span>, <span class="hljs-type">String</span>] =
   endpoint(get(path / <span class="hljs-string">"some-resource"</span>), textResponse())</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/algebras/algebra/src/test/scala/endpoints/algebra/EndpointsDocs.scala#L7-L11" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/algebras/algebra/src/test/scala/endpoints/algebra/EndpointsDocs.scala#L7-L11" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
 <p>The <code class="hljs">endpoint</code> constructor takes two parameters, the request description
 (of type <code class="hljs">Request[A]</code>) and the response description (of type <code class="hljs">Response[B]</code>),
 which are documented in the following sections.</p>
@@ -73,7 +84,7 @@ which are documented in the following sections.</p>
   textResponse(),
   description = <span class="hljs-type">Some</span>(<span class="hljs-string">"The contents of some resource"</span>)
 )</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/algebras/algebra/src/test/scala/endpoints/algebra/EndpointsDocs.scala#L16-L20" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/algebras/algebra/src/test/scala/endpoints/algebra/EndpointsDocs.scala#L16-L20" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
 <h2 id="request" class="a_section" data-magellan-target="request">Request<a class="a_hlink" href="#request"></a></h2>
 <p>The <code class="hljs">Request[A]</code> type models an HTTP request carrying
 some information of type <code class="hljs">A</code>. For instance, a <code class="hljs">Request[Long]</code> value
@@ -83,11 +94,11 @@ is a request containing a <code class="hljs">Long</code> value.</p>
 <pre class="hljs"><code class="language-scala"><span class="hljs-comment">// A request that uses the verb “GET”, the URL path “/foo”,</span>
 <span class="hljs-comment">// no entity and no headers</span>
 request(<span class="hljs-type">Get</span>, path / <span class="hljs-string">"foo"</span>, emptyRequest, emptyHeaders)</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/algebras/algebra/src/test/scala/endpoints/algebra/EndpointsDocs.scala#L24-L26" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/algebras/algebra/src/test/scala/endpoints/algebra/EndpointsDocs.scala#L24-L26" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
 <p>For convenience, a <code class="hljs">get</code> method and a <code class="hljs">post</code> method are provided:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">get(path / <span class="hljs-string">"foo"</span>) <span class="hljs-comment">// Same as above</span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/algebras/algebra/src/test/scala/endpoints/algebra/EndpointsDocs.scala" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/algebras/algebra/src/test/scala/endpoints/algebra/EndpointsDocs.scala#L30" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
 <h2 id="url" class="a_section" data-magellan-target="url">URL<a class="a_hlink" href="#url"></a></h2>
 <p>The <code class="hljs">Url[A]</code> type models an URL carrying some information of type <code class="hljs">A</code>. For
 instance, an <code class="hljs">Url[Long]</code> value is an URL containing a <code class="hljs">Long</code> value.</p>
@@ -100,7 +111,7 @@ path / <span class="hljs-string">"users"</span> / segment[<span class="hljs-type
 path / <span class="hljs-string">"articles"</span> /? qs[<span class="hljs-type">Int</span>](<span class="hljs-string">"page"</span>)            <span class="hljs-comment">// “/articles?page=2”, “/articles?page=5”, …</span>
 path / <span class="hljs-string">"articles"</span> /? optQs[<span class="hljs-type">Int</span>](<span class="hljs-string">"page"</span>)         <span class="hljs-comment">// “/articles”, “/articles?page=2”, …</span>
 path /? (qs[<span class="hljs-type">String</span>](<span class="hljs-string">"q"</span>) &amp; qs[<span class="hljs-type">String</span>](<span class="hljs-string">"lang"</span>))  <span class="hljs-comment">// “/?q=foo&amp;lang=en”, …</span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/algebras/algebra/src/test/scala/endpoints/algebra/EndpointsDocs.scala#L34-L39" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/algebras/algebra/src/test/scala/endpoints/algebra/EndpointsDocs.scala#L34-L39" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
 <p>Path segments and query string parameters can take additional parameters containing documentation:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-comment">// “/users/{id}”</span>
@@ -110,7 +121,7 @@ path / <span class="hljs-string">"users"</span> / segment[<span class="hljs-type
 <span class="hljs-keyword">val</span> query = qs[<span class="hljs-type">String</span>](<span class="hljs-string">"q"</span>, docs = <span class="hljs-type">Some</span>(<span class="hljs-string">"Query"</span>))
 <span class="hljs-keyword">val</span> lang = qs[<span class="hljs-type">String</span>](<span class="hljs-string">"lang"</span>, docs = <span class="hljs-type">Some</span>(<span class="hljs-string">"Language"</span>))
 path /? (query &amp; lang)</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/algebras/algebra/src/test/scala/endpoints/algebra/EndpointsDocs.scala#L43-L49" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/algebras/algebra/src/test/scala/endpoints/algebra/EndpointsDocs.scala#L43-L49" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
 <h2 id="response" class="a_section" data-magellan-target="response">Response<a class="a_hlink" href="#response"></a></h2>
 <p>The <code class="hljs">Response[A]</code> type models an HTTP response carrying some information of type <code class="hljs">A</code>.
 For instance, a <code class="hljs">Response[User]</code> value is an HTTP response containing a user.</p>
@@ -118,79 +129,106 @@ For instance, a <code class="hljs">Response[User]</code> value is an HTTP respon
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-comment">// An HTTP response with status code 200 (Ok) and no entity</span>
 <span class="hljs-keyword">val</span> nothing: <span class="hljs-type">Response</span>[<span class="hljs-type">Unit</span>] = emptyResponse()</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/algebras/algebra/src/test/scala/endpoints/algebra/EndpointsDocs.scala#L53-L54" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/algebras/algebra/src/test/scala/endpoints/algebra/EndpointsDocs.scala#L53-L54" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
 <p>Or by using a combinator:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-comment">// An HTTP response with status code 404 (Not Found) and no entity,</span>
 <span class="hljs-comment">// or with status code 200 (Ok) and a text entity.</span>
-<span class="hljs-keyword">val</span> maybeText: <span class="hljs-type">Response</span>[<span class="hljs-type">Option</span>[<span class="hljs-type">String</span>]] = option(textResponse())</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/algebras/algebra/src/test/scala/endpoints/algebra/EndpointsDocs.scala#L58-L60" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
+<span class="hljs-keyword">val</span> maybeText: <span class="hljs-type">Response</span>[<span class="hljs-type">Option</span>[<span class="hljs-type">String</span>]] = wheneverFound(textResponse())</code></pre>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/algebras/algebra/src/test/scala/endpoints/algebra/EndpointsDocs.scala#L58-L60" class="a_sourcelink">EndpointsDocs.scala</a></div></div>
 
+                 
+  <ul class="menu align-right simple a_navbar a_navbar_bottom">
+    
+      
+        <li><a href="../site-contents.html"  title="Table of Contents" ><span class="a_foundation_icon"></span>  Contents</a></li>
+      
+    
+  </ul>
+ 
               </main>
               
               
                 <div data-sticky-container class="small-12 medium-12 large-2 large-order-1 columns a_sitenav_container">
                   <nav class="a_sitenav" data-sticky data-sticky-on="large" data-anchor="_sections">
                     
-                  <ul>
-                     
+                    <ul>
+                       
   <li >
     
-      <a href="../index.html">Introduction</a>
+      
+        <a href="../index.html">Introduction</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../use-cases.html">Use Cases</a>
+      
+        <a href="../use-cases.html">Use Cases</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../quick-start.html">Quick start</a>
+      
+        <a href="../quick-start.html">Quick start</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../algebras-and-interpreters.html">Algebras and interpreters</a>
+      
+        <a href="../algebras-and-interpreters.html">Algebras and interpreters</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../design.html">Design in a nutshell</a>
+      
+        <a href="../design.html">Design in a nutshell</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../guides.html">Guides</a>
+      
+        <a href="../guides.html">Guides</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../comparison.html">Comparison with similar tools</a>
+      
+        <a href="../comparison.html">Comparison with similar tools</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../talks.html">Talks and Publications</a>
+      
+        <a href="../talks.html">Talks and Publications</a>
+      
     
     
   </li>
  
-                  </ul>
+                    </ul>
+                    
+                    
                   </nav>
                 </div>
               
@@ -202,42 +240,52 @@ For instance, a <code class="hljs">Response[User]</code> value is an HTTP respon
 </header> 
                     <ul class="vertical menu" data-magellan>
                        
-  <li>
-    
-       <a href="#endpoints">Endpoints</a> 
-    
-    
-      <ul class="vertical menu">  
-  <li>
-    
-       <a href="#endpoint">Endpoint</a> 
-    
-    
-  </li>
   
-  <li>
-    
-       <a href="#request">Request</a> 
-    
-    
-  </li>
+    <li>
+      
+         <a href="#endpoints">Endpoints</a> 
+      
+      
+        <ul class="vertical menu">  
   
-  <li>
-    
-       <a href="#url">URL</a> 
-    
-    
-  </li>
+    <li>
+      
+         <a href="#endpoint">Endpoint</a> 
+      
+      
+    </li>
   
-  <li>
-    
-       <a href="#response">Response</a> 
-    
-    
-  </li>
+  
+  
+    <li>
+      
+         <a href="#request">Request</a> 
+      
+      
+    </li>
+  
+  
+  
+    <li>
+      
+         <a href="#url">URL</a> 
+      
+      
+    </li>
+  
+  
+  
+    <li>
+      
+         <a href="#response">Response</a> 
+      
+      
+    </li>
+  
   </ul>
-    
-  </li>
+      
+    </li>
+  
  
                     </ul>
                   </nav>
@@ -262,6 +310,7 @@ For instance, a <code class="hljs">Response[User]</code> value is an HTTP respon
         </div>
       </footer>
     </div>
+    
     <script src="../theme/js/jquery.min.js"></script>
     <script src="../theme/js/what-input.min.js"></script>
     <script src="../theme/js/foundation.min.js"></script>

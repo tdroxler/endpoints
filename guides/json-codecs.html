@@ -7,8 +7,10 @@
     <title>JSON codecs</title>
     <link rel="stylesheet" href="../theme/css/foundation.min.css">
     <link rel="stylesheet" href="../theme/css/app.css">
-     <link rel="stylesheet" href="../theme/highlight.js/styles/github-gist.css"> 
     
+     <link rel="stylesheet" href="../theme/highlight.js/styles/github-gist.css">  <link rel="stylesheet" href="../theme/css/foundation-icons.custom.css"> 
+    
+     <link rel="toc" href="../site-contents.html"  title="Table of Contents"  /> 
   </head>
   <body>
     <div class="expanded row">
@@ -19,7 +21,7 @@
             <div class="row">
               <div class="large-12 columns a_limited top-bar">
                 <div class="top-bar-left">
-                  <p>endpoints 0.7.0</p>
+                  <p>endpoints 0.8.0</p>
 
                 </div>
                 <div class="top-bar-right align-right row">
@@ -40,6 +42,15 @@
             <div class="row">
               
               <main class="columns large-order-2 sections" id="_sections">
+                 
+  <ul class="menu align-right simple a_navbar a_navbar_top">
+    
+      
+        <li><a href="../site-contents.html"  title="Table of Contents" ><span class="a_foundation_icon"></span>  Contents</a></li>
+      
+    
+  </ul>
+ 
                 
                 <h1 id="json-codecs" class="a_section" data-magellan-target="json-codecs">JSON codecs<a class="a_hlink" href="#json-codecs"></a></h1>
 <p>The <a href="../algebras/json-entities.html">JSON entities algebras</a> show that several options
@@ -55,7 +66,7 @@ types for request and response entities:</p>
 
 <span class="hljs-comment">/** Type class defining how to represent the `A` information as a JSON response entity */</span>
 <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">JsonResponse</span>[<span class="hljs-type">A</span>]</span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/algebras/algebra/src/main/scala/endpoints/algebra/JsonEntities.scala#L23-L27" class="a_sourcelink">JsonEntities.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/algebras/algebra/src/main/scala/endpoints/algebra/JsonEntities.scala#L23-L27" class="a_sourcelink">JsonEntities.scala</a></div></div>
 <p>However, in case your endpoint definitions are interpreted in multiple ways these types
 should be aligned so that requests and responses are consistently encoded, decoded and
 documented by client, server and documentation interpreters. A consequence of this is that an
@@ -71,13 +82,13 @@ the <code class="hljs">JsonRequest</code> and <code class="hljs">JsonResponse</c
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-comment">/** A JSON codec type class */</span>
 <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">JsonCodec</span>[<span class="hljs-type">A</span>]</span></code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/algebras/algebra/src/main/scala/endpoints/algebra/JsonEntities.scala#L48-L49" class="a_sourcelink">JsonEntities.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/algebras/algebra/src/main/scala/endpoints/algebra/JsonEntities.scala#L48-L49" class="a_sourcelink">JsonEntities.scala</a></div></div>
 <p>Generally, you want to use a <code class="hljs">JsonEntitiesFromCodec</code> algebra that fixes this <code class="hljs">JsonCodec</code> type to
 a concrete type. An example is <code class="hljs">endpoints.algebra.playjson.JsonEntitiesFromCodec</code>, which
 aligns the <code class="hljs">JsonCodec</code> type with Play’s <code class="hljs">Format</code> type:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">JsonCodec</span>[<span class="hljs-type">A</span>] </span>= <span class="hljs-type">Format</span>[<span class="hljs-type">A</span>]</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/algebras/algebra-playjson/src/main/scala/endpoints/algebra/playjson/JsonEntitiesFromCodec.scala" class="a_sourcelink">JsonEntitiesFromCodec.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/algebras/algebra-playjson/src/main/scala/endpoints/algebra/playjson/JsonEntitiesFromCodec.scala#L61" class="a_sourcelink">JsonEntitiesFromCodec.scala</a></div></div>
 <p>The <a href="../algebras/json-entities.html#jsonentitiesfromcodec">JSON entities algebra</a> documentation page
 shows the list of <code class="hljs">JsonEntitiesFromCodec</code> algebras that fixes the <code class="hljs">JsonCodec</code> type to a concrete type.</p>
 <h3 id="interpreters" class="a_section" data-magellan-target="interpreters">Interpreters<a class="a_hlink" href="#interpreters"></a></h3>
@@ -94,7 +105,7 @@ algebra). Both the <code class="hljs">JsonRequest</code> and <code class="hljs">
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">JsonRequest</span>[<span class="hljs-type">A</span>] </span>= <span class="hljs-type">JsonSchema</span>[<span class="hljs-type">A</span>]
 <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">JsonResponse</span>[<span class="hljs-type">A</span>] </span>= <span class="hljs-type">JsonSchema</span>[<span class="hljs-type">A</span>]</code></pre>
-<a href="https://github.com/julienrf/endpoints/blob/3422bfc06a25534bda7f524697fb5a87df4b5be5/algebras/algebra/src/main/scala/endpoints/algebra/JsonSchemaEntities.scala#L14-L15" class="a_sourcelink">JsonSchemaEntities.scala</a></div></div>
+<a href="https://github.com/julienrf/endpoints/blob/v0.8.0/algebras/algebra/src/main/scala/endpoints/algebra/JsonSchemaEntities.scala#L14-L15" class="a_sourcelink">JsonSchemaEntities.scala</a></div></div>
 <h3 id="interpreters-1" class="a_section" data-magellan-target="interpreters-1">Interpreters<a class="a_hlink" href="#interpreters-1"></a></h3>
 <p>To interpret endpoints defined with this algebra, pick an interpreter that matches your
 <a href="../algebras-and-interpreters.html#interpreters">family</a> of interpreters and, if relevant,
@@ -102,71 +113,98 @@ the underlying JSON library to use. For instance, the
 <code class="hljs">endpoints.play.server.circe.JsonSchemaEntities</code> trait is a server interpreter based
 on Play framework that uses the circe JSON library.</p>
 
+                 
+  <ul class="menu align-right simple a_navbar a_navbar_bottom">
+    
+      
+        <li><a href="../site-contents.html"  title="Table of Contents" ><span class="a_foundation_icon"></span>  Contents</a></li>
+      
+    
+  </ul>
+ 
               </main>
               
               
                 <div data-sticky-container class="small-12 medium-12 large-2 large-order-1 columns a_sitenav_container">
                   <nav class="a_sitenav" data-sticky data-sticky-on="large" data-anchor="_sections">
                     
-                  <ul>
-                     
+                    <ul>
+                       
   <li >
     
-      <a href="../index.html">Introduction</a>
+      
+        <a href="../index.html">Introduction</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../use-cases.html">Use Cases</a>
+      
+        <a href="../use-cases.html">Use Cases</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../quick-start.html">Quick start</a>
+      
+        <a href="../quick-start.html">Quick start</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../algebras-and-interpreters.html">Algebras and interpreters</a>
+      
+        <a href="../algebras-and-interpreters.html">Algebras and interpreters</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../design.html">Design in a nutshell</a>
+      
+        <a href="../design.html">Design in a nutshell</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../guides.html">Guides</a>
+      
+        <a href="../guides.html">Guides</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../comparison.html">Comparison with similar tools</a>
+      
+        <a href="../comparison.html">Comparison with similar tools</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="../talks.html">Talks and Publications</a>
+      
+        <a href="../talks.html">Talks and Publications</a>
+      
     
     
   </li>
  
-                  </ul>
+                    </ul>
+                    
+                    
                   </nav>
                 </div>
               
@@ -178,67 +216,83 @@ on Play framework that uses the circe JSON library.</p>
 </header> 
                     <ul class="vertical menu" data-magellan>
                        
-  <li>
-    
-       <a href="#json-codecs">JSON codecs</a> 
-    
-    
-      <ul class="vertical menu">  
-  <li>
-    
-       <a href="#use-codecs-at-the-algebra-level">Use codecs at the algebra level</a> 
-    
-    
-  </li>
   
-  <li>
-    
-       <a href="#jsonentitiesfromcodec">JsonEntitiesFromCodec</a> 
-    
-    
-      <ul class="vertical menu">  
-  <li>
-    
-       <a href="#algebra">Algebra</a> 
-    
-    
-  </li>
+    <li>
+      
+         <a href="#json-codecs">JSON codecs</a> 
+      
+      
+        <ul class="vertical menu">  
   
-  <li>
-    
-       <a href="#interpreters">Interpreters</a> 
-    
-    
-  </li>
+    <li>
+      
+         <a href="#use-codecs-at-the-algebra-level">Use codecs at the algebra level</a> 
+      
+      
+    </li>
+  
+  
+  
+    <li>
+      
+         <a href="#jsonentitiesfromcodec">JsonEntitiesFromCodec</a> 
+      
+      
+        <ul class="vertical menu">  
+  
+    <li>
+      
+         <a href="#algebra">Algebra</a> 
+      
+      
+    </li>
+  
+  
+  
+    <li>
+      
+         <a href="#interpreters">Interpreters</a> 
+      
+      
+    </li>
+  
   </ul>
-    
-  </li>
+      
+    </li>
   
-  <li>
-    
-       <a href="#jsonschemaentities">JsonSchemaEntities</a> 
-    
-    
-      <ul class="vertical menu">  
-  <li>
-    
-       <a href="#algebra-1">Algebra</a> 
-    
-    
-  </li>
   
-  <li>
-    
-       <a href="#interpreters-1">Interpreters</a> 
-    
-    
-  </li>
+  
+    <li>
+      
+         <a href="#jsonschemaentities">JsonSchemaEntities</a> 
+      
+      
+        <ul class="vertical menu">  
+  
+    <li>
+      
+         <a href="#algebra-1">Algebra</a> 
+      
+      
+    </li>
+  
+  
+  
+    <li>
+      
+         <a href="#interpreters-1">Interpreters</a> 
+      
+      
+    </li>
+  
   </ul>
-    
-  </li>
+      
+    </li>
+  
   </ul>
-    
-  </li>
+      
+    </li>
+  
  
                     </ul>
                   </nav>
@@ -263,6 +317,7 @@ on Play framework that uses the circe JSON library.</p>
         </div>
       </footer>
     </div>
+    
     <script src="../theme/js/jquery.min.js"></script>
     <script src="../theme/js/what-input.min.js"></script>
     <script src="../theme/js/foundation.min.js"></script>
