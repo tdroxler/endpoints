@@ -41,7 +41,7 @@ trait Urls extends algebra.Urls {
     new Applicative[RequestExtractor] {
       def apply[A, B](mf: RequestExtractor[A => B], ma: RequestExtractor[A]): RequestExtractor[B] =
         request => mf(request).flatMap(f => ma(request).map(f))
-      def pure[A](a: A): RequestExtractor[A] =
+      def pure[A](a: => A): RequestExtractor[A] =
         _ => Some(a)
       def map[A, B](m: RequestExtractor[A], f: A => B): RequestExtractor[B] =
         request => m(request).map(f)
@@ -246,7 +246,7 @@ trait Urls extends algebra.Urls {
     request => {
       val segments =
         request.path
-          .split("/").to[List]
+          .split("/").toList
           .map(s => URLDecoder.decode(s, utf8Name))
       path.decode(if (segments.isEmpty) List("") else segments).collect { case (a, Nil) => a }
     }
