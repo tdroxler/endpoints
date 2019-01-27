@@ -6,19 +6,21 @@ val `algebra-playjson-jvm` = LocalProject("algebra-playjsonJVM")
 val `json-schema-circe-jvm` = LocalProject("json-schema-circeJVM")
 val `json-schema-generic-jvm` = LocalProject("json-schema-genericJVM")
 
-val akkaHttpVersion = "10.0.15"
-val akkaHttpJsonVersion = "1.18.1"
-val akkaHttpCirceVersion = "1.22.0"
+val akkaVersion = "2.5.19"
+val akkaHttpVersion = "10.1.7"
+val akkaHttpCirceVersion = "1.24.3"
 
 val `akka-http-client` =
   project.in(file("client"))
     .settings(
       publishSettings,
-      `scala 2.11 to 2.12`,
+      `scala 2.11 to latest`,
       name := "endpoints-akka-http-client",
       libraryDependencies ++= Seq(
         "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
+        "com.typesafe.akka" %% "akka-stream" % akkaVersion,
         "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test,
+        "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % Test,
         scalaTestDependency
       )
     )
@@ -29,11 +31,13 @@ val `akka-http-server` =
   project.in(file("server"))
     .settings(
       publishSettings,
-      `scala 2.11 to 2.12`,
+      `scala 2.11 to 2.12`, // 2.13 is not supported because of akka-http-circe and sttp
       name := "endpoints-akka-http-server",
       libraryDependencies ++= Seq(
         "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
+        "com.typesafe.akka" %% "akka-stream" % akkaVersion,
         "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test,
+        "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % Test,
         "de.heikoseeberger" %% "akka-http-circe" % akkaHttpCirceVersion % Provided,
         "com.softwaremill.sttp" %% "core" % sttpVersion % Test, // Temporary
         scalaTestDependency
