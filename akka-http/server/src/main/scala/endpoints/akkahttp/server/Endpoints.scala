@@ -1,6 +1,7 @@
 package endpoints.akkahttp.server
 
-import akka.http.scaladsl.model.{HttpEntity, HttpResponse, StatusCodes}
+import akka.http.scaladsl.model
+import akka.http.scaladsl.model.{HttpEntity, HttpResponse }
 import akka.http.scaladsl.server.{Directive1, Directives, Route}
 import akka.http.scaladsl.unmarshalling.FromRequestUnmarshaller
 import endpoints.algebra.Documentation
@@ -14,7 +15,7 @@ import scala.util.{Failure, Success}
   *
   * @group interpreters
   */
-trait Endpoints extends algebra.Endpoints with Urls with Methods {
+trait Endpoints extends algebra.Endpoints with Urls with Methods with StatusCodes {
 
   type RequestHeaders[A] = Directive1[A]
 
@@ -23,6 +24,8 @@ trait Endpoints extends algebra.Endpoints with Urls with Methods {
   type RequestEntity[A] = Directive1[A]
 
   type Response[A] = A => Route
+
+  type ResponseEntity[A] = A => model.ResponseEntity
 
   case class Endpoint[A, B](request: Request[A], response: Response[B]) {
     def implementedBy(implementation: A => B): Route = request { arguments =>
@@ -70,15 +73,21 @@ trait Endpoints extends algebra.Endpoints with Urls with Methods {
       RESPONSES
   ************************* */
 
-  def emptyResponse(docs: Documentation): Response[Unit] = x => Directives.complete((StatusCodes.OK, HttpEntity.Empty))
+ def ok[A](entity: ResponseEntity[A]): Response[A] = x => Directives.complete(HttpResponse(OK, entity = entity(x)))
 
-  def textResponse(docs: Documentation): Response[String] = x => Directives.complete((StatusCodes.OK, x))
+  def emptyResponse(docs: Documentation): ResponseEntity[Unit] = x => HttpEntity.Empty
+
+  def textResponse(docs: Documentation): ResponseEntity[String] = x => HttpEntity(x)
 
   def wheneverFound[A](response: Response[A], notFoundDocs: Documentation): Response[Option[A]] = {
     case Some(a) => response(a)
-    case None => Directives.complete(HttpResponse(StatusCodes.NotFound))
+    case None => Directives.complete(HttpResponse(NotFound))
   }
 
+  def wheneverValid[A, E<: WithStatusCode](response: Response[A])(errorEntity: ResponseEntity[E]): Response[Either[E, A]]={
+    case Right(a) => response(a)
+    case Left(error) => Directives.complete(HttpResponse(error.statusCode, entity = errorEntity(error)))
+  }
 
   def request[A, B, C, AB, Out](
     method: Method,

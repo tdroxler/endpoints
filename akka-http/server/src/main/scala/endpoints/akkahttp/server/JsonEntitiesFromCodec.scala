@@ -1,5 +1,4 @@
 package endpoints.akkahttp.server
-import akka.http.scaladsl.marshalling.{Marshaller, ToEntityMarshaller}
 import akka.http.scaladsl.model.{HttpEntity, MediaTypes}
 import akka.http.scaladsl.server.Directives
 import akka.http.scaladsl.unmarshalling.{FromEntityUnmarshaller, Unmarshaller}
@@ -21,12 +20,8 @@ trait JsonEntitiesFromCodec extends Endpoints with endpoints.algebra.JsonEntitie
     Directives.entity[A](implicitly)
   }
 
-  def jsonResponse[A](docs: Documentation)(implicit codec: Codec[String, A]): Response[A] = { a =>
-    implicit val toEntityMarshaller: ToEntityMarshaller[A] =
-      Marshaller.withFixedContentType(MediaTypes.`application/json`) { value =>
-        HttpEntity(MediaTypes.`application/json`, codec.encode(value))
-      }
-    Directives.complete(a)
+  def jsonResponse[A](docs: Documentation)(implicit codec: Codec[String, A]): ResponseEntity[A] = { a =>
+        HttpEntity(MediaTypes.`application/json`, codec.encode(a))
   }
 
 }

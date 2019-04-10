@@ -1,5 +1,6 @@
 package endpoints.akkahttp.server
 
+import akka.http.scaladsl.model.{HttpEntity, MediaTypes}
 import akka.http.scaladsl.server.Directives
 import de.heikoseeberger.akkahttpcirce.ErrorAccumulatingCirceSupport._
 import endpoints._
@@ -21,8 +22,8 @@ trait JsonSchemaEntities extends server.Endpoints with algebra.JsonSchemaEntitie
     Directives.entity[A](implicitly)
   }
 
-  def jsonResponse[A : JsonSchema](docs: Documentation): Response[A] = { a =>
-    implicit def encoder: Encoder[A] = implicitly[JsonSchema[A]].encoder
-    Directives.complete(a)
+  def jsonResponse[A : JsonSchema](docs: Documentation): ResponseEntity[A] = { a =>
+    implicit val encoder: Encoder[A] = implicitly[JsonSchema[A]].encoder
+        HttpEntity(MediaTypes.`application/json`, encoder(a).toString)
   }
 }

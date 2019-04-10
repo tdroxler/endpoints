@@ -31,7 +31,7 @@ trait JsonEntities extends Endpoints {
   def jsonRequest[A : JsonRequest](docs: Documentation = None): RequestEntity[A]
 
   /** Defines a `Response[A]` given an implicit `JsonResponse[A]` */
-  def jsonResponse[A : JsonResponse](docs: Documentation = None): Response[A]
+  def jsonResponse[A : JsonResponse](docs: Documentation = None): ResponseEntity[A]
 }
 
 /**

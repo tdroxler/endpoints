@@ -10,7 +10,7 @@ import endpoints.{InvariantFunctor, Tupler, algebra}
   *
   * @group interpreters
   */
-trait Urls extends algebra.Urls {
+trait Urls extends algebra.Urls with StatusCodes {
 
   import akka.http.scaladsl.server.Directives._
 
