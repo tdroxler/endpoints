@@ -37,7 +37,7 @@ trait Responses extends StatusCodes {
   def wheneverFound[A](response: Response[A], notFoundDocs: Documentation = None): Response[Option[A]]
 
 
-  def wheneverValid[A,E<:WithStatusCode](response: Response[A])(errorEntity: ResponseEntity[E]): Response[Either[E, A]]
+  def wheneverValid[A,E<:WithStatusCode](response: Response[A])(errorEntity: ResponseEntity[E], notValidDocs: List[StatusCode] = List.empty): Response[Either[E, A]]
 
   /** Extensions for [[Response]]. */
   implicit class ResponseExtensions[A](response: Response[A]) {

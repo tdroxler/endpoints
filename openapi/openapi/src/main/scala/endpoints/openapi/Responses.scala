@@ -10,21 +10,37 @@ import endpoints.openapi.model.MediaType
   * @group interpreters
   */
 trait Responses
-  extends algebra.Responses {
+  extends algebra.Responses with StatusCodes {
 
   type Response[A] = List[DocumentedResponse]
+  type ResponseEntity[A] = DocumentedResponseEntity
 
   /**
     * @param status Response status code (e.g. 200)
     * @param documentation Human readable documentation. Not optional because its required by openapi
     * @param content Map that associates each possible content-type (e.g. “text/html”) with a [[MediaType]] description
     */
-  case class DocumentedResponse(status: Int, documentation: String, content: Map[String, MediaType])
+  case class DocumentedResponse(status: Int, entity: DocumentedResponseEntity) {
+    def documentation = entity.documentation
+    def content = entity.content
+  }
+  object DocumentedResponse {
+    def apply(status: Int, documentation: String, content: Map[String, MediaType]): DocumentedResponse =
+      DocumentedResponse(status, DocumentedResponseEntity(documentation, content))
 
-  def emptyResponse(docs: Documentation): Response[Unit] = DocumentedResponse(200, docs.getOrElse(""), Map.empty) :: Nil
+  }
 
-  def textResponse(docs: Documentation): Response[String] = DocumentedResponse(200, docs.getOrElse(""), Map("text/plain" -> MediaType(None))) :: Nil
+  case class DocumentedResponseEntity(documentation: String, content: Map[String, MediaType])
+
+  def ok[A](entity: ResponseEntity[A]): Response[A] = DocumentedResponse(OK, entity) :: Nil
+
+  def emptyResponse(docs: Documentation): ResponseEntity[Unit] = DocumentedResponseEntity(docs.getOrElse(""), Map.empty)
+
+  def textResponse(docs: Documentation): ResponseEntity[String] = DocumentedResponseEntity(docs.getOrElse(""), Map("text/plain" -> MediaType(None)))
 
   def wheneverFound[A](response: Response[A], notFoundDocs: Documentation): Response[Option[A]] =
-    DocumentedResponse(404, notFoundDocs.getOrElse(""), content = Map.empty) :: response
+    DocumentedResponse(NotFound, notFoundDocs.getOrElse(""), content = Map.empty) :: response
+
+   override def wheneverValid[A,E<:WithStatusCode](response: Response[A])(errorEntity: ResponseEntity[E], notValidDocs: List[StatusCode]): Response[Either[E, A]] =
+     notValidDocs.map(statusCode => DocumentedResponse(statusCode, errorEntity)) ++ response
 }
