@@ -32,7 +32,7 @@ trait Responses
 
   case class DocumentedResponseEntity(documentation: String, content: Map[String, MediaType])
 
-  def ok[A](entity: ResponseEntity[A]): Response[A] = DocumentedResponse(OK, entity) :: Nil
+  def response[A](statusCode: StatusCode, entity: ResponseEntity[A]): Response[A] = DocumentedResponse(statusCode, entity) :: Nil
 
   def emptyResponse(docs: Documentation): ResponseEntity[Unit] = DocumentedResponseEntity(docs.getOrElse(""), Map.empty)
 
@@ -41,6 +41,14 @@ trait Responses
   def wheneverFound[A](response: Response[A], notFoundDocs: Documentation): Response[Option[A]] =
     DocumentedResponse(NotFound, notFoundDocs.getOrElse(""), content = Map.empty) :: response
 
+  def choiceResponse[A, B](respA: Response[A], respB: Response[B]): Response[Either[B, A]] = respA ++ respB
+
    override def wheneverValid[A,E<:WithStatusCode](response: Response[A])(errorEntity: ResponseEntity[E], notValidDocs: List[StatusCode]): Response[Either[E, A]] =
      notValidDocs.map(statusCode => DocumentedResponse(statusCode, errorEntity)) ++ response
+
+  override def enumResponse[A <: WithStatusCode](responseEntity: ResponseEntity[A], enum: enumeratum.Enum[A]): Response[A] ={
+    enum.values.toList.flatMap(a =>response(a.statusCode, responseEntity))
+  }
+
+
 }

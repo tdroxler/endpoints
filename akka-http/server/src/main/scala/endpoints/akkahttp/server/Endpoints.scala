@@ -73,7 +73,8 @@ trait Endpoints extends algebra.Endpoints with Urls with Methods with StatusCode
       RESPONSES
   ************************* */
 
- def ok[A](entity: ResponseEntity[A]): Response[A] = x => Directives.complete(HttpResponse(OK, entity = entity(x)))
+
+ def response[A](statusCode: StatusCode, entity: ResponseEntity[A]): Response[A] = x =>Directives.complete(HttpResponse(statusCode, entity = entity(x)))
 
   def emptyResponse(docs: Documentation): ResponseEntity[Unit] = x => HttpEntity.Empty
 
@@ -83,6 +84,13 @@ trait Endpoints extends algebra.Endpoints with Urls with Methods with StatusCode
     case Some(a) => response(a)
     case None => Directives.complete(HttpResponse(NotFound))
   }
+
+  def choiceResponse[A, B](respA: Response[A], respB: Response[B]): Response[Either[B, A]] ={
+    case Right(a) => respA(a)
+    case Left(b) => respB(b)
+  }
+
+  override def enumResponse[A <: WithStatusCode](responseEntity: ResponseEntity[A], enum: enumeratum.Enum[A]): Response[A] = entityA =>  Directives.complete(HttpResponse(entityA.statusCode, entity = responseEntity(entityA)))
 
   override def wheneverValid[A, E<: WithStatusCode](response: Response[A])(errorEntity: ResponseEntity[E], notValidDocs: List[StatusCode]): Response[Either[E, A]]={
     case Right(a) => response(a)
