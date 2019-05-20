@@ -130,6 +130,7 @@ trait Endpoints extends algebra.Endpoints with Urls with Methods {
       if (xhr.status == 404) Right(None)
       else response(xhr).right.map(Some(_))
 
+  def choiceResponse[A, B](innerA: Response[A], innerB: Response[B]): Response[Either[A, B]] = ???
   /**
     * A function that takes the information needed to build a request and returns
     * a task yielding the information carried by the response.

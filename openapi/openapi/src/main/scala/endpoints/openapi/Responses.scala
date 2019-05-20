@@ -29,4 +29,7 @@ trait Responses
 
   def wheneverFound[A](response: Response[A], notFoundDocs: Documentation): Response[Option[A]] =
     DocumentedResponse(404, notFoundDocs.getOrElse(""), content = Map.empty) :: response
+
+  def choiceResponse[A, B](responseA: Response[A], responseB: Response[B]): Response[Either[A,B]] =
+    responseB ++ responseA
 }

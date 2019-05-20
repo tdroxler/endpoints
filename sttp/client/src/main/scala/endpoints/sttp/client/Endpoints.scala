@@ -147,6 +147,8 @@ class Endpoints[R[_]](host: String, val backend: sttp.SttpBackend[R, Nothing]) e
     }
   }
 
+  def choiceResponse[A, B](innerA: Response[A], innerB: Response[B]): Response[Either[A, B]] = ???
+
   /**
     * A function that, given an `A`, eventually attempts to decode the `B` response.
     */

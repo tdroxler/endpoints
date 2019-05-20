@@ -115,6 +115,13 @@ class Endpoints(val settings: EndpointsSettings)
     }
   }
 
+  override def choiceResponse[A,B](innerA: HttpResponse => Future[Either[Throwable, A]], innerB: HttpResponse => Future[Either[Throwable, B]]): HttpResponse => Future[Either[Throwable, Either[A,B]]] = {
+    {
+      case resp if resp.status.intValue() == 200 => innerB(resp).map(_.right.map(Right(_)))
+      case resp  => innerA(resp).map(_.right.map(Left(_)))
+    }
+  }
+
   //#endpoint-type
   type Endpoint[A, B] = A => Future[B]
   //#endpoint-type

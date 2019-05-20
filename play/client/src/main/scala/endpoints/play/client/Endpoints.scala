@@ -103,6 +103,11 @@ class Endpoints(host: String, wsClient: WSClient)(implicit val executionContext:
       if (wsResponse.status == 404) Right(None)
       else response(wsResponse).right.map(Some(_))
 
+  def choiceResponse[A,B](responseA: Response[A], responseB: Response[B]): Response[Either[A,B]] =
+    wsResponse =>
+      if (wsResponse.status == 200) responseB(wsResponse).right.map(Right(_))
+      else responseA(wsResponse).right.map(Left(_))
+
   /**
     * A function that, given an `A`, eventually attempts to decode the `B` response.
     *

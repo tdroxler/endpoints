@@ -79,6 +79,10 @@ trait Endpoints extends algebra.Endpoints with Urls with Methods {
     case None => Directives.complete(HttpResponse(StatusCodes.NotFound))
   }
 
+  def choiceResponse[A, B](responseA: Response[A], responseB: Response[B]): Response[Either[A,B]] ={
+    case Right(b) => responseB(b)
+    case Left(a) => responseA(a)
+  }
 
   def request[A, B, C, AB, Out](
     method: Method,

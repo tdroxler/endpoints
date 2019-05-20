@@ -220,6 +220,10 @@ trait Endpoints extends algebra.Endpoints with Urls with Methods {
     case None => Results.NotFound
   }
 
+  def choiceResponse[A, B](responseA: Response[A], responseB: Response[B]): Response[Either[A,B]] = {
+    case Right(b) => responseB(b)
+    case Left(a) => responseA(a)
+  }
   /**
     * @return An HTTP response redirecting to another endpoint (using 303 code status).
     * @param other Endpoint to redirect to

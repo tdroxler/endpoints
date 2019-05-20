@@ -28,6 +28,9 @@ trait Responses {
     */
   def wheneverFound[A](response: Response[A], notFoundDocs: Documentation = None): Response[Option[A]]
 
+  def choiceResponse[A, B](responseA: Response[A], responseB: Response[B]): Response[Either[A,B]]
+
+
   /** Extensions for [[Response]]. */
   implicit class ResponseExtensions[A](response: Response[A]) {
     /** syntax for `wheneverFound` */
